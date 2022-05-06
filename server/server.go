@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/erudit-recommandation/search-engine-webapp/route"
 	"github.com/gorilla/mux"
 )
 
@@ -18,6 +19,8 @@ func setRoute(r *mux.Router) {
 		w.Header().Set("Content-Type", "text/html; charset=UTF-8")
 		fmt.Fprintf(w, "<h1>Boom Boom</h1>")
 	}).Methods("GET")
+
+	r.HandleFunc("/", route.Homepage).Methods("GET")
 }
 
 func GetPort() string {
