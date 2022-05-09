@@ -1,1 +1,17 @@
-body {color: #c0392b}
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.text-input {
+  width: 50vw;
+  height: 50vh;
+  border: solid;
+}
+
+.button-form {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
