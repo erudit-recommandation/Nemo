@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/erudit-recommandation/search-engine-webapp/api"
 	"github.com/erudit-recommandation/search-engine-webapp/route"
 	"github.com/gorilla/mux"
 )
@@ -21,6 +22,8 @@ func setRoute(r *mux.Router) {
 	}).Methods("GET")
 
 	r.HandleFunc("/", route.Homepage).Methods("GET")
+	r.HandleFunc("/search", route.Result).Methods("GET")
+	r.HandleFunc("/api/recommandation", api.Recommandation).Methods("POST")
 }
 
 func GetPort() string {
