@@ -12,7 +12,18 @@ import (
 
 func Recommandation(w http.ResponseWriter, r *http.Request) {
 	(w).Header().Set("Content-Type", "application/json; application/json")
-	res := domain.NewDummyResults()
+	if err := r.ParseForm(); err != nil {
+		err_msg := domain.NO_TEXT_SENDED_FOR_RECOMMANDATION
+		log.Println(err)
+		http.Error(w, err_msg, http.StatusInternalServerError)
+		fmt.Fprintf(w, "")
+		return
+	}
+
+	text := r.FormValue("text")
+	log.Println(text)
+
+	res := domain.NewDummyResults(10)
 	b, err := json.Marshal(res)
 	if err != nil {
 		log.Println(err)

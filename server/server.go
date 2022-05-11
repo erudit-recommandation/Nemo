@@ -22,7 +22,7 @@ func setRoute(r *mux.Router) {
 	}).Methods("GET")
 
 	r.HandleFunc("/", route.Homepage).Methods("GET")
-	r.HandleFunc("/search", route.Result).Methods("GET")
+	r.HandleFunc("/search", route.Result).Methods("POST")
 	r.HandleFunc("/api/recommandation", api.Recommandation).Methods("POST")
 }
 

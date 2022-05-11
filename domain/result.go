@@ -14,12 +14,16 @@ type Result struct {
 	DOI      string
 }
 
-func NewDummyResults() Result {
-	return Result{
-		Title:    randomdata.SillyName(),
-		Abstract: randomdata.Paragraph(),
-		Url:      fmt.Sprintf("https://%v.com", randomdata.SillyName()),
-		Date:     fmt.Sprintf("%v/%v/%v", randomdata.Day(), randomdata.Month(), randomdata.Number(1900, 2022)),
-		DOI:      fmt.Sprintf("https://%v.com", randomdata.SillyName()),
+func NewDummyResults(n int) []Result {
+	res := make([]Result, n)
+	for i := 0; i < n; i++ {
+		res[i] = Result{
+			Title:    randomdata.SillyName(),
+			Abstract: randomdata.Paragraph(),
+			Url:      fmt.Sprintf("https://%v.com", randomdata.SillyName()),
+			Date:     fmt.Sprintf("%v/%v/%v", randomdata.Day(), randomdata.Month(), randomdata.Number(1900, 2022)),
+			DOI:      fmt.Sprintf("https://%v.com", randomdata.SillyName()),
+		}
 	}
+	return res
 }

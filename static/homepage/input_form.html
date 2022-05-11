@@ -1,7 +1,7 @@
 {{define "search-input"}}
-<form class="input-form">
+<form class="input-form" action="/search" method="POST">
 
-    <textarea class="text-input" type="text" placeholder="Entrer le text de l'article">
+    <textarea  name="text" class="text-input" type="text" placeholder="Entrer le text de l'article">
 </textarea>
     <div class="button-form">
         <button>Recherche</button>
