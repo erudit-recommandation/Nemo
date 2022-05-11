@@ -1,3 +1,15 @@
+:root {
+  --page-gap: 10vh;
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2vh;
+  margin-left: var(--page-gap);
+  margin-right: var(--page-gap);
+}
+
 body {
   margin-top: 0;
   margin-left: 0;
@@ -14,15 +26,9 @@ body {
   color: white;
 }
 
-.result {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 2vh;
-}
-
 .result:hover {
-    background: rgba(0, 0, 0,0.05);
-  }
+  background: rgba(0, 0, 0, 0.05);
+}
 
 .result-header {
   display: flex;
@@ -30,8 +36,8 @@ body {
   justify-content: space-between;
   margin-bottom: 1vh;
 }
-.abstract{
-    text-overflow: ellipsis;
-    overflow: hidden;
-    max-height: 10%;
+.abstract {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-height: 10%;
 }

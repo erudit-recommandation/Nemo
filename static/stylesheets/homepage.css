@@ -1,12 +1,23 @@
+:root {
+  --banner-width: 600px;
+  --banner-height: 200px;
+}
+
 .main {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+.banner {
+  width: var(--banner-width);
+  height: var(--banner-height);
+  margin-bottom: 2vh;
+}
+
 .text-input {
-  width: 50vw;
   height: 50vh;
+  width: var(--banner-width);
   border: solid;
 }
 
