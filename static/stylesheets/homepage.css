@@ -19,6 +19,7 @@
   height: 50vh;
   width: var(--banner-width);
   border: solid;
+  margin-bottom: 1vh;
 }
 
 .button-form {
