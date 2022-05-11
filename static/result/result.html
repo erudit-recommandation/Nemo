@@ -1,11 +1,17 @@
 {{define "result"}}
 <div class="result">
-    <div class="result-header">
-        <a href={{.Url}} title={{.Title}}>{{.Title}}</a>
-        <span>{{.Date}}</span>
+    <div class="som">
+        <img src="static/images/placeholders/som.jpeg" alt="som">
+    </div>
+    <div class="result-payload">
+        <div class="result-header">
+            <a href={{.Url}} title={{.Title}}>{{.Title}}</a>
+            <span class="result-date">{{.Date}}</span>
+        </div>
+
+        <span class="abstract">{{.Abstract}}</span>
+        <a href="{{.DOI}}">{{.DOI}}</a>
     </div>
 
-    <span maxlength="3" class="abstract">{{.Abstract}}</span>
-    <a href="{{.DOI}}">{{.DOI}}</a>
 </div>
 {{end}}

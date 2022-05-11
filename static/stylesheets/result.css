@@ -1,13 +1,25 @@
 :root {
-  --page-gap: 10vh;
+  --page-gap: 5vh;
+  --som-size: 50vh;
+}
+
+.results-section {
+  margin-right: var(--page-gap-right);
+  margin-left: var(--page-gap-right);
 }
 
 .result {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   margin-bottom: 2vh;
-  margin-left: var(--page-gap);
-  margin-right: var(--page-gap);
+}
+
+.som img {
+  width: var(--som-size);
+}
+.result-payload {
+  display: flex;
+  flex-direction: column;
 }
 
 body {
@@ -32,8 +44,7 @@ body {
 
 .result-header {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
   margin-bottom: 1vh;
 }
 .abstract {
