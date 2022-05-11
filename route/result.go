@@ -9,6 +9,8 @@ import (
 	"github.com/erudit-recommandation/search-engine-webapp/domain"
 )
 
+const MAX_RESULTS = 10
+
 func Result(w http.ResponseWriter, r *http.Request) {
 
 	if err := r.ParseForm(); err != nil || r.FormValue("text") == "" {
@@ -23,11 +25,12 @@ func Result(w http.ResponseWriter, r *http.Request) {
 	log.Println(text)
 
 	tmpl := template.Must(template.ParseFiles(
-		"static/result/result_page.html",
+		"static/result/results_page.html",
+		"static/result/result.html",
 	))
 
 	result_info := ResultInfo{
-		Text: text,
+		Results: domain.NewDummyResults(MAX_RESULTS),
 	}
 	err := tmpl.Execute(w, result_info)
 	if err != nil {
@@ -36,5 +39,5 @@ func Result(w http.ResponseWriter, r *http.Request) {
 }
 
 type ResultInfo struct {
-	Text string
+	Results []domain.Result
 }

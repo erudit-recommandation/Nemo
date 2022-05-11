@@ -8,5 +8,5 @@
 </head>
 
 <body>
-    {{.Text}}
+    {{range $el:=.Results}} {{template "result" $el}} {{end}}
 </body>
