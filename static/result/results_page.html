@@ -4,9 +4,16 @@
 <head>
     <meta charset="utf-8">
     <title>Recommandation érudit</title>
-    <link rel="stylesheet" href="static/stylesheets/main.css">
+    <link rel="stylesheet" href="static/stylesheets/result.css">
 </head>
 
 <body>
-    {{range $el:=.Results}} {{template "result" $el}} {{end}}
+    <div class="header">
+        <a href="/">Faire une nouvelle recherche</a>
+    </div>
+
+    <div class="results-section">
+        {{range $el:=.Results}} {{template "result" $el}} {{end}}
+    </div>
+
 </body>

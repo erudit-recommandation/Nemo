@@ -1,0 +1,37 @@
+body {
+  margin-top: 0;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.header {
+  background-color: blue;
+  margin-bottom: 2vh;
+  height: 4vh;
+}
+
+.header * {
+  color: white;
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2vh;
+}
+
+.result:hover {
+    background: rgba(0, 0, 0,0.05);
+  }
+
+.result-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 1vh;
+}
+.abstract{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-height: 10%;
+}

@@ -1,8 +1,11 @@
 {{define "result"}}
 <div class="result">
-    <a href={{.Url}}>{{.Title}}</a>
-    <p>{{.Date}}</p>
-    <p>{{.Abstract}}</p>
+    <div class="result-header">
+        <a href={{.Url}} title={{.Title}}>{{.Title}}</a>
+        <span>{{.Date}}</span>
+    </div>
+
+    <span maxlength="3" class="abstract">{{.Abstract}}</span>
     <a href="{{.DOI}}">{{.DOI}}</a>
 </div>
 {{end}}
