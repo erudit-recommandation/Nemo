@@ -22,6 +22,12 @@
   margin-bottom: 1vh;
 }
 
+.input-form{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .button-form {
   display: flex;
   flex-direction: row;
