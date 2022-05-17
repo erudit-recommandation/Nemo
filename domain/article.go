@@ -12,6 +12,7 @@ type Article struct {
 	Url      string
 	Year     int `json:"annee"`
 	DOI      string
+	Author   string `json:"author"`
 }
 
 func NewDummyResults(n int) []Article {
@@ -19,6 +20,7 @@ func NewDummyResults(n int) []Article {
 	for i := 0; i < n; i++ {
 		res[i] = Article{
 			Title:    randomdata.SillyName(),
+			Author:   randomdata.SillyName(),
 			Abstract: randomdata.Paragraph(),
 			Url:      fmt.Sprintf("https://%v.com", randomdata.SillyName()),
 			Year:     randomdata.Number(1900, 2022),
