@@ -39,5 +39,5 @@ func Result(w http.ResponseWriter, r *http.Request) {
 }
 
 type ResultInfo struct {
-	Results []domain.Result
+	Results []domain.Article
 }

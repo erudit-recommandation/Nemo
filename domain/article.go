@@ -6,18 +6,18 @@ import (
 	"github.com/Pallinder/go-randomdata"
 )
 
-type Result struct {
-	Title    string
+type Article struct {
+	Title    string `json:"title"`
 	Abstract string
 	Url      string
-	Date     string
+	Date     string `json:"annee"`
 	DOI      string
 }
 
-func NewDummyResults(n int) []Result {
-	res := make([]Result, n)
+func NewDummyResults(n int) []Article {
+	res := make([]Article, n)
 	for i := 0; i < n; i++ {
-		res[i] = Result{
+		res[i] = Article{
 			Title:    randomdata.SillyName(),
 			Abstract: randomdata.Paragraph(),
 			Url:      fmt.Sprintf("https://%v.com", randomdata.SillyName()),

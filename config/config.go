@@ -1,4 +1,4 @@
-package server
+package config
 
 import (
 	"os"
@@ -22,14 +22,13 @@ func GetEnvVariableFromPath(path string) EnvVariable {
 			panic("was not able to load config check the current path in relation to the .env file")
 		}
 		return EnvVariable{
-			Port:             os.Getenv("PORT"),
-			TemplateRootPath: os.Getenv("TEMPLATE_ROOT_PATH"),
+			Port:                    os.Getenv("PORT"),
+			ArangoPort:              os.Getenv("ARANGO_PORT"),
+			ArangoPassword:          os.Getenv("ARANGO_PASSWORD"),
+			ArangoUsername:          os.Getenv("ARANGO_USERNAME"),
+			ArangoDatabase:          os.Getenv("ARANGO_DATABASE"),
+			ArangoArticleCollection: os.Getenv("ARANGO_ARTICLE_COLLECTION"),
 		}
 	}
 	return *envVariable
-}
-
-type EnvVariable struct {
-	Port             string
-	TemplateRootPath string
 }

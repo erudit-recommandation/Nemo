@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/erudit-recommandation/search-engine-webapp/api"
+	"github.com/erudit-recommandation/search-engine-webapp/config"
 	"github.com/erudit-recommandation/search-engine-webapp/route"
 	"github.com/gorilla/mux"
 )
@@ -28,7 +29,7 @@ func setRoute(r *mux.Router) {
 
 func GetPort() string {
 
-	return ":" + GetConfig().Port
+	return ":" + config.GetConfig().Port
 }
 
 func BuildServer(srv *http.Server, close chan os.Signal) {
