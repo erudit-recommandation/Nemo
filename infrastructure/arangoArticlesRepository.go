@@ -8,6 +8,7 @@ import (
 	driver "github.com/arangodb/go-driver"
 	"github.com/arangodb/go-driver/http"
 	"github.com/erudit-recommandation/search-engine-webapp/config"
+	"github.com/erudit-recommandation/search-engine-webapp/domain"
 )
 
 var QUERY_MAXIMUM_DURATION = 30 * time.Second
@@ -19,7 +20,7 @@ type ArangoArticlesRepository struct {
 	collection string
 }
 
-func (a ArangoArticlesRepository) GetByTitle(title string, n uint) (Article, error) {
+func (a ArangoArticlesRepository) GetByTitle(title string, n uint) (domain.Article, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), QUERY_MAXIMUM_DURATION)
 	defer cancel()
@@ -32,23 +33,23 @@ func (a ArangoArticlesRepository) GetByTitle(title string, n uint) (Article, err
 		n)
 	cursor, err := a.database.Query(ctx, query, nil)
 	if err != nil {
-		return Article{}, err
+		return domain.Article{}, err
 	}
 	defer cursor.Close()
-	var doc Article
+	var doc domain.Article
 	for {
 		_, err := cursor.ReadDocument(ctx, &doc)
 		if driver.IsNoMoreDocuments(err) {
 			break
 		} else if err != nil {
-			return Article{}, err
+			return domain.Article{}, err
 		}
 		break
 	}
 	return doc, nil
 }
 
-func (a ArangoArticlesRepository) GetByAuthor(title string, n uint) ([]Article, error) {
+func (a ArangoArticlesRepository) GetByAuthor(title string, n uint) ([]domain.Article, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), QUERY_MAXIMUM_DURATION)
 	defer cancel()
@@ -64,9 +65,9 @@ func (a ArangoArticlesRepository) GetByAuthor(title string, n uint) ([]Article, 
 		return nil, err
 	}
 	defer cursor.Close()
-	resp := make([]Article, 0, n)
+	resp := make([]domain.Article, 0, n)
 	for {
-		var doc Article
+		var doc domain.Article
 		_, err := cursor.ReadDocument(ctx, &doc)
 		if driver.IsNoMoreDocuments(err) {
 			break
