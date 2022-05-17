@@ -1,4 +1,4 @@
-package domain
+package infrastructure
 
 import "github.com/erudit-recommandation/search-engine-webapp/domain"
 

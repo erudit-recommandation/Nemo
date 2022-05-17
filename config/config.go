@@ -12,6 +12,10 @@ func GetConfig() EnvVariable {
 	return GetEnvVariableFromPath(".env")
 }
 
+func SetConfig(config *EnvVariable) {
+	envVariable = config
+}
+
 func ClearEnvVariable() {
 	envVariable = nil
 }

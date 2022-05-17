@@ -20,9 +20,6 @@ func Recommandation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	text := r.FormValue("text")
-	log.Println(text)
-
 	res := domain.NewDummyResults(10)
 	b, err := json.Marshal(res)
 	if err != nil {

@@ -1,4 +1,4 @@
-package domain
+package infrastructure
 
 import (
 	"context"
@@ -44,7 +44,6 @@ func (a ArangoArticlesRepository) GetByTitle(title string, n uint) (domain.Artic
 		} else if err != nil {
 			return domain.Article{}, err
 		}
-		break
 	}
 	return doc, nil
 }
@@ -55,7 +54,7 @@ func (a ArangoArticlesRepository) GetByAuthor(title string, n uint) ([]domain.Ar
 	defer cancel()
 
 	query := fmt.Sprintf(`FOR c IN articles
-    						FILTER c.title == "%v"
+    						FILTER c.author == "%v"
     						LIMIT %v
     						RETURN c`,
 		title,
