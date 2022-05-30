@@ -20,7 +20,7 @@ type ArangoArticlesRepository struct {
 	collection string
 }
 
-func (a ArangoArticlesRepository) GetByTitle(title string, n uint) (domain.Article, error) {
+func (a ArangoArticlesRepository) GetByTitle(title string, n uint) ([]domain.Article, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), QUERY_MAXIMUM_DURATION)
 	defer cancel()
@@ -33,19 +33,22 @@ func (a ArangoArticlesRepository) GetByTitle(title string, n uint) (domain.Artic
 		n)
 	cursor, err := a.database.Query(ctx, query, nil)
 	if err != nil {
-		return domain.Article{}, err
+		return nil, err
 	}
 	defer cursor.Close()
-	var doc domain.Article
+	resp := make([]domain.Article, 0, n)
 	for {
+		var doc domain.Article
 		_, err := cursor.ReadDocument(ctx, &doc)
 		if driver.IsNoMoreDocuments(err) {
 			break
 		} else if err != nil {
-			return domain.Article{}, err
+			return nil, err
 		}
+		doc.BuildUrl()
+		resp = append(resp, doc)
 	}
-	return doc, nil
+	return resp, nil
 }
 
 func (a ArangoArticlesRepository) GetByAuthor(title string, n uint) ([]domain.Article, error) {
@@ -73,6 +76,7 @@ func (a ArangoArticlesRepository) GetByAuthor(title string, n uint) ([]domain.Ar
 		} else if err != nil {
 			return nil, err
 		}
+		doc.BuildUrl()
 		resp = append(resp, doc)
 	}
 	return resp, nil

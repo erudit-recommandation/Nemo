@@ -13,6 +13,11 @@ type Article struct {
 	Year     int `json:"annee"`
 	DOI      string
 	Author   string `json:"author"`
+	ID       string `json:"idproprio"`
+}
+
+func (a *Article) BuildUrl() {
+	a.Url = fmt.Sprintf("https://id.erudit.org/iderudit/%v", a.ID)
 }
 
 func NewDummyResults(n int) []Article {
