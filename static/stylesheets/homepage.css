@@ -1,28 +1,68 @@
 :root {
-  --banner-width: 600px;
-  --banner-height: 200px;
+}
+
+* {
+  font-family: "Georgia";
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.foot {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20vh;
+  row-gap: 1vh;
+}
+
+
+a {
+  color: black;
+  align-self: center;
+  font-weight: bold;
+}
+
+#name {
+  font-size: 5em;
+}
+
+#visite {
+  font-size: 1.2em;
+}
+
+#corpus {
+  font-size: 3em;
+  text-decoration: underline;   
 }
 
 .main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 20vh;
 }
 
-.banner {
-  width: var(--banner-width);
-  height: var(--banner-height);
-  margin-bottom: 2vh;
+.title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: bolder;
 }
 
 .text-input {
-  height: 50vh;
-  width: var(--banner-width);
-  border: solid;
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+
   margin-bottom: 1vh;
+  width: 55vw;
+  height: 3vw;
 }
 
-.input-form{
+.input-form {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -31,5 +71,28 @@
 .button-form {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
+}
+
+button {
+  font-weight: bolder;
+  height: 4vw;
+
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+}
+
+#simple-search-button {
+  background-color: black;
+  color: white;
+}
+
+#complex-search-button {
+  background-color: black;
+  color: white;
+}
+#SOM-search {
+  background-color: white;
+  width: 31vw;
 }

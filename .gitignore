@@ -1,3 +1,2 @@
 build
-.env
-data/es/*
+data/arango/*
