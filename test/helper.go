@@ -10,7 +10,7 @@ func SliceContainTheSameElements[N any](s1 []N, s2 []N) bool {
 		ss1[el] = el
 	}
 
-	for _, el := range ss1 {
+	for _, el := range s2 {
 		ss2[el] = el
 	}
 

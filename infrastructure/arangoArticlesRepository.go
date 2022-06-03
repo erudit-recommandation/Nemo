@@ -54,10 +54,10 @@ func (a ArangoArticlesRepository) SearchPhrases(phrase string, n uint) ([]domain
 	ctx, cancel := context.WithTimeout(context.Background(), QUERY_MAXIMUM_DURATION)
 	defer cancel()
 
-	query := fmt.Sprintf(`FOR c IN article_analysis
-							SEARCH ANALYSER(PHRASE(c.text,"%v"),"text_fr")
-    						LIMIT %v
-    						RETURN c`,
+	query := fmt.Sprintf(`FOR doc in article_analysis
+    						SEARCH ANALYZER(PHRASE(doc.text,"%v"),"text_fr")
+							LIMIT %v
+							RETURN doc`,
 		phrase,
 		n)
 	cursor, err := a.database.Query(ctx, query, nil)
