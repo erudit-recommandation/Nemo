@@ -24,7 +24,7 @@ func setRoute(r *mux.Router) {
 
 	r.HandleFunc("/", route.Homepage).Methods("GET")
 	r.HandleFunc("/search", route.Result).Methods("POST")
-	r.HandleFunc("/api/recommandation", api.Recommandation).Methods("POST")
+	r.HandleFunc("/api/entendu_en_voyage", api.Recommandation).Methods("POST")
 }
 
 func GetPort() string {
