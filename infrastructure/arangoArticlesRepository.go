@@ -20,47 +20,45 @@ type ArangoArticlesRepository struct {
 	collection string
 }
 
-func (a ArangoArticlesRepository) GetByTitle(title string, n uint) ([]domain.Article, error) {
+func (a ArangoArticlesRepository) GetByIdproprio(id string) (domain.Article, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), QUERY_MAXIMUM_DURATION)
 	defer cancel()
 
 	query := fmt.Sprintf(`FOR c IN articles
-    						FILTER c.title == "%v"
-    						LIMIT %v
+    						FILTER c.idproprio == "%v"
+    						LIMIT 1
     						RETURN c`,
-		title,
-		n)
+		id)
 	cursor, err := a.database.Query(ctx, query, nil)
 	if err != nil {
-		return nil, err
+		return domain.Article{}, err
 	}
 	defer cursor.Close()
-	resp := make([]domain.Article, 0, n)
-	for {
-		var doc domain.Article
-		_, err := cursor.ReadDocument(ctx, &doc)
-		if driver.IsNoMoreDocuments(err) {
-			break
-		} else if err != nil {
-			return nil, err
-		}
-		doc.BuildUrl()
-		resp = append(resp, doc)
+	var doc domain.Article
+
+	_, err = cursor.ReadDocument(ctx, &doc)
+
+	if driver.IsNoMoreDocuments(err) {
+		return domain.Article{}, nil
+	} else if err != nil {
+		return domain.Article{}, err
 	}
-	return resp, nil
+	doc.BuildUrl()
+
+	return doc, nil
 }
 
-func (a ArangoArticlesRepository) GetByAuthor(title string, n uint) ([]domain.Article, error) {
+func (a ArangoArticlesRepository) SearchPhrases(phrase string, n uint) ([]domain.Article, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), QUERY_MAXIMUM_DURATION)
 	defer cancel()
 
-	query := fmt.Sprintf(`FOR c IN articles
-    						FILTER c.author == "%v"
+	query := fmt.Sprintf(`FOR c IN article_analysis
+							SEARCH ANALYSER(PHRASE(c.text,"%v"),"text_fr")
     						LIMIT %v
     						RETURN c`,
-		title,
+		phrase,
 		n)
 	cursor, err := a.database.Query(ctx, query, nil)
 	if err != nil {

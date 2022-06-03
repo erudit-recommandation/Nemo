@@ -1,151 +1,64 @@
 package infrastructure_test
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/erudit-recommandation/search-engine-webapp/domain"
 	"github.com/erudit-recommandation/search-engine-webapp/infrastructure"
-	"github.com/erudit-recommandation/search-engine-webapp/test"
 )
 
 func ProvideTestCaseArangoArticlesRepository() []func(repositoryProvider func() (infrastructure.ArticlesRepository, error), t *testing.T) (func(t *testing.T), string) {
 	return []func(repositoryProvider func() (infrastructure.ArticlesRepository, error), t *testing.T) (func(t *testing.T), string){
-		testGetAuthorArticles,
-		testGetAuthorArticlesAuthorDontExist,
-		testGetTitles,
-		testGetTitleArticlesTitleDontExist,
+		testGetByIdproprio,
+		testGetByIdproprioArticleDontExist,
 	}
 }
 
-func testGetAuthorArticles(repositoryProvider func() (infrastructure.ArticlesRepository, error), t *testing.T) (func(t *testing.T), string) {
+func testGetByIdproprio(repositoryProvider func() (infrastructure.ArticlesRepository, error), t *testing.T) (func(t *testing.T), string) {
 	repo, err := repositoryProvider()
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	return func(t *testing.T) {
-		var n uint = 10
-		author := "Savoie-Bernard"
-		expectedResult := []domain.Article{
-			{
-				Title: "Hervé : dans l’antichambre du véritable amour",
-				Year:  2021,
-				ID:    "96127ac",
-			},
-			{
-				Year:  2017,
-				ID:    "86259ac",
-				Title: "Des bouchées de Chloé",
-			},
-			{
-				Year:  2021,
-				ID:    "96215ac",
-				Title: "Réflexion.  Qui porte les voix dans l’écriture de l’histoire ?",
-			},
-			{
-				Year:  2016,
-				Title: "Se réinventer with a new tab",
-				ID:    "1044407ar",
-			},
-			{
-				Year:  2021,
-				Title: "Lettre à un·e écrivain·e vivant·e malgré tout",
-				ID:    "97262ac",
-			},
+		id := "18411ac"
+		expectedResult := domain.Article{
+			Title:  "Imperturbablement... Au sujet d’une nouvelle génération intellectuelle",
+			Year:   2005,
+			Author: "Thibault",
+			ID:     id,
 		}
+		expectedResult.BuildUrl()
 
-		for _, el := range expectedResult {
-			el.Author = author
-			el.BuildUrl()
-		}
-
-		resp, err := repo.GetByAuthor(author, n)
+		resp, err := repo.GetByIdproprio(id)
 		if err != nil {
 			t.Fatal(err)
 		}
-		if len(resp) != len(expectedResult) {
-			t.Fatalf("should return %v articles but returned %v", len(expectedResult), resp)
-		}
-		if !test.SliceContainTheSameElements(resp, expectedResult) {
-			t.Fatalf("the articles are not same the response is %v\n where we expect \n %v", resp, expectedResult)
+
+		if !reflect.DeepEqual(resp, expectedResult) {
+			t.Fatalf("the articles are not same the response is \n%v\n where we expect \n %v", resp, expectedResult)
 		}
 
-	}, "testGetAuthorArticles"
+	}, "testGetByIdproprio"
 }
 
-func testGetAuthorArticlesAuthorDontExist(repositoryProvider func() (infrastructure.ArticlesRepository, error), t *testing.T) (func(t *testing.T), string) {
+func testGetByIdproprioArticleDontExist(repositoryProvider func() (infrastructure.ArticlesRepository, error), t *testing.T) (func(t *testing.T), string) {
 	repo, err := repositoryProvider()
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	return func(t *testing.T) {
-		var n uint = 10
-		author := "Carlos Marximilian"
+		id := "abcdefghi"
 
-		resp, err := repo.GetByAuthor(author, n)
+		resp, err := repo.GetByIdproprio(id)
 		if err != nil {
 			t.Fatal(err)
 		}
-		if len(resp) != 0 {
-			t.Fatalf("There should be no author of the name %v", author)
+		if !reflect.DeepEqual(resp, domain.Article{}) {
+			t.Fatalf("There should be no article with the id %v", id)
 		}
 
-	}, "testGetAuthorArticlesAuthorDontExist"
-}
-
-func testGetTitles(repositoryProvider func() (infrastructure.ArticlesRepository, error), t *testing.T) (func(t *testing.T), string) {
-	repo, err := repositoryProvider()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	return func(t *testing.T) {
-		var n uint = 10
-		title := "L’injonction de penser dans l’amitié"
-		expectedResult := []domain.Article{
-			{
-				Title: "L’injonction de penser dans l’amitié",
-				Year:  2005,
-				ID:    "18424ac",
-			},
-		}
-
-		for _, el := range expectedResult {
-			el.BuildUrl()
-		}
-
-		resp, err := repo.GetByTitle(title, n)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if len(resp) != len(expectedResult) {
-			t.Fatalf("should return %v articles but returned %v", len(expectedResult), resp)
-		}
-		if !test.SliceContainTheSameElements(resp, expectedResult) {
-			t.Fatalf("the articles are not same the response is %v\n where we expect \n %v", resp, expectedResult)
-		}
-
-	}, "testGetTitles"
-}
-
-func testGetTitleArticlesTitleDontExist(repositoryProvider func() (infrastructure.ArticlesRepository, error), t *testing.T) (func(t *testing.T), string) {
-	repo, err := repositoryProvider()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	return func(t *testing.T) {
-		var n uint = 10
-		title := "Switch and translation"
-
-		resp, err := repo.GetByTitle(title, n)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if len(resp) != 0 {
-			t.Fatalf("There should be no article with the title %v", title)
-		}
-
-	}, "testGetTitleArticlesTitleDontExist"
+	}, "testGetByIdproprioArticleDontExist"
 }
