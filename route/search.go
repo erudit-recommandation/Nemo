@@ -21,9 +21,6 @@ func Result(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	text := r.FormValue("text")
-	log.Println(text)
-
 	tmpl := template.Must(template.ParseFiles(
 		"static/result/results_page.html",
 		"static/result/result.html",
@@ -39,5 +36,5 @@ func Result(w http.ResponseWriter, r *http.Request) {
 }
 
 type ResultInfo struct {
-	Results []domain.Result
+	Results []domain.Article
 }

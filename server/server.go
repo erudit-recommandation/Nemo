@@ -11,6 +11,8 @@ import (
 	"time"
 
 	"github.com/erudit-recommandation/search-engine-webapp/api"
+	"github.com/erudit-recommandation/search-engine-webapp/config"
+	"github.com/erudit-recommandation/search-engine-webapp/middleware"
 	"github.com/erudit-recommandation/search-engine-webapp/route"
 	"github.com/gorilla/mux"
 )
@@ -23,12 +25,12 @@ func setRoute(r *mux.Router) {
 
 	r.HandleFunc("/", route.Homepage).Methods("GET")
 	r.HandleFunc("/search", route.Result).Methods("POST")
-	r.HandleFunc("/api/recommandation", api.Recommandation).Methods("POST")
+	r.HandleFunc("/api/entendu_en_voyage", middleware.EntenduEnVoyage(api.EntenduEnVoyage)).Methods("POST")
 }
 
 func GetPort() string {
 
-	return ":" + GetConfig().Port
+	return ":" + config.GetConfig().Port
 }
 
 func BuildServer(srv *http.Server, close chan os.Signal) {
