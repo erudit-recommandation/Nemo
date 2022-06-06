@@ -1,43 +1,49 @@
 package route
 
 import (
-	"fmt"
-	"log"
+	"encoding/json"
 	"net/http"
 	"text/template"
 
 	"github.com/erudit-recommandation/search-engine-webapp/domain"
+	"github.com/erudit-recommandation/search-engine-webapp/middleware"
 )
 
 const MAX_RESULTS = 10
 
 func Result(w http.ResponseWriter, r *http.Request) {
 
-	if err := r.ParseForm(); err != nil || r.FormValue("text") == "" {
-		err_msg := domain.NO_TEXT_SENDED_FOR_RECOMMANDATION
-		log.Println(err)
-		http.Error(w, err_msg, http.StatusInternalServerError)
-		fmt.Fprintf(w, "")
+	var resp middleware.ResultResponse
+
+	err := json.NewDecoder(r.Body).Decode(&resp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	text := r.FormValue("text")
-	log.Println(text)
 
 	tmpl := template.Must(template.ParseFiles(
 		"static/result/results_page.html",
 		"static/result/result.html",
 	))
 
-	result_info := ResultInfo{
-		Results: domain.NewDummyResults(MAX_RESULTS),
+	articles := resp.Data
+
+	for i := 0; i < len(articles); i++ {
+		articles[i].BuildRelatedText(resp.Query)
 	}
-	err := tmpl.Execute(w, result_info)
+
+	result_info := ResultInfo{
+		Results: articles,
+		Query:   resp.Query,
+	}
+	err = tmpl.Execute(w, result_info)
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 }
 
 type ResultInfo struct {
-	Results []domain.Result
+	Results []domain.Article
+	Query   string
 }

@@ -8,12 +8,21 @@
 </head>
 
 <body>
-    <div class="header">
-        <a href="/">Faire une nouvelle recherche</a>
+    <div class="mini-search">
+        <div class="information">
+            <a href="./.." id="name">Nemo</a>
+            <span id="visite">visite</span>
+            <span id="corpus">Érudit</span>
+        </div>
+
+        <form method="POST" class="search-form">
+            <input name="text" type="text" id="search-bar" value="{{.Query}}">
+        </form>
     </div>
 
+
     <div class="results-section">
-        {{range $el:=.Results}} {{template "result" $el}} {{end}}
+         {{range $el:=.Results}} {{template "result" $el}} {{end}}
     </div>
 
 </body>

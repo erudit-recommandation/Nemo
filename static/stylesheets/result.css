@@ -1,54 +1,124 @@
-:root {
-  --page-gap: 5vh;
-  --som-size: 50vh;
+* {
+  font-family: "sans-serif";
+}
+.mini-search {
+  display: grid;
+  grid-template-columns: 15vw auto;
+  width: fit-content;
+  height: fit-content;
 }
 
-.results-section {
-  margin-right: var(--page-gap-right);
-  margin-left: var(--page-gap-right);
-}
-
-.result {
+.search-form {
+  align-self: start;
   display: flex;
   flex-direction: row;
-  margin-bottom: 2vh;
+  gap: 1vw;
+  margin-top: 25px;
 }
 
-.som img {
-  width: var(--som-size);
-}
-.result-payload {
+.information {
+  color: black;
+  align-self: center;
+  font-weight: bold;
   display: flex;
   flex-direction: column;
+  align-self: start;
+}
+
+#name {
+  font-size: 3.5em;
+  color: black;
+  text-decoration: underline;
+}
+
+#visite {
+  font-size: 1.05em;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+#corpus {
+  font-size: 1.1em;
+  text-decoration: underline;
+}
+
+#simple-search-button {
+  background-color: black;
+  color: white;
+  border-bottom-color: white;
+}
+
+#complex-search-button {
+  background-color: black;
+  color: white;
+}
+
+#search-bar {
+  width: 70vw;
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+  height: 30px;
 }
 
 body {
-  margin-top: 0;
-  margin-left: 0;
+  margin-top: 5vh;
+  margin-left: 5vw;
   margin-right: 0;
 }
 
-.header {
-  background-color: blue;
-  margin-bottom: 2vh;
-  height: 4vh;
-}
+button {
+  font-weight: bolder;
+  height: 5vh;
+  width: 15vw;
 
-.header * {
-  color: white;
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
 }
 
 .result:hover {
   background: rgba(0, 0, 0, 0.05);
 }
 
+.result {
+  display: grid;
+  grid-template-columns: 100px auto;
+  margin-bottom: 30px;
+}
+
+.results-section {
+  margin-left: 10vw;
+}
+
+.som {
+  width: 100px;
+  height: 100px;
+}
+
+.result-payload {
+  display: flex;
+  flex-direction: column;
+}
+
 .result-header {
   display: flex;
   flex-direction: column;
-  margin-bottom: 1vh;
 }
-.abstract {
+
+.related-text {
+  margin-top: 20px;
+  white-space: nowrap;
+}
+
+.result-title {
+  color: black;
+  font-weight: bold;
+}
+
+.related-text-best {
+  font-weight: bold;
+}
+.result-payload p {
   text-overflow: ellipsis;
-  overflow: hidden;
-  max-height: 10%;
 }
