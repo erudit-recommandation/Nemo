@@ -6,10 +6,15 @@
 
     <div class="result-payload">
         <div class="result-header">
-            <a href={{.Url}} title={{.Title}} class="result-title">{{.Title}}</a>
+            <a href={{.Url}} target="_blank" rel="noopener noreferrer" title={{.Title}} class="result-title">{{.Title}}</a>
             <span class="description">({{.Author}}, {{.Year}}, {{.Journal}})</span>
         </div>
-        <span class="related-text">{{.RelatedText}}</span>
+        <p>
+        <span class="related-text">{{.RelatedText.Prev}}</span>
+        <span class="related-text related-text-best">{{.RelatedText.Best}}</span>
+        <span class="related-text">{{.RelatedText.After}}</span>
+        </p>
+        
     </div>
 
 </div>

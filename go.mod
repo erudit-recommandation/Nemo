@@ -11,5 +11,6 @@ require (
 require (
 	github.com/arangodb/go-driver v1.3.1 // indirect
 	github.com/arangodb/go-velocypack v0.0.0-20200318135517-5af53c29c67e // indirect
+	github.com/ka-weihe/fast-levenshtein v0.0.0-20201227151214-4c99ee36a1ba // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 )

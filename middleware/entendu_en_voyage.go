@@ -30,6 +30,7 @@ func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 		}
 
 		query := req.FormValue("text")
+		log.Printf("-- Query: %v --\n", query)
 
 		resp, err := repo.SearchPhrases(query, LIMIT)
 
@@ -39,7 +40,7 @@ func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 			return
 		}
 
-		j, err := json.Marshal(resp)
+		j, err := json.Marshal(ResultResponse{Data: resp, Query: query})
 
 		if err != nil {
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)

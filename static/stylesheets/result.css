@@ -84,6 +84,7 @@ button {
 .result {
   display: grid;
   grid-template-columns: 100px auto;
+  margin-bottom: 30px;
 }
 
 .results-section {
@@ -106,10 +107,18 @@ button {
 }
 
 .related-text {
-  margin-top: 100px;
+  margin-top: 20px;
+  white-space: nowrap;
 }
 
 .result-title {
   color: black;
   font-weight: bold;
+}
+
+.related-text-best {
+  font-weight: bold;
+}
+.result-payload p {
+  text-overflow: ellipsis;
 }
