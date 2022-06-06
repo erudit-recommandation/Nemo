@@ -1,13 +1,11 @@
 package infrastructure_test
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 
 	"github.com/erudit-recommandation/search-engine-webapp/domain"
 	"github.com/erudit-recommandation/search-engine-webapp/infrastructure"
-	"github.com/erudit-recommandation/search-engine-webapp/test"
 )
 
 func ProvideTestCaseArangoArticlesRepository() []func(repositoryProvider func() (infrastructure.ArticlesRepository, error), t *testing.T) (func(t *testing.T), string) {
@@ -29,10 +27,11 @@ func testGetByIdproprio(repositoryProvider func() (infrastructure.ArticlesReposi
 	return func(t *testing.T) {
 		id := "18411ac"
 		expectedResult := domain.Article{
-			Title:  "Imperturbablement... Au sujet d’une nouvelle génération intellectuelle",
-			Year:   2005,
-			Author: "Thibault",
-			ID:     id,
+			Title:   "Imperturbablement... Au sujet d’une nouvelle génération intellectuelle",
+			Year:    2005,
+			Author:  "Thibault",
+			ID:      id,
+			Journal: "Spirale",
 		}
 		expectedResult.BuildUrl()
 
@@ -40,6 +39,8 @@ func testGetByIdproprio(repositoryProvider func() (infrastructure.ArticlesReposi
 		if err != nil {
 			t.Fatal(err)
 		}
+
+		resp.Text = ""
 
 		if !reflect.DeepEqual(resp, expectedResult) {
 			t.Fatalf("the articles are not same the response is \n%v\n where we expect \n %v", resp, expectedResult)
@@ -76,26 +77,15 @@ func testSearchPhrasesWithOneResult(repositoryProvider func() (infrastructure.Ar
 
 	return func(t *testing.T) {
 		phrase := "L'unité et la division"
-		var n uint = 10
-
-		expectedResp := []domain.Article{
-			{
-				Author: "Hamel",
-				Title:  "La question du partenariat : de la crise institutionnelle à la redéfinition des rapports entre sphère publique et sphère privée",
-				Year:   1995,
-				ID:     "1002278ar",
-			},
-		}
-		expectedResp[0].BuildUrl()
+		var n uint = 1
 
 		resp, err := repo.SearchPhrases(phrase, n)
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		if !test.SliceContainTheSameElements(resp, expectedResp) {
-			t.Fatalf("the response are not the same the response is \n%v\n whereas the expected result is\n%v",
-				resp, expectedResp)
+		if uint(len(resp)) != n {
+			t.Fatalf("there should be one response")
 		}
 
 	}, "testSearchPhrasesWithOneResult"
@@ -130,43 +120,15 @@ func testSearchPhrasesWithMultipleResults(repositoryProvider func() (infrastruct
 
 	return func(t *testing.T) {
 		phrase := "la crise des logements"
-		var n uint = 3
-
-		expectedResp := []domain.Article{
-			{
-				Author: "Altenor",
-				Title:  "Les causes économiques et socio-politiques du passage de la régionalisation à la départementalisation en Haïti",
-				Year:   2020,
-				ID:     "1075860ar",
-			},
-			{
-				Author: "Gherghel",
-				Title:  "Transformations de la régulation politique et juridique de la famille. La Roumanie dans la période communiste et post-communiste",
-				Year:   2006,
-				ID:     "015786ar",
-			},
-			{
-				Author: "Semmoud",
-				Title:  "Appropriations et usages des espaces urbains en Algérie du Nord",
-				Year:   2009,
-				ID:     "038144ar",
-			},
-		}
-		for i := 0; i < len(expectedResp); i++ {
-			expectedResp[i].BuildUrl()
-		}
-
-		fmt.Println(expectedResp[0])
-		fmt.Println("\n\na")
+		var n uint = 20
 
 		resp, err := repo.SearchPhrases(phrase, n)
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		if !test.SliceContainTheSameElements(resp, expectedResp) {
-			t.Fatalf("the response are not the same the response is \n%v\n whereas the expected result is\n%v",
-				resp, expectedResp)
+		if uint(len(resp)) > n || uint(len(resp)) == 0 {
+			t.Fatalf("there should be between 0 and %v results", n)
 		}
 
 	}, "testSearchPhrasesWithMultipleResults"

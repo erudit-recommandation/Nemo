@@ -55,9 +55,15 @@ func (a ArangoArticlesRepository) SearchPhrases(phrase string, n uint) ([]domain
 	defer cancel()
 
 	query := fmt.Sprintf(`FOR doc in article_analysis
-    						SEARCH ANALYZER(PHRASE(doc.text,"%v"),"text_fr")
-							LIMIT %v
-							RETURN doc`,
+    SEARCH ANALYZER(
+        BOOST(PHRASE(doc.text,"%v"), 5) OR
+        doc.text IN TOKENS("%v", "text_fr"),
+        "text_fr"
+    )
+	LIMIT %v
+	SORT TFIDF(doc) DESC 
+	RETURN doc`,
+		phrase,
 		phrase,
 		n)
 	cursor, err := a.database.Query(ctx, query, nil)
