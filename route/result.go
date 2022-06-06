@@ -1,8 +1,7 @@
 package route
 
 import (
-	"fmt"
-	"log"
+	"encoding/json"
 	"net/http"
 	"text/template"
 
@@ -13,11 +12,11 @@ const MAX_RESULTS = 10
 
 func Result(w http.ResponseWriter, r *http.Request) {
 
-	if err := r.ParseForm(); err != nil || r.FormValue("text") == "" {
-		err_msg := domain.NO_TEXT_SENDED_FOR_RECOMMANDATION
-		log.Println(err)
-		http.Error(w, err_msg, http.StatusInternalServerError)
-		fmt.Fprintf(w, "")
+	var articles []domain.Article
+
+	err := json.NewDecoder(r.Body).Decode(&articles)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -27,11 +26,12 @@ func Result(w http.ResponseWriter, r *http.Request) {
 	))
 
 	result_info := ResultInfo{
-		Results: domain.NewDummyResults(MAX_RESULTS),
+		Results: articles,
 	}
-	err := tmpl.Execute(w, result_info)
+	err = tmpl.Execute(w, result_info)
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 }
 

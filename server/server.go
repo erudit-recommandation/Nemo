@@ -24,7 +24,8 @@ func setRoute(r *mux.Router) {
 	}).Methods("GET")
 
 	r.HandleFunc("/", route.Homepage).Methods("GET")
-	r.HandleFunc("/search", route.Result).Methods("POST")
+	r.HandleFunc("/entendu_en_voyage", middleware.EntenduEnVoyage(route.Result)).Methods("POST")
+
 	r.HandleFunc("/api/entendu_en_voyage", middleware.EntenduEnVoyage(api.EntenduEnVoyage)).Methods("POST")
 }
 
