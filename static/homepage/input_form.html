@@ -1,11 +1,10 @@
 {{define "search-input"}}
-<form class="input-form" action="/search" method="POST">
-
-    <textarea  name="text" class="text-input" type="text" placeholder="Entrez le text de l'article ou importez un fichier">
-</textarea>
+<form class="input-form" method="POST">
+    <input name="text" class="text-input" type="text">
     <div class="button-form">
-        <button>Recherche</button>
-        <button type="reset">Vider</button>
+        <button type="submit" formaction="/entendu_en_voyage" id="simple-search-button">Entendu en voyage</button>
+        <button type="submit" formaction="/clefs_canoniques" id="SOM-search">Clés canoniques</button>
+        <button type="submit" formaction="/rencontre_en_voyage" id="complex-search-button">Rencontré en voyage</button>
     </div>
 </form>
 {{end}}

@@ -3,14 +3,23 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Recommandation érudit</title>
+    <title>Nemo</title>
     <link rel="stylesheet" href="static/stylesheets/homepage.css">
 </head>
 
 <body>
     <div class="main">
-        <img class="banner" src="static/images/placeholders/banner.png" alt="banner">
+        <div class="title">
+            <span id="name">Nemo</span>
+            <span id="visite">visite</span>
+            <span id="corpus">Érudit</span>
+        </div>
         {{template "search-input"}}
+    </div>
+
+    <div class="foot">
+        <a id="vaisseau" href="/vaiseau">— le vaisseau —</a>
+        <a id="remerciements" href="/remerciements">— remerciements —</a>
     </div>
 </body>
 
