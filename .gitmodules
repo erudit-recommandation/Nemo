@@ -1,0 +1,3 @@
+[submodule "erudit_notebooks"]
+	path = erudit_notebooks
+	url = https://github.com/erudit-recommandation/erudit_notebooks
