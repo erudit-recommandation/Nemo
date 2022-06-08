@@ -83,8 +83,9 @@ button {
 
 .result {
   display: grid;
-  grid-template-columns: 100px auto;
-  margin-bottom: 30px;
+  grid-template-columns: 100px 60vw;
+  margin-bottom: 40px;
+  height: 200px;
 }
 
 .results-section {
@@ -99,16 +100,16 @@ button {
 .result-payload {
   display: flex;
   flex-direction: column;
+  height: inherit;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
 }
 
 .result-header {
   display: flex;
   flex-direction: column;
-}
-
-.related-text {
-  margin-top: 20px;
-  white-space: nowrap;
+  margin-bottom: 20px;
 }
 
 .result-title {
@@ -118,7 +119,4 @@ button {
 
 .related-text-best {
   font-weight: bold;
-}
-.result-payload p {
-  text-overflow: ellipsis;
 }

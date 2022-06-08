@@ -6,10 +6,11 @@ import (
 	"strings"
 
 	"github.com/Pallinder/go-randomdata"
+	"github.com/hyperjumptech/beda"
 	levenshtein "github.com/ka-weihe/fast-levenshtein"
 )
 
-var N_RELATED_TEXT_SENTENCE int = 3
+var N_RELATED_TEXT_SENTENCE int = 2
 var MIN_SENTENCE_RELATED_SIZE int = 15
 
 type Article struct {
@@ -35,6 +36,13 @@ func (a *Article) BuildUrl() {
 
 func (a *Article) BuildRelatedText(query string) {
 	sentenceSlice := strings.Split(a.Text, ".")
+
+	minScoreIndex := a.findMostRelatedSentenceTrigram(query, sentenceSlice)
+
+	a.RelatedText = a.createdRelatedTextObject(minScoreIndex, sentenceSlice)
+}
+
+func (a Article) findMostRelatedSentenceLevenshtein(query string, sentenceSlice []string) int {
 	minScore := math.MaxInt
 	minScoreIndex := -1
 	for i, s := range sentenceSlice {
@@ -47,6 +55,26 @@ func (a *Article) BuildRelatedText(query string) {
 		}
 
 	}
+	return minScoreIndex
+}
+
+func (a Article) findMostRelatedSentenceTrigram(query string, sentenceSlice []string) int {
+	var maxScore float32 = -math.MaxFloat32
+	maxScoreIndex := -1
+	for i, s := range sentenceSlice {
+		if nWord := strings.Split(s, " "); len(nWord) >= MIN_SENTENCE_RELATED_SIZE {
+			diff := beda.TrigramCompare(query, s)
+			if diff > maxScore {
+				maxScore = diff
+				maxScoreIndex = i
+			}
+		}
+
+	}
+	return maxScoreIndex
+}
+
+func (a Article) createdRelatedTextObject(minScoreIndex int, sentenceSlice []string) RelatedText {
 
 	lowerBoundRelatedText := minScoreIndex - N_RELATED_TEXT_SENTENCE
 	upperBoundRelatedText := minScoreIndex + N_RELATED_TEXT_SENTENCE
@@ -64,10 +92,10 @@ func (a *Article) BuildRelatedText(query string) {
 		relatedTextAfter = strings.Join(sentenceSlice[minScoreIndex+1:upperBoundRelatedText], ".")
 	}
 
-	a.RelatedText = RelatedText{
-		Prev:  strings.Join(sentenceSlice[lowerBoundRelatedText:minScoreIndex-1], "."),
+	return RelatedText{
+		Prev:  strings.Join(sentenceSlice[lowerBoundRelatedText:minScoreIndex-1], ".") + ".",
 		Best:  sentenceSlice[minScoreIndex] + ".",
-		After: relatedTextAfter,
+		After: relatedTextAfter + ".",
 	}
 }
 
