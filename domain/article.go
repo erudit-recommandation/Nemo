@@ -82,6 +82,10 @@ func (a Article) createdRelatedTextObject(minScoreIndex int, sentenceSlice []str
 	if lowerBoundRelatedText < 0 {
 		lowerBoundRelatedText = 0
 	}
+	relatedTextBefore := ""
+	if res := strings.Join(sentenceSlice[lowerBoundRelatedText:minScoreIndex-1], "."); res != "" {
+		relatedTextBefore += res + "."
+	}
 
 	if upperBoundRelatedText > len(sentenceSlice)-1 {
 		upperBoundRelatedText = len(sentenceSlice) - 1
@@ -93,7 +97,7 @@ func (a Article) createdRelatedTextObject(minScoreIndex int, sentenceSlice []str
 	}
 
 	return RelatedText{
-		Prev:  strings.Join(sentenceSlice[lowerBoundRelatedText:minScoreIndex-1], ".") + ".",
+		Prev:  relatedTextBefore,
 		Best:  sentenceSlice[minScoreIndex] + ".",
 		After: relatedTextAfter + ".",
 	}

@@ -101,9 +101,6 @@ button {
   display: flex;
   flex-direction: column;
   height: inherit;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  word-wrap: break-word;
 }
 
 .result-header {
@@ -116,7 +113,10 @@ button {
   color: black;
   font-weight: bold;
 }
-
+.related-text {
+  overflow: scroll;
+  word-wrap: break-word;
+}
 .related-text-best {
   font-weight: bold;
 }
