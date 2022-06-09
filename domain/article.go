@@ -74,33 +74,40 @@ func (a Article) findMostRelatedSentenceTrigram(query string, sentenceSlice []st
 	return maxScoreIndex
 }
 
-func (a Article) createdRelatedTextObject(minScoreIndex int, sentenceSlice []string) RelatedText {
+func (a Article) createdRelatedTextObject(bestScoreIndex int, sentenceSlice []string) RelatedText {
+	if bestScoreIndex != 0 {
+		lowerBoundRelatedText := bestScoreIndex - N_RELATED_TEXT_SENTENCE
+		upperBoundRelatedText := bestScoreIndex + N_RELATED_TEXT_SENTENCE
 
-	lowerBoundRelatedText := minScoreIndex - N_RELATED_TEXT_SENTENCE
-	upperBoundRelatedText := minScoreIndex + N_RELATED_TEXT_SENTENCE
+		if lowerBoundRelatedText < 0 {
+			lowerBoundRelatedText = 0
+		}
+		relatedTextBefore := ""
+		if res := strings.Join(sentenceSlice[lowerBoundRelatedText:bestScoreIndex-1], "."); res != "" {
+			relatedTextBefore += res + "."
+		}
 
-	if lowerBoundRelatedText < 0 {
-		lowerBoundRelatedText = 0
+		if upperBoundRelatedText > len(sentenceSlice)-1 {
+			upperBoundRelatedText = len(sentenceSlice) - 1
+		}
+		relatedTextAfter := ""
+
+		if bestScoreIndex != upperBoundRelatedText {
+			relatedTextAfter = strings.Join(sentenceSlice[bestScoreIndex+1:upperBoundRelatedText], ".")
+		}
+
+		return RelatedText{
+			Prev:  relatedTextBefore,
+			Best:  sentenceSlice[bestScoreIndex] + ".",
+			After: relatedTextAfter + ".",
+		}
 	}
-	relatedTextBefore := ""
-	if res := strings.Join(sentenceSlice[lowerBoundRelatedText:minScoreIndex-1], "."); res != "" {
-		relatedTextBefore += res + "."
-	}
-
-	if upperBoundRelatedText > len(sentenceSlice)-1 {
-		upperBoundRelatedText = len(sentenceSlice) - 1
-	}
-	relatedTextAfter := ""
-
-	if minScoreIndex != upperBoundRelatedText {
-		relatedTextAfter = strings.Join(sentenceSlice[minScoreIndex+1:upperBoundRelatedText], ".")
-	}
-
 	return RelatedText{
-		Prev:  relatedTextBefore,
-		Best:  sentenceSlice[minScoreIndex] + ".",
-		After: relatedTextAfter + ".",
+		Prev:  "",
+		Best:  sentenceSlice[bestScoreIndex] + ".",
+		After: strings.Join(sentenceSlice[bestScoreIndex+1:bestScoreIndex+N_RELATED_TEXT_SENTENCE], "."),
 	}
+
 }
 
 func NewDummyResults(n int) []Article {
