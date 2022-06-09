@@ -32,7 +32,11 @@ a {
 
 #corpus {
   font-size: 3em;
-  text-decoration: underline;   
+    
+}
+
+#corpus:hover{
+  text-decoration: underline; 
 }
 
 .main {
@@ -55,7 +59,6 @@ a {
   border-color: black;
 
   margin-bottom: 1vh;
-  width: 55vw;
   height: 30px;
 }
 
@@ -73,7 +76,7 @@ a {
 
 button {
   font-weight: bolder;
-  height: 10vh;
+  height: 55px;
 
   border-style: solid;
   border-width: 1px;
@@ -83,6 +86,7 @@ button {
 #simple-search-button {
   background-color: black;
   color: white;
+  margin-right: 20px;
 }
 
 #complex-search-button {
@@ -91,5 +95,14 @@ button {
 }
 #SOM-search {
   background-color: white;
-  width: 31vw;
+  width: 400px;
+  margin-right: 20px;
+}
+
+a{
+  text-decoration: none; 
+}
+
+a:hover{
+  text-decoration: none; 
 }

@@ -32,6 +32,9 @@ type RelatedText struct {
 
 func (a *Article) BuildUrl() {
 	a.Url = fmt.Sprintf("https://id.erudit.org/iderudit/%v", a.ID)
+	if a.Title == "" {
+		a.Title = a.Url
+	}
 }
 
 func (a *Article) BuildRelatedText(query string) {
@@ -75,9 +78,13 @@ func (a Article) findMostRelatedSentenceTrigram(query string, sentenceSlice []st
 }
 
 func (a Article) createdRelatedTextObject(bestScoreIndex int, sentenceSlice []string) RelatedText {
+	lowerBoundRelatedText := bestScoreIndex - N_RELATED_TEXT_SENTENCE
+	upperBoundRelatedText := bestScoreIndex + N_RELATED_TEXT_SENTENCE
+
+	if upperBoundRelatedText > len(sentenceSlice)-1 {
+		upperBoundRelatedText = len(sentenceSlice) - 1
+	}
 	if bestScoreIndex != 0 {
-		lowerBoundRelatedText := bestScoreIndex - N_RELATED_TEXT_SENTENCE
-		upperBoundRelatedText := bestScoreIndex + N_RELATED_TEXT_SENTENCE
 
 		if lowerBoundRelatedText < 0 {
 			lowerBoundRelatedText = 0
@@ -87,9 +94,6 @@ func (a Article) createdRelatedTextObject(bestScoreIndex int, sentenceSlice []st
 			relatedTextBefore += res + "."
 		}
 
-		if upperBoundRelatedText > len(sentenceSlice)-1 {
-			upperBoundRelatedText = len(sentenceSlice) - 1
-		}
 		relatedTextAfter := ""
 
 		if bestScoreIndex != upperBoundRelatedText {
@@ -102,10 +106,17 @@ func (a Article) createdRelatedTextObject(bestScoreIndex int, sentenceSlice []st
 			After: relatedTextAfter + ".",
 		}
 	}
+
+	relatedTextAfter := ""
+
+	if bestScoreIndex != upperBoundRelatedText {
+		relatedTextAfter = strings.Join(sentenceSlice[1:upperBoundRelatedText], ".")
+	}
+
 	return RelatedText{
 		Prev:  "",
 		Best:  sentenceSlice[bestScoreIndex] + ".",
-		After: strings.Join(sentenceSlice[bestScoreIndex+1:bestScoreIndex+N_RELATED_TEXT_SENTENCE], "."),
+		After: relatedTextAfter,
 	}
 
 }

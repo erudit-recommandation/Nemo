@@ -28,6 +28,9 @@
 #name {
   font-size: 3.5em;
   color: black;
+}
+
+#name:hover {
   text-decoration: underline;
 }
 
@@ -39,9 +42,11 @@
 
 #corpus {
   font-size: 1.1em;
-  text-decoration: underline;
 }
 
+#corpus:hover {
+  text-decoration: underline;
+}
 #simple-search-button {
   background-color: black;
   color: white;
@@ -114,9 +119,17 @@ button {
   font-weight: bold;
 }
 .related-text {
-  overflow: scroll;
+  overflow-y: scroll;
   word-wrap: break-word;
 }
 .related-text-best {
   font-weight: bold;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }

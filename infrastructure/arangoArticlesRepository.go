@@ -11,7 +11,7 @@ import (
 	"github.com/erudit-recommandation/search-engine-webapp/domain"
 )
 
-var QUERY_MAXIMUM_DURATION = 30 * time.Second
+var QUERY_MAXIMUM_DURATION = 15 * time.Second
 
 var arangoDb *ArangoArticlesRepository = nil
 
@@ -56,14 +56,12 @@ func (a ArangoArticlesRepository) SearchPhrases(phrase string, n uint) ([]domain
 
 	query := fmt.Sprintf(`FOR doc in article_analysis
     SEARCH ANALYZER(
-        BOOST(PHRASE(doc.text,"%v"), 5) OR
-        doc.text IN TOKENS("%v", "text_fr"),
+        PHRASE(doc.text,"%v"),
         "text_fr"
     )
 	LIMIT %v
 	SORT TFIDF(doc) DESC 
 	RETURN doc`,
-		phrase,
 		phrase,
 		n)
 	cursor, err := a.database.Query(ctx, query, nil)
