@@ -25,6 +25,10 @@ func setRoute(r *mux.Router) {
 
 	r.HandleFunc("/", route.Homepage).Methods("GET")
 	r.HandleFunc("/entendu_en_voyage", middleware.EntenduEnVoyage(route.Result)).Methods("POST")
+	r.HandleFunc("/rencontre_en_voyage", middleware.RencontreEnVoyage(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=UTF-8")
+		fmt.Fprintf(w, "<h1>Boom Boom</h1>")
+	})).Methods("POST")
 
 	r.HandleFunc("/api/entendu_en_voyage", middleware.EntenduEnVoyage(api.EntenduEnVoyage)).Methods("POST")
 }
@@ -70,7 +74,7 @@ func SendCloseSignal(close chan os.Signal) {
 }
 
 func closeServer(srv *http.Server) {
-	log.Print("Server Stopped")
+	log.Println("Server Stopped")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
