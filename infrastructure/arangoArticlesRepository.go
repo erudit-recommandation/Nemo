@@ -49,6 +49,35 @@ func (a ArangoArticlesRepository) GetByIdproprio(id string) (domain.Article, err
 	return doc, nil
 }
 
+func (a ArangoArticlesRepository) GetByIdPandas(id int) (domain.Article, error) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), QUERY_MAXIMUM_DURATION)
+	defer cancel()
+
+	query := fmt.Sprintf(`FOR c IN articles
+    						FILTER c.pandas_index == %v
+    						LIMIT 1
+    						RETURN c`,
+		id)
+	cursor, err := a.database.Query(ctx, query, nil)
+	if err != nil {
+		return domain.Article{}, err
+	}
+	defer cursor.Close()
+	var doc domain.Article
+
+	_, err = cursor.ReadDocument(ctx, &doc)
+
+	if driver.IsNoMoreDocuments(err) {
+		return domain.Article{}, nil
+	} else if err != nil {
+		return domain.Article{}, err
+	}
+	doc.BuildUrl()
+
+	return doc, nil
+}
+
 func (a ArangoArticlesRepository) SearchPhrases(phrase string, n uint) ([]domain.Article, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), QUERY_MAXIMUM_DURATION)

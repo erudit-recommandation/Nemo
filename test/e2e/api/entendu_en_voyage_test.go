@@ -42,7 +42,7 @@ func TestAPIEntenduEnVoyage(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(middleware.EntenduEnVoyage(api.EntenduEnVoyage))
+	handler := http.HandlerFunc(middleware.EntenduEnVoyage(api.JSONResult))
 
 	handler.ServeHTTP(rr, req)
 
@@ -71,7 +71,7 @@ func TestAPIEntenduEnVoyageNoText(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(middleware.EntenduEnVoyage(api.EntenduEnVoyage))
+	handler := http.HandlerFunc(middleware.EntenduEnVoyage(api.JSONResult))
 
 	handler.ServeHTTP(rr, req)
 

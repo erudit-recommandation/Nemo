@@ -7,4 +7,5 @@ type EnvVariable struct {
 	ArangoUsername          string
 	ArangoDatabase          string
 	ArangoArticleCollection string
+	GemsimServiceAddr       string
 }

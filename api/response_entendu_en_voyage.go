@@ -10,7 +10,7 @@ import (
 	"github.com/erudit-recommandation/search-engine-webapp/middleware"
 )
 
-func EntenduEnVoyage(w http.ResponseWriter, r *http.Request) {
+func JSONResult(w http.ResponseWriter, r *http.Request) {
 	(w).Header().Set("Content-Type", "application/json; application/json")
 
 	var resp middleware.ResultResponse

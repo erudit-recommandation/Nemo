@@ -30,7 +30,7 @@ func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 		}
 
 		query := req.FormValue("text")
-		log.Printf("-- Query: %v --\n", query)
+		log.Printf("-- Entendu en voyage Query: %v --\n", query)
 
 		resp, err := repo.SearchPhrases(query, LIMIT)
 

@@ -1,6 +1,6 @@
 {{define "search-input"}}
 <form class="input-form" method="POST">
-    <input name="text" class="search-bar" type="text">
+    <textarea name="text" class="search-bar" spellcheck="true"></textarea>
     <div class="button-form">
         <button type="submit" formaction="/entendu_en_voyage" id="simple-search-button">Entendu en voyage</button>
         <button type="submit" formaction="/clefs_canoniques" id="SOM-search">Clés canoniques</button>

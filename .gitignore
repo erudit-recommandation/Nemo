@@ -1,4 +1,6 @@
 build
 data/arango/*
+gemsim_service/models
+**/*__pycache__
 
 !data/arango/.gitkeep

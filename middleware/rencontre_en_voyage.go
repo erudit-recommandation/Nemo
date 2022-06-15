@@ -1,74 +1,92 @@
 package middleware
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
-	"os/exec"
+	"strconv"
+
+	"github.com/erudit-recommandation/search-engine-webapp/config"
+	"github.com/erudit-recommandation/search-engine-webapp/domain"
+	"github.com/erudit-recommandation/search-engine-webapp/infrastructure"
 )
 
-var gemsim_service *exec.Cmd = exec.Command("python3", "./scripts/gemsim_service.py")
-
-//var gemsim_service *exec.Cmd = exec.Command("echo", "-n", `{"Name": 11.1, "Age": 32.2}`)
-var gemsim_service_listener io.ReadCloser = nil
-var gemsim_service_writer io.WriteCloser = nil
-var gemsim_is_on bool = false
-
 func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
-	if !gemsim_is_on {
-		log.Println("\n\nstarting gemsim service")
-		start_gemsim_service()
-	}
-	return func(w http.ResponseWriter, req *http.Request) {
-		query := "test"
-		io.WriteString(gemsim_service_writer, query)
-		log.Printf("query: %v", query)
-		var res map[string]float64
 
-		if err := json.NewDecoder(gemsim_service_listener).Decode(&res); err != nil {
-			log.Fatal(err)
+	return func(w http.ResponseWriter, req *http.Request) {
+		n := 20
+		query := req.FormValue("text")
+		log.Printf("-- Rencontré en voyage Query: %v --\n", query)
+
+		recommandation, err := sendRequestToGemsimService(query, n)
+		if err != nil {
+			log.Println(err.Error())
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 			fmt.Fprintf(w, "")
 			return
 		}
-		log.Println(res)
+		repo, err := infrastructure.ProvideArangoArticlesRepository()
+		if err != nil {
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			fmt.Fprintf(w, "")
+			return
+		}
+		articles := make([]domain.Article, 0, n)
+
+		for k := range recommandation {
+			id, err := strconv.Atoi(k)
+			if err != nil {
+				log.Println(err)
+				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+				fmt.Fprintf(w, "")
+				return
+			}
+			article, err := repo.GetByIdPandas(id)
+			if err != nil {
+				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+				fmt.Fprintf(w, "")
+				return
+			}
+			articles = append(articles, article)
+
+		}
+
+		j, err := json.Marshal(ResultResponse{Data: articles, Query: query})
+
+		if err != nil {
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			fmt.Fprintf(w, "")
+			return
+		}
+		req.Body = ioutil.NopCloser(bytes.NewReader(j))
+
 		next(w, req)
 	}
 }
 
-func SetGemsimServicePath(path string) {
-	gemsim_service = exec.Command("python3", path)
-	start_gemsim_service()
-}
-
-func start_gemsim_service() {
-	stdout, err := gemsim_service.StdoutPipe()
-	gemsim_service_listener = stdout
-	if err != nil {
-		error_msg := fmt.Sprintf("was not able to start the gemsim service with error \n%v", err)
-		log.Println(error_msg)
-		panic(error_msg)
+func sendRequestToGemsimService(text string, n int) (map[string]float64, error) {
+	gemsimAddr := fmt.Sprintf("%v/gemsim", config.GetConfig().GemsimServiceAddr)
+	body := gemsimServiceRequest{
+		Text: text,
+		N:    n,
 	}
 
-	gemsim_service_writer, err = gemsim_service.StdinPipe()
+	jsonData, err := json.Marshal(body)
 	if err != nil {
-		error_msg := fmt.Sprintf("was not able to start the gemsim service with error \n%v", err)
-		log.Println(error_msg)
-		panic(error_msg)
+		return nil, err
 	}
 
-	go func() {
-		err = gemsim_service.Run()
-		log.Println("gemsim service started")
-		if err != nil {
-			error_msg := fmt.Sprintf("was not able to start the gemsim service with error \n%v", err)
-			log.Println(error_msg)
-			panic(error_msg)
-		}
-		log.Println("gemsim service exited")
-	}()
-	gemsim_is_on = true
+	resp, err := http.Post(gemsimAddr, "application/json", bytes.NewBuffer(jsonData))
+	if err != nil {
+		return nil, err
+	}
+	var responseMap map[string]float64
 
+	if err := json.NewDecoder(resp.Body).Decode(&responseMap); err != nil {
+		return nil, err
+	}
+	return responseMap, nil
 }
