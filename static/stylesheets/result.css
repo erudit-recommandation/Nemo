@@ -59,7 +59,7 @@
 }
 
 #search-bar {
-  width: 70vw;
+  width: 60vw;
   border-style: solid;
   border-width: 1px;
   border-color: black;
@@ -74,7 +74,7 @@ body {
 
 button {
   font-weight: bolder;
-  height: 5vh;
+  height: 30px;
   width: 15vw;
 
   border-style: solid;
