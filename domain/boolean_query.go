@@ -67,3 +67,7 @@ func associateOperation(operations []string) []Operation {
 
 	return resp
 }
+
+// abc. def.
+// phrase("abc. def.", text_fr)
+// phrase (abc) AND phrase(def)
