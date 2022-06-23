@@ -27,7 +27,7 @@ func (b BooleanQuery) Operations() []Operation {
 }
 
 func NewBooleanQuery(query string) BooleanQuery {
-	re := regexp.MustCompile("(AND|OR|NOT)")
+	re := regexp.MustCompile("( AND | OR | NOT )")
 	if re.MatchString(query) { //boolean operation
 		operations := associateOperation(re.FindAllString(query, -1))
 		phrases := re.Split(query, -1)
@@ -37,10 +37,13 @@ func NewBooleanQuery(query string) BooleanQuery {
 			operations: operations,
 		}
 
-	} else if sentences := strings.Split(query, "."); len(sentences) > 1 { // multiple phrases
+	} else if sentences := strings.Split(query, ". "); len(sentences) > 1 { // multiple phrases
 		operations := make([]Operation, len(sentences)-1)
 		for i := 0; i < len(sentences)-1; i += 1 {
 			operations[i] = AND
+		}
+		if last_sentence := sentences[len(sentences)-1]; string(last_sentence[len(last_sentence)-1]) == "." {
+			sentences[len(sentences)-1] = last_sentence[0 : len(last_sentence)-1]
 		}
 		return BooleanQuery{
 			phrases:    sentences,
@@ -56,9 +59,9 @@ func NewBooleanQuery(query string) BooleanQuery {
 func associateOperation(operations []string) []Operation {
 	resp := make([]Operation, len(operations))
 	for i, o := range operations {
-		if o == "AND" {
+		if o == " AND " {
 			resp[i] = AND
-		} else if o == "OR" {
+		} else if o == " OR " {
 			resp[i] = OR
 		} else {
 			resp[i] = NOT
@@ -67,7 +70,3 @@ func associateOperation(operations []string) []Operation {
 
 	return resp
 }
-
-// abc. def.
-// phrase("abc. def.", text_fr)
-// phrase (abc) AND phrase(def)
