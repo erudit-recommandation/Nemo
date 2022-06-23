@@ -1,4 +1,4 @@
-GOCMD = /usr/local/go/bin/go
+GOCMD = go
 BUILD_PATH = ./build
 BINARY = $(BUILD_PATH)/website
 TEST_PATH= ./test/...
