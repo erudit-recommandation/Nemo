@@ -30,9 +30,6 @@ func Result(w http.ResponseWriter, r *http.Request) {
 
 	articles := resp.Data
 
-	for i := 0; i < len(articles); i++ {
-		articles[i].BuildRelatedText(resp.Query)
-	}
 	pageType := Page{}
 	if r.URL.Path == ENTENDU_EN_VOYAGE {
 		pageType = Page{

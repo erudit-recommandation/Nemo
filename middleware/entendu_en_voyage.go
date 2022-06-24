@@ -39,6 +39,9 @@ func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 			fmt.Fprintf(w, "")
 			return
 		}
+		for i := 0; i < len(resp); i++ {
+			resp[i].BuildRelatedText(query)
+		}
 
 		j, err := json.Marshal(ResultResponse{Data: resp, Query: query})
 
