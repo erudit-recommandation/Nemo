@@ -144,15 +144,18 @@ a:hover {
 }
 
 .result-element-persona {
-  width: 15vw;
+  width: 17vw;
   height: 200px;
   text-align: center;
   background-color: red;
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
 }
 
 .result-grid {
   display: grid;
-  grid-template-columns: 20% 20% 20% 20%;
+  grid-template-columns: repeat(4, 22%);
   row-gap: 30px;
 }
 
