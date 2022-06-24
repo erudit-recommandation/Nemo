@@ -9,7 +9,7 @@
 
 <body>
     {{template "header" .}}
-    <div class="results-section">
+    <div class="results-section {{.PageType.ResultSectionClass}}">
         {{if .PageType.IsPersonaPage}} 
             {{range $el:=.Results}}
                 {{template "element_with_persona" $el}} 

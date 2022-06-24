@@ -75,7 +75,6 @@
   resize: vertical;
 }
 
-
 body {
   margin-top: 5vh;
   margin-left: 5vw;
@@ -142,4 +141,31 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+.result-element-persona {
+  width: 15vw;
+  height: 200px;
+  text-align: center;
+  background-color: red;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: 20% 20% 20% 20%;
+  row-gap: 30px;
+}
+
+.result-element-persona a {
+  color: white;
+}
+
+.result-element-persona span {
+  color: white;
+}
+
+#search-button-container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
 }
