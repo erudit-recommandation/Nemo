@@ -15,6 +15,7 @@ func ProvideTestCaseArangoArticlesRepository() []func(repositoryProvider func() 
 		testSearchPhrasesWithOneResult,
 		testSearchPhrasesWithNoResults,
 		testSearchPhrasesWithMultipleResults,
+		testSearchPhrasesWithBooleanQuery,
 	}
 }
 
@@ -132,4 +133,26 @@ func testSearchPhrasesWithMultipleResults(repositoryProvider func() (infrastruct
 		}
 
 	}, "testSearchPhrasesWithMultipleResults"
+}
+
+func testSearchPhrasesWithBooleanQuery(repositoryProvider func() (infrastructure.ArticlesRepository, error), t *testing.T) (func(t *testing.T), string) {
+	repo, err := repositoryProvider()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return func(t *testing.T) {
+		query := "Le voyage AND La ville de quebec OR le retour NOT l'economie du congo"
+		var n uint = 20
+
+		resp, err := repo.SearchPhrases(query, n)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if uint(len(resp)) > n || uint(len(resp)) == 0 {
+			t.Fatalf("there should be between 0 and %v results", n)
+		}
+
+	}, "testSearchPhrasesWithBooleanQuery"
 }

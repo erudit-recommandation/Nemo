@@ -82,16 +82,17 @@ func (a ArangoArticlesRepository) SearchPhrases(phrase string, n uint) ([]domain
 
 	ctx, cancel := context.WithTimeout(context.Background(), QUERY_MAXIMUM_DURATION)
 	defer cancel()
+	booleanQuery := domain.NewBooleanQuery(phrase)
 
 	query := fmt.Sprintf(`FOR doc in article_analysis
     SEARCH ANALYZER(
-        PHRASE(doc.text,"%v"),
+        %v,
         "text_fr"
     )
 	LIMIT %v
 	SORT TFIDF(doc) DESC 
 	RETURN doc`,
-		phrase,
+		booleanQuery.ToArangoPhraseQueryBody(),
 		n)
 	cursor, err := a.database.Query(ctx, query, nil)
 	if err != nil {
