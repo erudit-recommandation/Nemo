@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 )
@@ -12,6 +13,18 @@ const (
 	OR
 	NOT
 )
+
+func (o Operation) String() string {
+	switch o {
+	case AND:
+		return "AND"
+	case OR:
+		return "OR"
+	case NOT:
+		return "AND NOT"
+	}
+	return ""
+}
 
 type BooleanQuery struct {
 	phrases    []string
@@ -25,6 +38,28 @@ func (b BooleanQuery) Phrase() []string {
 func (b BooleanQuery) Operations() []Operation {
 	return b.operations
 }
+
+func (b BooleanQuery) ToArangoPhraseQueryBody() string {
+	resp := ""
+	resp += fmt.Sprintf(`PHRASE(doc.text, "%v") `, b.phrases[0])
+	for i := 1; i < len(b.phrases); i++ {
+		resp += fmt.Sprintf(`%v PHRASE(doc.text, "%v") `,
+			b.operations[i-1], b.phrases[i])
+	}
+	return resp[:len(resp)-1]
+}
+
+/*
+FOR doc in article_analysis
+    SEARCH ANALYZER(
+        PHRASE(doc.text,"le voyage") AND PHRASE(doc.text,"l'europe") AND NOT PHRASE(doc.text,"route maritim exportation canadien"),
+        "text_fr"
+    )
+
+	LIMIT 10
+	SORT TFIDF(doc) DESC
+	RETURN doc
+*/
 
 func NewBooleanQuery(query string) BooleanQuery {
 	re := regexp.MustCompile("( AND | OR | NOT )")
