@@ -19,6 +19,14 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 
 	return func(w http.ResponseWriter, req *http.Request) {
 		n := 20
+		if err := req.ParseForm(); err != nil || req.FormValue("text") == "" {
+			err_msg := domain.NO_TEXT_SENDED_FOR_RECOMMANDATION
+			log.Println(err)
+			http.Error(w, err_msg, http.StatusInternalServerError)
+			fmt.Fprintf(w, "")
+			return
+		}
+
 		query := req.FormValue("text")
 		log.Printf("-- Rencontré en voyage Query: %v --\n", query)
 

@@ -73,10 +73,11 @@ def gemsim():
         json = request.json
         text = json["text"]
         n = json["n"]
+        print("-- query: {} --".format(text))
         inf_vec = convert_to_inf_vec(text=text)
         recommandation_indexes = get_recommandations(inf_vec=inf_vec, n=n)
         result = convert_to_json(recommandation_indexes)
-        print(result)
+        print("-- result: {} --".format(result))
         return result
     else:
         return 'Content-Type not supported!'

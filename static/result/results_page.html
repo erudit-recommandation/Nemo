@@ -8,21 +8,18 @@
 </head>
 
 <body>
-    <div class="mini-search">
-        <div class="information">
-            <a href="./.." id="name">Nemo</a>
-            <span id="visite">visite</span>
-            <span id="corpus">Érudit</span>
-        </div>
-
-        <form method="POST" class="search-form">
-            <input name="text" id="search-bar" value="{{.Query}}" type="text">
-         </form>
-    </div>
-
-
+    {{template "header" .}}
     <div class="results-section">
-         {{range $el:=.Results}} {{template "result" $el}} {{end}}
+        {{if .PageType.IsPersonaPage}} 
+            {{range $el:=.Results}}
+                {{template "element_with_persona" $el}} 
+            {{end}}
+        {{else}}
+            {{range $el:=.Results}}
+                {{template "element_with_description" $el}}  
+            {{end}}
+                
+        {{end}} 
     </div>
 
 </body>

@@ -23,7 +23,9 @@ func Result(w http.ResponseWriter, r *http.Request) {
 
 	tmpl := template.Must(template.ParseFiles(
 		"static/result/results_page.html",
-		"static/result/result.html",
+		"static/result/header.html",
+		"static/result/element_with_description.html",
+		"static/result/element_with_persona.html",
 	))
 
 	articles := resp.Data
@@ -31,10 +33,22 @@ func Result(w http.ResponseWriter, r *http.Request) {
 	for i := 0; i < len(articles); i++ {
 		articles[i].BuildRelatedText(resp.Query)
 	}
-
+	pageType := Page{}
+	if r.URL.Path == ENTENDU_EN_VOYAGE {
+		pageType = Page{
+			ResultSectionClass: "",
+			IsPersonaPage:      false,
+		}
+	} else {
+		pageType = Page{
+			ResultSectionClass: "result-grid",
+			IsPersonaPage:      true,
+		}
+	}
 	result_info := ResultInfo{
-		Results: articles,
-		Query:   resp.Query,
+		Results:  articles,
+		Query:    resp.Query,
+		PageType: pageType,
 	}
 	err = tmpl.Execute(w, result_info)
 	if err != nil {
@@ -44,6 +58,12 @@ func Result(w http.ResponseWriter, r *http.Request) {
 }
 
 type ResultInfo struct {
-	Results []domain.Article
-	Query   string
+	Results  []domain.Article
+	Query    string
+	PageType Page
+}
+
+type Page struct {
+	ResultSectionClass string
+	IsPersonaPage      bool
 }
