@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"sort"
 	"strconv"
 
 	"github.com/erudit-recommandation/search-engine-webapp/config"
@@ -34,9 +35,9 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 			fmt.Fprintf(w, "")
 			return
 		}
-		articles := make([]domain.Article, 0, n)
+		articlesParsed := make([]articleScore, 0, n)
 
-		for k := range recommandation {
+		for k, v := range recommandation {
 			id, err := strconv.Atoi(k)
 			if err != nil {
 				log.Println(err)
@@ -50,10 +51,15 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 				fmt.Fprintf(w, "")
 				return
 			}
-			articles = append(articles, article)
-
+			articlesParsed = append(articlesParsed, articleScore{Article: article, Score: v})
+			sort.Slice(articlesParsed, func(i, j int) bool { return articlesParsed[i].Score > articlesParsed[j].Score })
 		}
 
+		articles := make([]domain.Article, len(articlesParsed))
+
+		for i, el := range articlesParsed {
+			articles[i] = el.Article
+		}
 		j, err := json.Marshal(ResultResponse{Data: articles, Query: query})
 
 		if err != nil {
@@ -89,4 +95,9 @@ func sendRequestToGemsimService(text string, n int) (map[string]float64, error) 
 		return nil, err
 	}
 	return responseMap, nil
+}
+
+type articleScore struct {
+	Article domain.Article
+	Score   float64
 }

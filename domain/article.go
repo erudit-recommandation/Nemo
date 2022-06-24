@@ -38,6 +38,8 @@ func (a *Article) BuildUrl() {
 }
 
 func (a *Article) BuildRelatedText(query string) {
+
+	query = NewBooleanQuery(query).phrases[0]
 	sentenceSlice := strings.Split(a.Text, ".")
 
 	minScoreIndex := a.findMostRelatedSentenceTrigram(query, sentenceSlice)
