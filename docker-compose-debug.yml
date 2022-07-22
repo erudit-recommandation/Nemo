@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  arangodb:
+    image: arangodb:latest
+    environment:
+      ARANGO_ROOT_PASSWORD: rootpassword
+    ports:
+      - 8529:8529
+    volumes:
+      - ./data/arango/db:/var/lib/arangodb3
+      - ./data/arango/app:/var/lib/arangodb3-apps

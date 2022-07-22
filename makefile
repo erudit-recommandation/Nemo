@@ -20,10 +20,20 @@ full-clear-docker:
 
 run-docker:
 	sudo chmod -R a+rwx ./data/
-	docker-compose up --build
+	docker-compose up --build 
 
-run-gemsim-service:
-	cd ./gemsim_service && export FLASK_APP=app && flask run
+run-docker-debug:
+	sudo chmod -R a+rwx ./data/
+	docker-compose -f "docker-compose-debug.yml" up --build 
+
+see-log-web-app:
+	docker-compose logs erudit_recommandation
+
+stop-docker:
+	docker-compose stop
+
+run-text-analysis-service:
+	cd ./text_analysis_service && export FLASK_APP=app && flask run
 
 test:
 	$(GOCMD) test $(TEST_PATH)

@@ -1,7 +1,19 @@
 version: '3.8'
 services:
-  arangodb_db_container:
+  erudit_recommandation: 
+    container_name: 'erudit_recommandation'
+    build: './erudit_recommandation'
+    ports: 
+        - '8087:8087'
+    volumes: 
+        - './erudit_recommandation:/app'
+    depends_on: 
+        - 'arangodb'
+    links:
+        - "arangodb:arangodb"
+  arangodb:
     image: arangodb:latest
+    container_name: 'arangodb'
     environment:
       ARANGO_ROOT_PASSWORD: rootpassword
     ports:

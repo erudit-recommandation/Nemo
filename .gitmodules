@@ -1,3 +1,3 @@
-[submodule "gemsim_service/gnomonics"]
-	path = gemsim_service/gnomonics
-	url = https://github.com/erudit-recommandation/gnomonics.git
+[submodule "text-analysis-service"]
+	path = text-analysis-service
+	url = https://github.com/erudit-recommandation/text-analysis-service

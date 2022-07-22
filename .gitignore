@@ -4,3 +4,5 @@ gemsim_service/models
 **/*__pycache__
 
 !data/arango/.gitkeep
+erudit-recommandation/build
+erudit-recommandation/build.zip
