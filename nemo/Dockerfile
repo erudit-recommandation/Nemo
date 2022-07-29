@@ -8,4 +8,4 @@ WORKDIR /app
 
 EXPOSE 8087
 
-CMD ["make", "run"]
+CMD ["make", "run-prod"]

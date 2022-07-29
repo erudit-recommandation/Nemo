@@ -12,8 +12,9 @@ import (
 
 func main() {
 
-	devMode := flag.Bool("dev", true, "developpement model")
+	devMode := flag.Bool("d", false, "developpement model")
 	flag.Parse()
+	fmt.Println(*devMode)
 
 	config.DEV_MODE = *devMode
 	if config.DEV_MODE {

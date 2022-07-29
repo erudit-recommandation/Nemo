@@ -10,7 +10,7 @@ build:
 	$(GOCMD) build -o $(BINARY) main.go
 
 run: build
-	$(BINARY)
+	$(BINARY) -d
 
 test:
 	$(GOCMD) test $(TEST_PATH)
@@ -20,3 +20,6 @@ run-docker:
 
 create-docker:
 	docker build -t erudit_recommandation .
+
+run-prod: build
+	$(BINARY)
