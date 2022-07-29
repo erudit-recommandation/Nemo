@@ -1,0 +1,174 @@
+* {
+  font-family: "sans-serif";
+}
+.mini-search {
+  display: grid;
+  grid-template-columns: 15vw auto;
+  width: fit-content;
+  height: fit-content;
+}
+
+.search-form {
+  align-self: start;
+  display: flex;
+  flex-direction: row;
+  gap: 1vw;
+  margin-top: 25px;
+}
+
+.information {
+  color: black;
+  align-self: center;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  align-self: start;
+}
+
+#name {
+  font-size: 3.5em;
+  color: black;
+}
+
+#name:hover {
+  text-decoration: underline;
+}
+
+#visite {
+  font-size: 1.05em;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+#corpus {
+  font-size: 1.1em;
+}
+
+#corpus:hover {
+  text-decoration: underline;
+}
+#simple-search-button {
+  background-color: black;
+  color: white;
+  border-bottom-color: white;
+}
+
+#complex-search-button {
+  background-color: black;
+  color: white;
+}
+
+#search-bar {
+  width: 60vw;
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+  height: 30px;
+}
+
+#search-field {
+  width: 47vw;
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+  height: 90px;
+  resize: vertical;
+}
+
+body {
+  margin-top: 5vh;
+  margin-left: 5vw;
+  margin-right: 0;
+}
+
+button {
+  font-weight: bolder;
+  height: 30px;
+  width: 15vw;
+
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+}
+
+.result-element-description:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.result-element-description {
+  display: grid;
+  grid-template-columns: 100px 60vw;
+  margin-bottom: 40px;
+  height: 200px;
+}
+
+.results-section {
+  margin-left: 10vw;
+}
+
+.som {
+  width: 100px;
+  height: 100px;
+}
+
+.result-element-description-payload {
+  display: flex;
+  flex-direction: column;
+  height: inherit;
+}
+
+.result-element-description-header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.result-title {
+  color: black;
+  font-weight: bold;
+}
+.related-text {
+  overflow-y: scroll;
+  word-wrap: break-word;
+}
+.related-text-best {
+  font-weight: bold;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.result-element-persona {
+  width: 17vw;
+  height: 200px;
+  text-align: center;
+  background-color: red;
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 22%);
+  row-gap: 30px;
+}
+
+.result-element-persona a {
+  color: white;
+}
+
+.result-element-persona span {
+  color: white;
+}
+
+#search-button-container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+}
