@@ -1,19 +1,27 @@
-version: '3.8'
+version: "3.8"
 services:
-  erudit_recommandation: 
-    container_name: 'erudit_recommandation'
-    build: './erudit_recommandation'
-    ports: 
-        - '8087:8087'
-    volumes: 
-        - './erudit_recommandation:/app'
-    depends_on: 
-        - 'arangodb'
+
+  erudit_recommandation:
+    build: "./nemo"
+    ports:
+      - "8087:8087"
+    volumes:
+      - "./erudit_recommandation:/app"
+    depends_on:
+      - "arangodb"
+      - "text_analysis"
     links:
-        - "arangodb:arangodb"
+      - "arangodb:arangodb"
+      - "text_analysis:analysis"
+
+  text_analysis:
+    build: "./text-analysis-service"
+    ports:
+      - "8092:8092"
+
   arangodb:
     image: arangodb:latest
-    container_name: 'arangodb'
+    container_name: "arangodb"
     environment:
       ARANGO_ROOT_PASSWORD: rootpassword
     ports:
@@ -21,3 +29,4 @@ services:
     volumes:
       - ./data/arango/db:/var/lib/arangodb3
       - ./data/arango/app:/var/lib/arangodb3-apps
+ 
