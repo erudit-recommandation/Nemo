@@ -1,3 +1,5 @@
+@import "input_form.css";
+
 * {
   font-family: "Cabin", sans-serif;
 }
@@ -53,66 +55,6 @@ a {
   align-items: center;
   font-weight: bolder;
 }
-
-.search-bar {
-  border-style: solid;
-  border-width: 1px;
-  border-color: black;
-  width: 40vw;
-  margin-bottom: 1vh;
-  height: 28px;
-  resize: vertical;
-  padding: 0px;
-  margin-top: 0px;
-  position: relative;
-}
-
-.input-form {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-
-button {
-  font-weight: bolder;
-  height: 30px;
-  width: 30px;
-
-  border-style: solid;
-  border-width: 0px;
-  padding: 0px;
-}
-
-#simple-search-button {
-  background-image: url("/static/images/p_white.svg");
-  background-repeat: no-repeat;
-}
-
-#simple-search-button:hover {
-  background-image: url("/static/images/p_black.svg");
-  background-repeat: no-repeat;
-}
-
-#complex-search-button {
-  background-image: url("/static/images/o_white.svg");
-  background-repeat: no-repeat;
-}
-
-#complex-search-button:hover {
-  background-image: url("/static/images/o_black.svg");
-  background-repeat: no-repeat;
-}
-
-#SOM-search {
-  background-image: url("/static/images/key_white.svg");
-  background-repeat: no-repeat;
-}
-
-#SOM-search:hover {
-  background-image: url("/static/images/key_black.svg");
-  background-repeat: no-repeat;
-}
-
 a {
   text-decoration: none;
 }
@@ -121,9 +63,3 @@ a:hover {
   text-decoration: underline;
 }
 
-.input-form-button-section {
-  display: flex;
-  flex-direction: row;
-  column-gap: 3px;
-  margin-right: 15px;
-}

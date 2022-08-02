@@ -26,6 +26,7 @@ func Result(w http.ResponseWriter, r *http.Request) {
 		"static/result/header.html",
 		"static/result/element_with_description.html",
 		"static/result/element_with_persona.html",
+		"static/component/input_form.html",
 	))
 
 	articles := resp.Data

@@ -9,3 +9,7 @@ services:
     volumes:
       - ./data/arango/db:/var/lib/arangodb3
       - ./data/arango/app:/var/lib/arangodb3-apps
+  text_analysis:
+      build: "./text-analysis-service"
+      ports:
+        - "8092:8092"

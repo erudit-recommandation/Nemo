@@ -12,6 +12,9 @@ build:
 run: build
 	$(BINARY) -d
 
+run-in-docker: build
+	$(BINARY) -dd
+
 test:
 	$(GOCMD) test $(TEST_PATH)
 
@@ -22,4 +25,4 @@ create-docker:
 	docker build -t erudit_recommandation .
 
 run-prod: build
-	$(BINARY)
+	$(BINARY) -p

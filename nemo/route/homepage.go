@@ -9,7 +9,7 @@ func Homepage(w http.ResponseWriter, r *http.Request) {
 
 	tmpl := template.Must(template.ParseFiles(
 		"static/homepage/homepage.html",
-		"static/homepage/input_form.html",
+		"static/component/input_form.html",
 	))
 	err := tmpl.Execute(w, map[string]string{})
 	if err != nil {

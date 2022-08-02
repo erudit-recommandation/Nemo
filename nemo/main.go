@@ -12,15 +12,23 @@ import (
 
 func main() {
 
+	devModeDocker := flag.Bool("dd", false, "developpement model")
 	devMode := flag.Bool("d", false, "developpement model")
+	productionMode := flag.Bool("p", false, "developpement model")
 	flag.Parse()
-	fmt.Println(*devMode)
 
-	config.DEV_MODE = *devMode
-	if config.DEV_MODE {
+	if *devModeDocker {
+		config.CONFIG_MODE = config.DEV_DOCKER
+		fmt.Println("developpement mode with docker")
+	} else if *devMode {
+		config.CONFIG_MODE = config.DEV
 		fmt.Println("developpement mode")
-	} else {
+	} else if *productionMode {
+		config.CONFIG_MODE = config.PRODUCTION
 		fmt.Println("production mode")
+	} else {
+		fmt.Println("developpement mode")
+		config.CONFIG_MODE = config.DEV
 	}
 
 	fmt.Printf("\nServer started at: http://localhost%v", server.GetPort())

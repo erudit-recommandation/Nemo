@@ -9,11 +9,15 @@ import (
 var envVariable *EnvVariable = nil
 
 func GetConfig() EnvVariable {
-	if DEV_MODE {
-		return GetEnvVariableFromPath(".env_dev")
-	} else {
+	switch CONFIG_MODE {
+	case PRODUCTION:
 		return GetEnvVariableFromPath(".env")
+	case DEV_DOCKER:
+		return GetEnvVariableFromPath(".env_dev_docker")
+	case DEV:
+		return GetEnvVariableFromPath(".env_dev")
 	}
+	return EnvVariable{}
 }
 
 func SetConfig(config *EnvVariable) {

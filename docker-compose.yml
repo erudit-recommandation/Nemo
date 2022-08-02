@@ -1,12 +1,12 @@
 version: "3.8"
 services:
-
-  erudit_recommandation:
-    build: "./nemo"
+  nemo:
+    build:
+      context: "./nemo"
+      dockerfile: "Dockerfile-local"
     ports:
       - "8087:8087"
-    volumes:
-      - "./erudit_recommandation:/app"
+
     depends_on:
       - "arangodb"
       - "text_analysis"
@@ -29,4 +29,3 @@ services:
     volumes:
       - ./data/arango/db:/var/lib/arangodb3
       - ./data/arango/app:/var/lib/arangodb3-apps
- 
