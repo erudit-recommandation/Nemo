@@ -40,7 +40,7 @@ func GetEnvVariableFromPath(path string) EnvVariable {
 			ArangoUsername:          os.Getenv("ARANGO_USERNAME"),
 			ArangoDatabase:          os.Getenv("ARANGO_DATABASE"),
 			ArangoArticleCollection: os.Getenv("ARANGO_ARTICLE_COLLECTION"),
-			GemsimServiceAddr:       os.Getenv("GEMSIM_SERVICE_ADDR"),
+			TEXT_ANALYSIS_SERVICE:   os.Getenv("TEXT_ANALYSIS_SERVICE"),
 		}
 	}
 	return *envVariable

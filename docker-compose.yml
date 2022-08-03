@@ -18,6 +18,8 @@ services:
     build: "./text-analysis-service"
     ports:
       - "8092:8092"
+    volumes:
+      - ./text-analysis-service/models:/app/models
 
   arangodb:
     image: arangodb:latest

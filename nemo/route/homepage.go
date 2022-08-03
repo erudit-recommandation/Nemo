@@ -11,7 +11,7 @@ func Homepage(w http.ResponseWriter, r *http.Request) {
 		"static/homepage/homepage.html",
 		"static/component/input_form.html",
 	))
-	err := tmpl.Execute(w, map[string]string{})
+	err := tmpl.Execute(w, map[string]string{"Query": ""})
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 	}
