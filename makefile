@@ -35,5 +35,8 @@ stop-docker:
 run-text-analysis-service:
 	cd ./text_analysis_service && export FLASK_APP=app && flask run
 
+delete-database:
+	sudo  rm -r ./data/arango/
+
 test:
 	$(GOCMD) test $(TEST_PATH)
