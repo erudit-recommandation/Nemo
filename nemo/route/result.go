@@ -34,13 +34,15 @@ func Result(w http.ResponseWriter, r *http.Request) {
 	pageType := Page{}
 	if r.URL.Path == ENTENDU_EN_VOYAGE {
 		pageType = Page{
-			ResultSectionClass: "",
-			IsPersonaPage:      false,
+			ResultSectionClass:  "",
+			IsEntenduEnVoyage:   true,
+			IsRencontreEnVoyage: false,
 		}
 	} else {
 		pageType = Page{
-			ResultSectionClass: "result-grid",
-			IsPersonaPage:      true,
+			ResultSectionClass:  "result-grid",
+			IsEntenduEnVoyage:   false,
+			IsRencontreEnVoyage: true,
 		}
 	}
 	result_info := ResultInfo{
@@ -62,6 +64,7 @@ type ResultInfo struct {
 }
 
 type Page struct {
-	ResultSectionClass string
-	IsPersonaPage      bool
+	ResultSectionClass  string
+	IsEntenduEnVoyage   bool
+	IsRencontreEnVoyage bool
 }

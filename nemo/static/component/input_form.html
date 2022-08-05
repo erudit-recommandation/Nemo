@@ -2,9 +2,19 @@
 <form class="input-form" method="POST">
 
     <div class="input-form-button-section">
-        <button type="submit" formaction="/entendu_en_voyage" id="simple-search-button"></button>
-        <button type="submit" formaction="/rencontre_en_voyage" id="complex-search-button"></button>
-        <button type="submit" formaction="/clefs_canoniques" id="SOM-search"></button>
+        {{if .PageType.IsRencontreEnVoyage}}
+        <button type="submit" formaction="/entendu_en_voyage" class="entendu-en-voyage"></button>
+        <button type="submit" formaction="/rencontre_en_voyage" class="rencontre-en-voyage-previous-search"></button>
+        <button type="submit" formaction="/clefs_canoniques" class="clef-canonique"></button>
+        {{else if .PageType.IsEntenduEnVoyage}}
+        <button type="submit" formaction="/entendu_en_voyage" class="entendu-en-voyage-previous-search"></button>
+        <button type="submit" formaction="/rencontre_en_voyage" class="rencontre-en-voyage"></button>
+        <button type="submit" formaction="/clefs_canoniques" class="clef-canonique"></button>
+        {{else}}
+        <button type="submit" formaction="/entendu_en_voyage" class="entendu-en-voyage"></button>
+        <button type="submit" formaction="/rencontre_en_voyage" class="rencontre-en-voyage"></button>
+        <button type="submit" formaction="/clefs_canoniques" class="clef-canonique"></button>
+        {{end}}
     </div>
 
     <textarea name="text" class="search-bar" spellcheck="true">{{.Query}}</textarea>

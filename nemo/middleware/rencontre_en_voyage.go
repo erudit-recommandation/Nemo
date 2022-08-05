@@ -52,26 +52,28 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 				Error(w, req, http.StatusInternalServerError, err.Error())
 				return
 			}
-			article, err := repo.GetByIdPandas(id)
-			if err != nil {
-				Error(w, req, http.StatusInternalServerError, err.Error())
-				fmt.Fprintf(w, "")
-				return
+			article, _ := repo.GetByIdPandas(id)
+			if err == nil {
+				articlesParsed = append(articlesParsed, articleScore{Article: article, Score: v})
+				sort.Slice(articlesParsed, func(i, j int) bool { return articlesParsed[i].Score > articlesParsed[j].Score })
 			}
-			articlesParsed = append(articlesParsed, articleScore{Article: article, Score: v})
-			sort.Slice(articlesParsed, func(i, j int) bool { return articlesParsed[i].Score > articlesParsed[j].Score })
 		}
 
-		articles := make([]domain.Article, len(articlesParsed))
+		articles := make([]domain.Article, 0, len(articlesParsed))
 
-		for i, el := range articlesParsed {
-			articles[i] = el.Article
+		for _, el := range articlesParsed {
+			articles = append(articles, el.Article)
 		}
+
+		if len(articles) == 0 {
+			Error(w, req, http.StatusInternalServerError, "Il n'y aucun resultat contacter le mainteneur")
+			return
+		}
+
 		j, err := json.Marshal(ResultResponse{Data: articles, Query: query})
 
 		if err != nil {
 			Error(w, req, http.StatusInternalServerError, err.Error())
-			fmt.Fprintf(w, "")
 			return
 		}
 		req.Body = ioutil.NopCloser(bytes.NewReader(j))
