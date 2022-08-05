@@ -22,8 +22,8 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 		if err := req.ParseForm(); err != nil || req.FormValue("text") == "" {
 			err_msg := domain.NO_TEXT_SENDED_FOR_RECOMMANDATION
 			log.Println(err)
-			http.Error(w, err_msg, http.StatusInternalServerError)
-			fmt.Fprintf(w, "")
+
+			Error(w, req, http.StatusInternalServerError, err_msg)
 			return
 		}
 
@@ -33,13 +33,13 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 		recommandation, err := sendRequestToGemsimService(query, n)
 		if err != nil {
 			log.Println(err)
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-			fmt.Fprintf(w, "")
+			Error(w, req, http.StatusInternalServerError, err.Error())
 			return
 		}
 		repo, err := infrastructure.ProvideArangoArticlesRepository()
 		if err != nil {
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			log.Println(err)
+			Error(w, req, http.StatusInternalServerError, err.Error())
 			fmt.Fprintf(w, "")
 			return
 		}
@@ -49,13 +49,12 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 			id, err := strconv.Atoi(k)
 			if err != nil {
 				log.Println(err)
-				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-				fmt.Fprintf(w, "")
+				Error(w, req, http.StatusInternalServerError, err.Error())
 				return
 			}
 			article, err := repo.GetByIdPandas(id)
 			if err != nil {
-				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+				Error(w, req, http.StatusInternalServerError, err.Error())
 				fmt.Fprintf(w, "")
 				return
 			}
@@ -71,7 +70,7 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 		j, err := json.Marshal(ResultResponse{Data: articles, Query: query})
 
 		if err != nil {
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			Error(w, req, http.StatusInternalServerError, err.Error())
 			fmt.Fprintf(w, "")
 			return
 		}

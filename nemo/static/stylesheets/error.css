@@ -1,0 +1,13 @@
+* {
+  font-family: "Cabin", sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  font-size: 5em;
+}

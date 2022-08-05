@@ -3,6 +3,8 @@ package route
 import (
 	"net/http"
 	"text/template"
+
+	"github.com/erudit-recommandation/search-engine-webapp/middleware"
 )
 
 func Homepage(w http.ResponseWriter, r *http.Request) {
@@ -13,6 +15,6 @@ func Homepage(w http.ResponseWriter, r *http.Request) {
 	))
 	err := tmpl.Execute(w, map[string]string{"Query": ""})
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		middleware.Error(w, r, http.StatusInternalServerError, err.Error())
 	}
 }
