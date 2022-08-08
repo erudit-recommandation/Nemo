@@ -20,7 +20,7 @@ full-clear-docker:
 
 run-docker:
 	sudo chmod -R a+rwx ./data/
-	docker-compose up --build 
+	docker-compose up --build
 
 run-docker-debug:
 	sudo chmod -R a+rwx ./data/
@@ -37,6 +37,9 @@ run-text-analysis-service:
 
 delete-database:
 	sudo  rm -r ./data/arango/
+	
+run-etl:
+	cd initialisation-service && make run
 
 test:
 	$(GOCMD) test $(TEST_PATH)

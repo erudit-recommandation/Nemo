@@ -10,24 +10,12 @@ services:
     depends_on:
       - "arangodb"
       - "text_analysis"
-      - "initialisation_service"
-    links:
-      - "arangodb:arangodb"
-      - "text_analysis:analysis"
-
-  initialisation_service:
-    build:
-      context: "./initialisation-service"
-      dockerfile: "Dockerfile-local"
-    depends_on:
-      - "arangodb"
-      - "text_analysis"
     links:
       - "arangodb:arangodb"
       - "text_analysis:analysis"
 
   text_analysis:
-    build: 
+    build:
       context: "./text-analysis-service"
       dockerfile: "Dockerfile-local"
     ports:
