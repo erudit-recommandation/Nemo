@@ -47,7 +47,7 @@ button {
 }
 
 .rencontre-en-voyage,
-.rencontre-en-voyage-previous:hover {
+.rencontre-en-voyage-previous-search:hover {
   background-image: url("/static/images/o_white.svg");
   background-repeat: no-repeat;
 }

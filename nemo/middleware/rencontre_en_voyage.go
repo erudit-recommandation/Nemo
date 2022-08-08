@@ -52,11 +52,13 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 				Error(w, req, http.StatusInternalServerError, err.Error())
 				return
 			}
-			article, _ := repo.GetByIdPandas(id)
+			article, err := repo.GetByIdPandas(id)
 			if err == nil {
 				articlesParsed = append(articlesParsed, articleScore{Article: article, Score: v})
 				sort.Slice(articlesParsed, func(i, j int) bool { return articlesParsed[i].Score > articlesParsed[j].Score })
+
 			}
+
 		}
 
 		articles := make([]domain.Article, 0, len(articlesParsed))
