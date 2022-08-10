@@ -5,7 +5,7 @@ Site web "Nemo", un engin de recherche d'article académique à partir de mot cl
 # Support
 Linux, non tester sur Windows (par contre avec Docker, il n'y a pas de problème)
 
-# Installation et Dépense
+# Installation et Dépendance
 
 Il suffit de télécharger:
 
