@@ -1,12 +1,14 @@
+
+run-docker:
+	sudo chmod -R a+rwx ./data/
+	docker-compose up --build
+
 clear-docker:
 	docker system prune -a -f
 
 full-clear-docker:
 	docker system prune -a -f --volumes
 
-run-docker:
-	sudo chmod -R a+rwx ./data/
-	docker-compose up --build
 
 run-docker-debug:
 	sudo chmod -R a+rwx ./data/
