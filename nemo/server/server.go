@@ -23,6 +23,10 @@ func setRoute(r *mux.Router) {
 	}).Methods("GET")
 
 	r.HandleFunc("/", route.Homepage).Methods("GET")
+	r.HandleFunc("/error", func(w http.ResponseWriter, r *http.Request) {
+		middleware.Error(w, r, 200, "Aucune erreur, voici la page test")
+	}).Methods("GET")
+
 	r.HandleFunc(route.ENTENDU_EN_VOYAGE, middleware.EntenduEnVoyage(route.Result)).Methods("POST")
 	r.HandleFunc(route.RENCONTRE_EN_VOYAGE, middleware.RencontreEnVoyage(route.Result)).Methods("POST")
 

@@ -23,7 +23,7 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 			err_msg := domain.NO_TEXT_SENDED_FOR_RECOMMANDATION
 			log.Println(err)
 
-			Error(w, req, http.StatusInternalServerError, err_msg)
+			Error(w, req, http.StatusBadRequest, err_msg)
 			return
 		}
 
@@ -68,6 +68,7 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 		}
 
 		if len(articles) == 0 {
+			log.Println(err)
 			Error(w, req, http.StatusInternalServerError, "Il n'y aucun resultat contacter le mainteneur")
 			return
 		}
