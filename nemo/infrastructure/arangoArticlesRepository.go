@@ -3,6 +3,7 @@ package infrastructure
 import (
 	"context"
 	"fmt"
+	"reflect"
 	"time"
 
 	driver "github.com/arangodb/go-driver"
@@ -67,6 +68,9 @@ func (a ArangoArticlesRepository) GetByIdPandas(id int) (domain.Article, error) 
 	var doc domain.Article
 
 	_, err = cursor.ReadDocument(ctx, &doc)
+	if reflect.DeepEqual(doc, domain.Article{}) {
+		return domain.Article{}, fmt.Errorf("was not able to find an article")
+	}
 
 	if driver.IsNoMoreDocuments(err) {
 		return domain.Article{}, nil
