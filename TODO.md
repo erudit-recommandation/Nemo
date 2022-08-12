@@ -12,7 +12,7 @@
   - AND changer segment phrase [X]
 - Ajouter nombre de résultats [ ]
 - Définelement infinie [X]
-- Phrase context italique [ ]
+- Phrase context italique [X]
 - Input button interactif [ ]
 
 
