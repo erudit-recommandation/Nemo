@@ -124,7 +124,7 @@ body {
   word-wrap: break-word;
 }
 .related-text-best {
-  font-weight: bold;
+  font-style: italic;
 }
 
 a {
