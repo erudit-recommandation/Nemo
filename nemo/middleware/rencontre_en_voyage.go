@@ -86,7 +86,7 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 }
 
 func sendRequestToGemsimService(text string, n int) (map[string]float64, error) {
-	gemsimAddr := fmt.Sprintf("%v/gemsim", config.GetConfig().TEXT_ANALYSIS_SERVICE)
+	gemsimAddr := fmt.Sprintf("%v/gensim", config.GetConfig().TEXT_ANALYSIS_SERVICE)
 	body := gemsimServiceRequest{
 		Text: text,
 		N:    n,

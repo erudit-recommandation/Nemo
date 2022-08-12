@@ -1,8 +1,9 @@
 @import "input_form.css";
 
 * {
-  font-family: "sans-serif";
+  font-family: "Cabin", sans-serif;
 }
+
 .mini-search {
   display: grid;
   grid-template-columns: 15vw auto;
@@ -171,7 +172,6 @@ a:hover {
 .input-form-button-section {
   column-gap: 8px;
 }
-
 
 .input-form {
   display: flex;

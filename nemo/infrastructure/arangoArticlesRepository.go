@@ -3,6 +3,7 @@ package infrastructure
 import (
 	"context"
 	"fmt"
+	"math/rand"
 	"reflect"
 	"time"
 
@@ -88,14 +89,44 @@ func (a ArangoArticlesRepository) SearchPhrases(phrase string, n uint) ([]domain
 	defer cancel()
 	booleanQuery := domain.NewBooleanQuery(phrase)
 
-	query := fmt.Sprintf(`FOR doc in article_analysis
-    SEARCH ANALYZER(
-        %v,
-        "text_fr"
+	query := fmt.Sprintf(`LET ids_sentences = (
+FOR s IN sentences
+	FILTER %v
+    LIMIT %v
+    RETURN {"id":s.idproprio, n_sentence:s.index_nm, sentence: s.text}
+    
+)
+
+
+FOR el IN ids_sentences
+
+    LET prev = (
+        FOR s IN sentences
+            FILTER el.n_sentence == s.index_nm -1
+            LIMIT 1
+            RETURN s.text
+    
     )
-	LIMIT %v
-	SORT TFIDF(doc) DESC 
-	RETURN doc`,
+    
+    LET next = (
+        FOR s IN sentences
+            FILTER el.n_sentence == s.index_nm +1
+            LIMIT 1
+            RETURN s.text
+    
+    )
+
+    FOR a IN articles
+        FILTER a.idproprio == el.id
+        RETURN DISTINCT {title:a.title,
+                annee:a.annee,
+                author:a.author,
+                idproprio:a.idproprio,
+                titrerev:a.titrerev,
+                current_sentence:el.sentence,
+                previous_sentence: prev[0],
+                next_sentence: next[0],
+        }`,
 		booleanQuery.ToArangoPhraseQueryBody(),
 		n)
 	cursor, err := a.database.Query(ctx, query, nil)
@@ -115,6 +146,8 @@ func (a ArangoArticlesRepository) SearchPhrases(phrase string, n uint) ([]domain
 		doc.BuildUrl()
 		resp = append(resp, doc)
 	}
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(resp), func(i, j int) { resp[i], resp[j] = resp[j], resp[i] })
 	return resp, nil
 }
 
@@ -148,3 +181,26 @@ func ProvideArangoArticlesRepository() (ArticlesRepository, error) {
 	return arangoDb, nil
 
 }
+
+/**
+let ids_sentences = (
+FOR s IN sentences
+    FILTER CONTAINS(LOWER(s.text), LOWER("le"))
+    LIMIT 100
+    RETURN {"id":s.idproprio, n_sentence:s.index_nm}
+
+)
+
+
+FOR el IN ids_sentences
+    FOR a IN articles
+        FILTER a.idproprio == el.id
+        RETURN DISTINCT {title:a.title,
+                annee:a.annee,
+                author:a.author,
+                idproprio:a.idproprio,
+                titrerev:a.titrerev,
+                n_sentence:el.n_sentence,
+                text: a.text
+        }
+*/

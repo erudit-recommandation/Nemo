@@ -12,7 +12,7 @@ func TestQueryOnePhraseWithNoOperator(t *testing.T) {
 	query := "le vol d'un oiseau"
 	booleanQuery := domain.NewBooleanQuery(query)
 	respPhrases := []string{query}
-	respArangoQuery := fmt.Sprintf(`PHRASE(doc.text, "%v")`, query)
+	respArangoQuery := fmt.Sprintf(`CONTAINS(LOWER(s.text), LOWER("%v"))`, query)
 
 	if phrase := booleanQuery.Phrase(); !reflect.DeepEqual(phrase, respPhrases) {
 		t.Errorf("boolean query has the phrase\n%v\n but suppose to have\n%v",
@@ -36,7 +36,7 @@ func TestQueryMultiplePhrase(t *testing.T) {
 		"Le chant d'une cygogne",
 		"1.1+1.2=2.3"}
 	respOperations := []domain.Operation{domain.AND, domain.AND}
-	respArangoQuery := fmt.Sprintf(`PHRASE(doc.text, "%v") AND PHRASE(doc.text, "%v") AND PHRASE(doc.text, "%v")`,
+	respArangoQuery := fmt.Sprintf(`CONTAINS(LOWER(s.text), LOWER("%v")) AND CONTAINS(LOWER(s.text), LOWER("%v")) AND CONTAINS(LOWER(s.text), LOWER("%v"))`,
 		respPhrases[0], respPhrases[1], respPhrases[2])
 
 	if phrase := booleanQuery.Phrase(); !reflect.DeepEqual(phrase, respPhrases) {
@@ -67,14 +67,14 @@ func TestQueryWithSimpleOperation(t *testing.T) {
 				"Le chant d'une cygogne",
 			},
 			[]domain.Operation{domain.AND},
-			fmt.Sprintf(`PHRASE(doc.text, "%v") AND PHRASE(doc.text, "%v")`, "le vol d'un oiseau", "Le chant d'une cygogne"),
+			fmt.Sprintf(`CONTAINS(LOWER(s.text), LOWER("%v")) AND CONTAINS(LOWER(s.text), LOWER("%v"))`, "le vol d'un oiseau", "Le chant d'une cygogne"),
 		},
 		{"Le chat et le renard OR Le chien et le loup",
 			[]string{"Le chat et le renard",
 				"Le chien et le loup",
 			},
 			[]domain.Operation{domain.OR},
-			fmt.Sprintf(`PHRASE(doc.text, "%v") OR PHRASE(doc.text, "%v")`, "Le chat et le renard", "Le chien et le loup"),
+			fmt.Sprintf(`CONTAINS(LOWER(s.text), LOWER("%v")) OR CONTAINS(LOWER(s.text), LOWER("%v"))`, "Le chat et le renard", "Le chien et le loup"),
 		},
 
 		{"abcde NOT bar",
@@ -82,7 +82,7 @@ func TestQueryWithSimpleOperation(t *testing.T) {
 				"bar",
 			},
 			[]domain.Operation{domain.NOT},
-			fmt.Sprintf(`PHRASE(doc.text, "%v") AND NOT PHRASE(doc.text, "%v")`, "abcde", "bar"),
+			fmt.Sprintf(`CONTAINS(LOWER(s.text), LOWER("%v")) AND NOT CONTAINS(LOWER(s.text), LOWER("%v"))`, "abcde", "bar"),
 		},
 	}
 	for _, tt := range tests {
@@ -118,7 +118,7 @@ func TestQueryWithCombinedOperation(t *testing.T) {
 				"FOO",
 			},
 			[]domain.Operation{domain.AND, domain.NOT},
-			fmt.Sprintf(`PHRASE(doc.text, "%v") AND PHRASE(doc.text, "%v") AND NOT PHRASE(doc.text, "%v")`, "le vol d'un oiseau", "Le chant d'une cygogne", "FOO"),
+			fmt.Sprintf(`CONTAINS(LOWER(s.text), LOWER("%v")) AND CONTAINS(LOWER(s.text), LOWER("%v")) AND NOT CONTAINS(LOWER(s.text), LOWER("%v"))`, "le vol d'un oiseau", "Le chant d'une cygogne", "FOO"),
 		},
 		{"Le chat et le renard OR Le chien et le loup AND a OR b NOT c",
 			[]string{"Le chat et le renard",
@@ -128,7 +128,7 @@ func TestQueryWithCombinedOperation(t *testing.T) {
 				"c",
 			},
 			[]domain.Operation{domain.OR, domain.AND, domain.OR, domain.NOT},
-			fmt.Sprintf(`PHRASE(doc.text, "%v") OR PHRASE(doc.text, "%v") AND PHRASE(doc.text, "%v") OR PHRASE(doc.text, "%v") AND NOT PHRASE(doc.text, "%v")`,
+			fmt.Sprintf(`CONTAINS(LOWER(s.text), LOWER("%v")) OR CONTAINS(LOWER(s.text), LOWER("%v")) AND CONTAINS(LOWER(s.text), LOWER("%v")) OR CONTAINS(LOWER(s.text), LOWER("%v")) AND NOT CONTAINS(LOWER(s.text), LOWER("%v"))`,
 				"Le chat et le renard", "Le chien et le loup", "a", "b", "c"),
 		},
 	}

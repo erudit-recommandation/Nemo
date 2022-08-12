@@ -41,25 +41,13 @@ func (b BooleanQuery) Operations() []Operation {
 
 func (b BooleanQuery) ToArangoPhraseQueryBody() string {
 	resp := ""
-	resp += fmt.Sprintf(`PHRASE(doc.text, "%v") `, b.phrases[0])
+	resp += fmt.Sprintf(`CONTAINS(LOWER(s.text), LOWER("%v")) `, b.phrases[0])
 	for i := 1; i < len(b.phrases); i++ {
-		resp += fmt.Sprintf(`%v PHRASE(doc.text, "%v") `,
+		resp += fmt.Sprintf(`%v CONTAINS(LOWER(s.text), LOWER("%v")) `,
 			b.operations[i-1], b.phrases[i])
 	}
 	return resp[:len(resp)-1]
 }
-
-/*
-FOR doc in article_analysis
-    SEARCH ANALYZER(
-        PHRASE(doc.text,"le voyage") AND PHRASE(doc.text,"l'europe") AND NOT PHRASE(doc.text,"route maritim exportation canadien"),
-        "text_fr"
-    )
-
-	LIMIT 10
-	SORT TFIDF(doc) DESC
-	RETURN doc
-*/
 
 func NewBooleanQuery(query string) BooleanQuery {
 	re := regexp.MustCompile("( AND | OR | NOT )")

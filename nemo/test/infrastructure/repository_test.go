@@ -120,7 +120,7 @@ func testSearchPhrasesWithMultipleResults(repositoryProvider func() (infrastruct
 	}
 
 	return func(t *testing.T) {
-		phrase := "la crise des logements"
+		phrase := "logements"
 		var n uint = 20
 
 		resp, err := repo.SearchPhrases(phrase, n)
