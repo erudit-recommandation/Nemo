@@ -118,7 +118,7 @@ func EntenduEnVoyageCached(next httpHandlerFunc) httpHandlerFunc {
 		}
 		var page int
 		pageString := req.URL.Query().Get("page")
-		log.Printf("-- Entendu en voyage Page: %v --\n", pageString)
+		log.Printf("-- Entendu en voyage Page: %v; Query: %v --\n", pageString, r.Query)
 
 		if pageString == "" {
 			page = 0
