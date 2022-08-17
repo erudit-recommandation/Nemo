@@ -16,7 +16,12 @@
         <button type="submit" formaction="/clefs_canoniques" class="clef-canonique"></button>
         {{end}}
     </div>
+    <div>
+        <textarea name="text" class="search-bar" spellcheck="true">{{.Query}}</textarea>
+        {{if .PageType.IsEntenduEnVoyage}}
+        <p>Nombre de résultats: {{.NResult}}</p>
+        {{end}}
+    </div>
 
-    <textarea name="text" class="search-bar" spellcheck="true">{{.Query}}</textarea>
 </form>
 {{end}}

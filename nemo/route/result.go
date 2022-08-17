@@ -49,6 +49,7 @@ func Result(w http.ResponseWriter, r *http.Request) {
 		Results:  articles,
 		Query:    resp.Query,
 		PageType: pageType,
+		NResult:  resp.N,
 	}
 	err = tmpl.Execute(w, result_info)
 	if err != nil {
@@ -61,6 +62,7 @@ type ResultInfo struct {
 	Results  []domain.Article
 	Query    string
 	PageType Page
+	NResult  int
 }
 
 type Page struct {
