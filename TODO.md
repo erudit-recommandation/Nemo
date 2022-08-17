@@ -19,3 +19,6 @@
 - Faire les pages le vaisseau et remerciement [ ]
 - Production des images [ ]
 - Valider le script de création de gensim [ ]
+
+
+- Proposer de mettre en minuscule les phrases [ ]
