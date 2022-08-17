@@ -83,7 +83,7 @@ func (a ArangoArticlesRepository) GetByIdPandas(id int) (domain.Article, error) 
 	return doc, nil
 }
 
-func (a ArangoArticlesRepository) SearchPhrases(phrase string, n uint) ([]domain.Article, error) {
+func (a ArangoArticlesRepository) SearchSentences(phrase string, n uint) ([]domain.Article, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), QUERY_MAXIMUM_DURATION)
 	defer cancel()
@@ -151,6 +151,104 @@ FOR el IN ids_sentences
 	return resp, nil
 }
 
+func (a ArangoArticlesRepository) GetSearchSentencesID(phrase string, n uint) ([]ArticlesID, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), QUERY_MAXIMUM_DURATION)
+	defer cancel()
+	booleanQuery := domain.NewBooleanQuery(phrase)
+
+	query := fmt.Sprintf(`
+FOR s IN sentences
+	FILTER %v
+    LIMIT %v
+    RETURN {"id":s.idproprio, n_sentence:s.index_nm}`,
+		booleanQuery.ToArangoPhraseQueryBody(),
+		n)
+	cursor, err := a.database.Query(ctx, query, nil)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close()
+	resp := make([]ArticlesID, 0, n)
+	for {
+		var doc ArticlesID
+		_, err := cursor.ReadDocument(ctx, &doc)
+		if driver.IsNoMoreDocuments(err) {
+			break
+		} else if err != nil {
+			return nil, err
+		}
+		resp = append(resp, doc)
+	}
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(resp), func(i, j int) { resp[i], resp[j] = resp[j], resp[i] })
+	return resp, nil
+}
+
+func (a ArangoArticlesRepository) GetArticleFromSentenceID(articleID ArticlesID) (domain.Article, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), QUERY_MAXIMUM_DURATION)
+	defer cancel()
+
+	query := fmt.Sprintf(`
+		LET prev = (
+        FOR s IN sentences
+            FILTER %v == s.index_nm -1
+            LIMIT 1
+            RETURN s.text
+    
+    )
+    
+    LET next = (
+        FOR s IN sentences
+            FILTER %v == s.index_nm +1
+            LIMIT 1
+            RETURN s.text
+    
+    )
+    
+     LET current = (
+        FOR s IN sentences
+            FILTER %v == s.index_nm
+            LIMIT 1
+            RETURN s.text
+    
+    )
+
+    FOR a IN articles
+        FILTER a.idproprio == "%v"
+        LIMIT 1
+        RETURN {title:a.title,
+                annee:a.annee,
+                author:a.author,
+                idproprio:a.idproprio,
+                titrerev:a.titrerev,
+                current_sentence:current[0],
+                previous_sentence: prev[0],
+                next_sentence: next[0],
+        }
+	`,
+		articleID.NSentence, articleID.NSentence, articleID.NSentence, articleID.Id)
+	cursor, err := a.database.Query(ctx, query, nil)
+	if err != nil {
+		return domain.Article{}, err
+	}
+	defer cursor.Close()
+	var doc domain.Article
+
+	_, err = cursor.ReadDocument(ctx, &doc)
+	if reflect.DeepEqual(doc, domain.Article{}) {
+		return domain.Article{}, fmt.Errorf("was not able to find an article")
+	}
+
+	if driver.IsNoMoreDocuments(err) {
+		return domain.Article{}, nil
+	} else if err != nil {
+		return domain.Article{}, err
+	}
+	doc.BuildUrl()
+
+	return doc, nil
+}
+
 func ProvideArangoArticlesRepository() (ArticlesRepository, error) {
 	if arangoDb == nil {
 		config := config.GetConfig()
@@ -181,26 +279,3 @@ func ProvideArangoArticlesRepository() (ArticlesRepository, error) {
 	return arangoDb, nil
 
 }
-
-/**
-let ids_sentences = (
-FOR s IN sentences
-    FILTER CONTAINS(LOWER(s.text), LOWER("le"))
-    LIMIT 100
-    RETURN {"id":s.idproprio, n_sentence:s.index_nm}
-
-)
-
-
-FOR el IN ids_sentences
-    FOR a IN articles
-        FILTER a.idproprio == el.id
-        RETURN DISTINCT {title:a.title,
-                annee:a.annee,
-                author:a.author,
-                idproprio:a.idproprio,
-                titrerev:a.titrerev,
-                n_sentence:el.n_sentence,
-                text: a.text
-        }
-*/

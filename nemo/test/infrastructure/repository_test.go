@@ -12,10 +12,11 @@ func ProvideTestCaseArangoArticlesRepository() []func(repositoryProvider func() 
 	return []func(repositoryProvider func() (infrastructure.ArticlesRepository, error), t *testing.T) (func(t *testing.T), string){
 		testGetByIdproprio,
 		testGetByIdproprioArticleDontExist,
-		testSearchPhrasesWithOneResult,
-		testSearchPhrasesWithNoResults,
-		testSearchPhrasesWithMultipleResults,
-		testSearchPhrasesWithBooleanQuery,
+		testSearchSentencesWithOneResult,
+		testSearchSentencesWithNoResults,
+		testSearchSentencesWithMultipleResults,
+		testSearchSentencesWithBooleanQuery,
+		testSearchSentenceWithID,
 	}
 }
 
@@ -70,17 +71,17 @@ func testGetByIdproprioArticleDontExist(repositoryProvider func() (infrastructur
 	}, "testGetByIdproprioArticleDontExist"
 }
 
-func testSearchPhrasesWithOneResult(repositoryProvider func() (infrastructure.ArticlesRepository, error), t *testing.T) (func(t *testing.T), string) {
+func testSearchSentencesWithOneResult(repositoryProvider func() (infrastructure.ArticlesRepository, error), t *testing.T) (func(t *testing.T), string) {
 	repo, err := repositoryProvider()
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	return func(t *testing.T) {
-		phrase := "L'unité et la division"
+		phrase := "l'unité et la division"
 		var n uint = 1
 
-		resp, err := repo.SearchPhrases(phrase, n)
+		resp, err := repo.SearchSentences(phrase, n)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -89,10 +90,10 @@ func testSearchPhrasesWithOneResult(repositoryProvider func() (infrastructure.Ar
 			t.Fatalf("there should be one response")
 		}
 
-	}, "testSearchPhrasesWithOneResult"
+	}, "testSearchSentencesWithOneResult"
 }
 
-func testSearchPhrasesWithNoResults(repositoryProvider func() (infrastructure.ArticlesRepository, error), t *testing.T) (func(t *testing.T), string) {
+func testSearchSentencesWithNoResults(repositoryProvider func() (infrastructure.ArticlesRepository, error), t *testing.T) (func(t *testing.T), string) {
 	repo, err := repositoryProvider()
 	if err != nil {
 		t.Fatal(err)
@@ -102,7 +103,7 @@ func testSearchPhrasesWithNoResults(repositoryProvider func() (infrastructure.Ar
 		phrase := ""
 		var n uint = 10
 
-		resp, err := repo.SearchPhrases(phrase, n)
+		resp, err := repo.SearchSentences(phrase, n)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -110,10 +111,10 @@ func testSearchPhrasesWithNoResults(repositoryProvider func() (infrastructure.Ar
 			t.Fatalf(`There should be no article with the phrase "%v" but return \n%v`, phrase, resp)
 		}
 
-	}, "testSearchPhrasesWithNoResults"
+	}, "testSearchSentencesWithNoResults"
 }
 
-func testSearchPhrasesWithMultipleResults(repositoryProvider func() (infrastructure.ArticlesRepository, error), t *testing.T) (func(t *testing.T), string) {
+func testSearchSentencesWithMultipleResults(repositoryProvider func() (infrastructure.ArticlesRepository, error), t *testing.T) (func(t *testing.T), string) {
 	repo, err := repositoryProvider()
 	if err != nil {
 		t.Fatal(err)
@@ -123,7 +124,7 @@ func testSearchPhrasesWithMultipleResults(repositoryProvider func() (infrastruct
 		phrase := "logements"
 		var n uint = 20
 
-		resp, err := repo.SearchPhrases(phrase, n)
+		resp, err := repo.SearchSentences(phrase, n)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -132,10 +133,10 @@ func testSearchPhrasesWithMultipleResults(repositoryProvider func() (infrastruct
 			t.Fatalf("there should be between 0 and %v results", n)
 		}
 
-	}, "testSearchPhrasesWithMultipleResults"
+	}, "testSearchSentencesWithMultipleResults"
 }
 
-func testSearchPhrasesWithBooleanQuery(repositoryProvider func() (infrastructure.ArticlesRepository, error), t *testing.T) (func(t *testing.T), string) {
+func testSearchSentencesWithBooleanQuery(repositoryProvider func() (infrastructure.ArticlesRepository, error), t *testing.T) (func(t *testing.T), string) {
 	repo, err := repositoryProvider()
 	if err != nil {
 		t.Fatal(err)
@@ -145,7 +146,7 @@ func testSearchPhrasesWithBooleanQuery(repositoryProvider func() (infrastructure
 		query := "Le voyage AND La ville de quebec OR le retour NOT l'economie du congo"
 		var n uint = 20
 
-		resp, err := repo.SearchPhrases(query, n)
+		resp, err := repo.SearchSentences(query, n)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -154,5 +155,35 @@ func testSearchPhrasesWithBooleanQuery(repositoryProvider func() (infrastructure
 			t.Fatalf("there should be between 0 and %v results", n)
 		}
 
-	}, "testSearchPhrasesWithBooleanQuery"
+	}, "testSearchSentencesWithBooleanQuery"
+}
+
+func testSearchSentenceWithID(repositoryProvider func() (infrastructure.ArticlesRepository, error), t *testing.T) (func(t *testing.T), string) {
+	repo, err := repositoryProvider()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return func(t *testing.T) {
+		query := "Le voyage AND La ville de quebec OR le retour NOT l'economie du congo"
+		var n uint = 20
+
+		resp, err := repo.GetSearchSentencesID(query, n)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if uint(len(resp)) > n || uint(len(resp)) == 0 {
+			t.Fatalf("there should be between 0 and %v results", n)
+		}
+
+		for _, id := range resp {
+			_, err = repo.GetArticleFromSentenceID(id)
+
+			if err != nil {
+				t.Fatal(err)
+			}
+		}
+
+	}, "testSearchSentenceWithID"
 }

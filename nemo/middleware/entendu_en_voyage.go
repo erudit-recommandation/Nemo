@@ -29,7 +29,7 @@ func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 		query := req.FormValue("text")
 		log.Printf("-- Entendu en voyage Query: %v --\n", query)
 
-		resp, err := repo.SearchPhrases(query, LIMIT)
+		resp, err := repo.SearchSentences(query, LIMIT_ENTENDU_EN_VOYAGE)
 
 		if err != nil {
 			Error(w, req, http.StatusInternalServerError, err.Error())

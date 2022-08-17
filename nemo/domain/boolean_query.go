@@ -41,9 +41,9 @@ func (b BooleanQuery) Operations() []Operation {
 
 func (b BooleanQuery) ToArangoPhraseQueryBody() string {
 	resp := ""
-	resp += fmt.Sprintf(`CONTAINS(LOWER(s.text), LOWER("%v")) `, b.phrases[0])
+	resp += fmt.Sprintf(`CONTAINS(s.text, "%v") `, b.phrases[0])
 	for i := 1; i < len(b.phrases); i++ {
-		resp += fmt.Sprintf(`%v CONTAINS(LOWER(s.text), LOWER("%v")) `,
+		resp += fmt.Sprintf(`%v CONTAINS(s.text, "%v") `,
 			b.operations[i-1], b.phrases[i])
 	}
 	return resp[:len(resp)-1]

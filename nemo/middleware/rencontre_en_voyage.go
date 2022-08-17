@@ -18,7 +18,6 @@ import (
 func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 
 	return func(w http.ResponseWriter, req *http.Request) {
-		n := 20
 		if err := req.ParseForm(); err != nil || req.FormValue("text") == "" {
 			err_msg := domain.NO_TEXT_SENDED_FOR_RECOMMANDATION
 			log.Println(err)
@@ -30,7 +29,7 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 		query := req.FormValue("text")
 		log.Printf("-- Rencontré en voyage Query: %v --\n", query)
 
-		recommandation, err := sendRequestToGemsimService(query, n)
+		recommandation, err := sendRequestToGemsimService(query, LIMIT_RENCONTRE_ENVOYAGE)
 		if err != nil {
 			log.Println(err)
 			Error(w, req, http.StatusInternalServerError, err.Error())
@@ -43,7 +42,7 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 			fmt.Fprintf(w, "")
 			return
 		}
-		articlesParsed := make([]articleScore, 0, n)
+		articlesParsed := make([]articleScore, 0, LIMIT_RENCONTRE_ENVOYAGE)
 
 		for k, v := range recommandation {
 			id, err := strconv.Atoi(k)
@@ -85,7 +84,7 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 	}
 }
 
-func sendRequestToGemsimService(text string, n int) (map[string]float64, error) {
+func sendRequestToGemsimService(text string, n uint) (map[string]float64, error) {
 	gemsimAddr := fmt.Sprintf("%v/gensim", config.GetConfig().TEXT_ANALYSIS_SERVICE)
 	body := gemsimServiceRequest{
 		Text: text,
