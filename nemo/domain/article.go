@@ -36,7 +36,7 @@ func (a *Article) BuildUrl() {
 	}
 }
 
-func (a *Article) BuildRelatedText(query string) {
+func (a *Article) BuildRelatedText() {
 
 	a.RelatedText = RelatedText{
 		Prev:  a.PreviousSentence,

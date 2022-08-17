@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <title>Recommandation érudit</title>
-    <link rel="stylesheet" href="static/stylesheets/result.css">
+    <link rel="stylesheet" href="/static/stylesheets/result.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,8 +15,8 @@
 
 <body>
     {{template "header" .}}
-    <div class="results-section {{.PageType.ResultSectionClass}}">
-        {{if .PageType.IsRencontreEnVoyage}}
+    <div class="results-section {{.Page.ResultSectionClass}}">
+        {{if .Page.IsRencontreEnVoyage}}
         {{range $el:=.Results}}
         {{template "element_with_persona" $el}}
         {{end}}
@@ -27,5 +27,18 @@
 
         {{end}}
     </div>
+    <div id="page-navigation">
+        {{if .Page.HasPreviousPage}}
+        <a href="{{.Page.PreviousPage}}"> Page Précédente</a>
+        {{else}}
+        <p></p>
+        {{end}}
+        {{if .Page.HasNextPage}}
+        <a href="{{.Page.NextPage}}"> Prochaine Page</a>
+        {{else}}
+        <p></p>
+        {{end}}
+    </div>
+
 
 </body>

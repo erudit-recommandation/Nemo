@@ -2,11 +2,14 @@ package route
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"text/template"
 
 	"github.com/erudit-recommandation/search-engine-webapp/domain"
 	"github.com/erudit-recommandation/search-engine-webapp/middleware"
+	"golang.org/x/text/language"
+	"golang.org/x/text/message"
 )
 
 const MAX_RESULTS = 10
@@ -30,26 +33,16 @@ func Result(w http.ResponseWriter, r *http.Request) {
 	))
 
 	articles := resp.Data
+	page := managePageType(r, &resp)
 
-	pageType := Page{}
-	if r.URL.Path == ENTENDU_EN_VOYAGE {
-		pageType = Page{
-			ResultSectionClass:  "",
-			IsEntenduEnVoyage:   true,
-			IsRencontreEnVoyage: false,
-		}
-	} else {
-		pageType = Page{
-			ResultSectionClass:  "result-grid",
-			IsEntenduEnVoyage:   false,
-			IsRencontreEnVoyage: true,
-		}
-	}
+	p := message.NewPrinter(language.CanadianFrench)
+
 	result_info := ResultInfo{
-		Results:  articles,
-		Query:    resp.Query,
-		PageType: pageType,
-		NResult:  resp.N,
+		Results:     articles,
+		Query:       resp.Query,
+		Page:        page,
+		NResult:     p.Sprintf("%d\n", resp.N),
+		HashedQuery: fmt.Sprintf("%v", resp.HashedQuery),
 	}
 	err = tmpl.Execute(w, result_info)
 	if err != nil {
@@ -58,15 +51,57 @@ func Result(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func managePageType(r *http.Request, resp *middleware.ResultResponse) Page {
+	pageType := Page{}
+	if r.URL.Path == RENCONTRE_EN_VOYAGE {
+		pageType = Page{
+			ResultSectionClass:  "result-grid",
+			IsEntenduEnVoyage:   false,
+			IsRencontreEnVoyage: true,
+		}
+	} else {
+
+		pageType = Page{
+			ResultSectionClass:  "",
+			IsEntenduEnVoyage:   true,
+			IsRencontreEnVoyage: false,
+		}
+
+		if resp.Page == 0 {
+			pageType.HasPreviousPage = false
+		} else {
+			pageType.HasPreviousPage = true
+			pageType.PreviousPage = fmt.Sprintf("%v/%v?page=%v", ENTENDU_EN_VOYAGE, resp.HashedQuery, resp.Page-1)
+		}
+
+		if resp.Page == resp.LastPage {
+			pageType.HasNextPage = false
+		} else {
+			pageType.HasNextPage = true
+			pageType.NextPage = fmt.Sprintf("%v/%v?page=%v", ENTENDU_EN_VOYAGE, resp.HashedQuery, resp.Page+1)
+		}
+	}
+
+	return pageType
+}
+
 type ResultInfo struct {
-	Results  []domain.Article
-	Query    string
-	PageType Page
-	NResult  int
+	Results     []domain.Article
+	Query       string
+	HashedQuery string
+	Page        Page
+	NResult     string
 }
 
 type Page struct {
 	ResultSectionClass  string
 	IsEntenduEnVoyage   bool
 	IsRencontreEnVoyage bool
+
+	CurrentPage  string
+	NextPage     string
+	PreviousPage string
+
+	HasNextPage     bool
+	HasPreviousPage bool
 }

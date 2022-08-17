@@ -14,4 +14,5 @@ require (
 	github.com/hyperjumptech/beda v1.1.0 // indirect
 	github.com/ka-weihe/fast-levenshtein v0.0.0-20201227151214-4c99ee36a1ba // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	golang.org/x/text v0.3.7 // indirect
 )

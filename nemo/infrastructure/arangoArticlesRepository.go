@@ -102,7 +102,7 @@ FOR el IN ids_sentences
 
     LET prev = (
         FOR s IN sentences
-            FILTER el.n_sentence == s.index_nm -1
+            FILTER el.n_sentence == s.index_nm -1 AND el.id == s.idproprio
             LIMIT 1
             RETURN s.text
     
@@ -110,7 +110,7 @@ FOR el IN ids_sentences
     
     LET next = (
         FOR s IN sentences
-            FILTER el.n_sentence == s.index_nm +1
+            FILTER el.n_sentence == s.index_nm +1 AND el.id == s.idproprio
             LIMIT 1
             RETURN s.text
     
@@ -189,9 +189,11 @@ func (a ArangoArticlesRepository) GetArticleFromSentenceID(articleID ArticlesID)
 	defer cancel()
 
 	query := fmt.Sprintf(`
-		LET prev = (
+	LET index = %v
+	LET id = "%v"	
+	LET prev = (
         FOR s IN sentences
-            FILTER %v == s.index_nm -1
+            FILTER index == s.index_nm -1  AND id == s.idproprio
             LIMIT 1
             RETURN s.text
     
@@ -199,7 +201,7 @@ func (a ArangoArticlesRepository) GetArticleFromSentenceID(articleID ArticlesID)
     
     LET next = (
         FOR s IN sentences
-            FILTER %v == s.index_nm +1
+            FILTER index == s.index_nm +1 AND id == s.idproprio
             LIMIT 1
             RETURN s.text
     
@@ -207,14 +209,14 @@ func (a ArangoArticlesRepository) GetArticleFromSentenceID(articleID ArticlesID)
     
      LET current = (
         FOR s IN sentences
-            FILTER %v == s.index_nm
+            FILTER index == s.index_nm AND id == s.idproprio
             LIMIT 1
             RETURN s.text
     
     )
 
     FOR a IN articles
-        FILTER a.idproprio == "%v"
+        FILTER a.idproprio == id
         LIMIT 1
         RETURN {title:a.title,
                 annee:a.annee,
@@ -226,7 +228,7 @@ func (a ArangoArticlesRepository) GetArticleFromSentenceID(articleID ArticlesID)
                 next_sentence: next[0],
         }
 	`,
-		articleID.NSentence, articleID.NSentence, articleID.NSentence, articleID.Id)
+		articleID.NSentence, articleID.Id)
 	cursor, err := a.database.Query(ctx, query, nil)
 	if err != nil {
 		return domain.Article{}, err

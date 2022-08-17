@@ -2,11 +2,11 @@
 <form class="input-form" method="POST">
 
     <div class="input-form-button-section">
-        {{if .PageType.IsRencontreEnVoyage}}
+        {{if .Page.IsRencontreEnVoyage}}
         <button type="submit" formaction="/entendu_en_voyage" class="entendu-en-voyage"></button>
         <button type="submit" formaction="/rencontre_en_voyage" class="rencontre-en-voyage-previous-search"></button>
         <button type="submit" formaction="/clefs_canoniques" class="clef-canonique"></button>
-        {{else if .PageType.IsEntenduEnVoyage}}
+        {{else if .Page.IsEntenduEnVoyage}}
         <button type="submit" formaction="/entendu_en_voyage" class="entendu-en-voyage-previous-search"></button>
         <button type="submit" formaction="/rencontre_en_voyage" class="rencontre-en-voyage"></button>
         <button type="submit" formaction="/clefs_canoniques" class="clef-canonique"></button>
@@ -18,7 +18,7 @@
     </div>
     <div>
         <textarea name="text" class="search-bar" spellcheck="true">{{.Query}}</textarea>
-        {{if .PageType.IsEntenduEnVoyage}}
+        {{if .Page.IsEntenduEnVoyage}}
         <p>Nombre de résultats: {{.NResult}}</p>
         {{end}}
     </div>

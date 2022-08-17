@@ -28,7 +28,13 @@ func setRoute(r *mux.Router) {
 	}).Methods("GET")
 
 	r.HandleFunc(route.ENTENDU_EN_VOYAGE, middleware.EntenduEnVoyage(route.Result)).Methods("POST")
+	r.HandleFunc(fmt.Sprintf("%v/{hashedQuery}", route.ENTENDU_EN_VOYAGE), middleware.EntenduEnVoyageCached(route.Result)).Methods("GET")
+
 	r.HandleFunc(route.RENCONTRE_EN_VOYAGE, middleware.RencontreEnVoyage(route.Result)).Methods("POST")
+
+	r.NotFoundHandler = r.NewRoute().HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		middleware.Error(w, r, 404, "page non trouvée")
+	}).GetHandler()
 
 }
 
