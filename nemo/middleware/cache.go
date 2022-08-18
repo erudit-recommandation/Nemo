@@ -13,6 +13,9 @@ import (
 	"github.com/erudit-recommandation/search-engine-webapp/infrastructure"
 )
 
+var PERSONA_IMAGE_DIRECTORY_TEMPLATE = "./static/images/persona/%v"
+var PERSONA_IMAGE_TEMPLATE = "./static/images/persona/%v/%v.svg"
+
 type cache map[uint32]cacheElement
 
 func (c *cache) ClearExpired() {
@@ -20,11 +23,9 @@ func (c *cache) ClearExpired() {
 	for _, k := range keys {
 		if (*c)[uint32(k.Uint())].IsExpired() {
 			log.Printf("cache %v removed", k.Uint())
-			path := fmt.Sprintf("./static/images/persona/%v", uint32(k.Uint()))
+			path := fmt.Sprintf(PERSONA_IMAGE_DIRECTORY_TEMPLATE, uint32(k.Uint()))
 			os.RemoveAll(path)
 			delete(*c, uint32(k.Uint()))
-		} else {
-			log.Println(time.Until((*c)[uint32(k.Uint())].CreatedDate))
 		}
 	}
 }
@@ -48,7 +49,7 @@ func (c cacheElement) IsExpired() bool {
 }
 
 func (c cacheElement) NumberOfPage() uint {
-	return uint(math.Ceil(float64(len(c.Elements)) / float64(MAX_PAGE_ENTENDU_EN_VOYAGE)))
+	return uint(math.Ceil(float64(len(c.Elements))/float64(MAX_PAGE_ENTENDU_EN_VOYAGE))) - 1
 }
 
 func (c cacheElement) GetPage(page uint) ([]infrastructure.ArticlesID, error) {
@@ -56,7 +57,7 @@ func (c cacheElement) GetPage(page uint) ([]infrastructure.ArticlesID, error) {
 		return nil, fmt.Errorf("la page n'existe pas")
 	}
 
-	if page == c.NumberOfPage() {
+	if page == c.NumberOfPage() || MAX_PAGE_ENTENDU_EN_VOYAGE*(page+1) >= c.NumberOfPage() {
 		return c.Elements[MAX_PAGE_ENTENDU_EN_VOYAGE*page:], nil
 	}
 
@@ -64,7 +65,7 @@ func (c cacheElement) GetPage(page uint) ([]infrastructure.ArticlesID, error) {
 }
 
 func createPersonaDirectory(hasedQuery uint32) error {
-	path := fmt.Sprintf("./static/images/persona/%v", hasedQuery)
+	path := fmt.Sprintf(PERSONA_IMAGE_DIRECTORY_TEMPLATE, hasedQuery)
 	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
 		err := os.Mkdir(path, os.ModePerm)
 		if err != nil {
@@ -74,6 +75,31 @@ func createPersonaDirectory(hasedQuery uint32) error {
 	return nil
 }
 
-func createPersonaSVG(article []domain.Article) {
+func createPersonaSVG(articles []domain.Article, hasedQuery uint32) error {
+	if len(articles) == 0 {
+		return nil
+	}
+	path := fmt.Sprintf(PERSONA_IMAGE_TEMPLATE, hasedQuery, articles[0].ID)
+	if _, err := os.Stat(path); err == nil {
+		return nil
 
+	} else if errors.Is(err, os.ErrNotExist) {
+		for _, a := range articles {
+			path := fmt.Sprintf(PERSONA_IMAGE_TEMPLATE, hasedQuery, a.ID)
+			f, err := os.Create(path)
+			if err != nil {
+				return err
+			}
+			defer f.Close()
+			b := []byte(a.PersonaSvg)
+			if _, err := f.Write(b); err != nil {
+				return err
+			}
+		}
+
+	} else {
+		return err
+	}
+
+	return nil // for compiler
 }

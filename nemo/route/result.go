@@ -36,9 +36,15 @@ func Result(w http.ResponseWriter, r *http.Request) {
 	page := managePageType(r, &resp)
 
 	p := message.NewPrinter(language.CanadianFrench)
-
+	articleHashedQuery := make([]ArticleHashedQuery, len(articles))
+	for i, a := range resp.Data {
+		articleHashedQuery[i] = ArticleHashedQuery{
+			Article:     a,
+			HashedQuery: fmt.Sprintf("%v", resp.HashedQuery),
+		}
+	}
 	result_info := ResultInfo{
-		Results:     articles,
+		Results:     articleHashedQuery,
 		Query:       resp.Query,
 		Page:        page,
 		NResult:     p.Sprintf("%d\n", resp.N),
@@ -86,11 +92,16 @@ func managePageType(r *http.Request, resp *middleware.ResultResponse) Page {
 }
 
 type ResultInfo struct {
-	Results     []domain.Article
+	Results     []ArticleHashedQuery
 	Query       string
 	HashedQuery string
 	Page        Page
 	NResult     string
+}
+
+type ArticleHashedQuery struct {
+	domain.Article
+	HashedQuery string
 }
 
 type Page struct {

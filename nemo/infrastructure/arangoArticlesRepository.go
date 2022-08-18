@@ -243,7 +243,7 @@ func (a ArangoArticlesRepository) GetArticleFromSentenceID(articleID ArticlesID)
 
 	_, err = cursor.ReadDocument(ctx, &doc)
 	if reflect.DeepEqual(doc, domain.Article{}) {
-		return domain.Article{}, fmt.Errorf("was not able to find an article")
+		return domain.Article{}, fmt.Errorf("was not able to find an article %v", articleID)
 	}
 
 	if driver.IsNoMoreDocuments(err) {

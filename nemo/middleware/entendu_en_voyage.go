@@ -53,23 +53,28 @@ func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 			}
 		} else {
 			ids, err := repo.GetSearchSentencesID(query, LIMIT_ENTENDU_EN_VOYAGE)
-
-			nFound = len(ids)
 			if err != nil {
 				log.Println(err)
 				Error(w, req, http.StatusInternalServerError, err.Error())
 				return
 			}
-			CACHE[hasedQuery] = newCacheElement(query, hasedQuery, ids)
 
-			articles, errorCode, err := GetEntenduEnvoyageArticleFromCache(repo, hasedQuery, 0)
-			lastPage = CACHE[hasedQuery].NumberOfPage()
-			resp = articles
-			if err != nil {
-				log.Println(err)
-				Error(w, req, errorCode, err.Error())
-				return
+			nFound = len(ids)
+			lastPage = 0
+			if nFound != 0 {
+
+				CACHE[hasedQuery] = newCacheElement(query, hasedQuery, ids)
+
+				articles, errorCode, err := GetEntenduEnvoyageArticleFromCache(repo, hasedQuery, 0)
+				lastPage = CACHE[hasedQuery].NumberOfPage()
+				resp = articles
+				if err != nil {
+					log.Println(err)
+					Error(w, req, errorCode, err.Error())
+					return
+				}
 			}
+
 		}
 
 		j, err := json.Marshal(ResultResponse{Data: resp, Query: query, N: nFound, Page: uint(page), LastPage: lastPage, HashedQuery: hasedQuery})
@@ -150,8 +155,10 @@ func EntenduEnVoyageCached(next httpHandlerFunc) httpHandlerFunc {
 func GetEntenduEnvoyageArticleFromCache(repo infrastructure.ArticlesRepository, hasedQuery uint32, page uint) ([]domain.Article, int, error) {
 
 	resp := make([]domain.Article, 0, MAX_PAGE_ENTENDU_EN_VOYAGE)
+	var pageIds []infrastructure.ArticlesID
+	el := CACHE[hasedQuery]
+	pageIds, err := el.GetPage(page)
 
-	pageIds, err := CACHE[hasedQuery].GetPage(page)
 	if err != nil {
 		return nil, http.StatusNotFound, err
 	}
@@ -159,6 +166,8 @@ func GetEntenduEnvoyageArticleFromCache(repo infrastructure.ArticlesRepository, 
 	for _, id := range pageIds {
 		article, err := repo.GetArticleFromSentenceID(id)
 		if err != nil {
+			log.Println(pageIds)
+			log.Println(el)
 			return nil, http.StatusInternalServerError, err
 		}
 		resp = append(resp, article)
@@ -166,6 +175,9 @@ func GetEntenduEnvoyageArticleFromCache(repo infrastructure.ArticlesRepository, 
 
 	for i := 0; i < len(resp); i++ {
 		resp[i].BuildRelatedText()
+	}
+	if err := createPersonaSVG(resp, hasedQuery); err != nil {
+		return resp, http.StatusInternalServerError, err
 	}
 	return resp, http.StatusOK, nil
 }
