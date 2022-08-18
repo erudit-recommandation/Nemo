@@ -16,11 +16,11 @@ type Article struct {
 	Author           string `json:"author"`
 	ID               string `json:"idproprio"`
 	Journal          string `json:"titrerev"`
-	Text             string `json:"text"`
 	CurrentSentence  string `json:"current_sentence"`
 	PreviousSentence string `json:"previous_sentence"`
 	NextSentence     string `json:"next_sentence"`
 	RelatedText      RelatedText
+	PersonaSvg       string `json:"persona_svg"`
 }
 
 type RelatedText struct {

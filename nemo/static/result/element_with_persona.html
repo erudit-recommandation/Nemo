@@ -1,6 +1,17 @@
 {{define "element_with_persona"}}
-<div class="result-element-persona">
+<div class="result-element-persona" id="id-{{.ID}}">
     <a href={{.Url}} target="_blank" rel="noopener noreferrer" title={{.Title}} class="result-title">{{.Title}}</a>
     <span class="description">({{.Author}}, {{.Year}}, {{.Journal}})</span>
 </div>
+
+
+<style>
+    #id-{{.ID}}
+    {
+        background-image: url("static/images/0.svg");
+        background-size: cover;                
+        background-repeat: no-repeat;
+        background-position: center center
+    }
+</style>
 {{end}}

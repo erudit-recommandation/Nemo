@@ -56,10 +56,15 @@ func (a ArangoArticlesRepository) GetByIdPandas(id int) (domain.Article, error) 
 	ctx, cancel := context.WithTimeout(context.Background(), QUERY_MAXIMUM_DURATION)
 	defer cancel()
 
-	query := fmt.Sprintf(`FOR c IN articles
-    						FILTER c.pandas_index == %v
+	query := fmt.Sprintf(`FOR a IN articles
+    						FILTER a.pandas_index == %v
     						LIMIT 1
-    						RETURN c`,
+    						RETURN {title:a.title,
+								annee:a.annee,
+								author:a.author,
+								idproprio:a.idproprio,
+								titrerev:a.titrerev,
+						}`,
 		id)
 	cursor, err := a.database.Query(ctx, query, nil)
 	if err != nil {

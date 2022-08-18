@@ -89,9 +89,10 @@ body {
 
 .result-element-description {
   display: grid;
-  grid-template-columns: 100px 60vw;
+  grid-template-columns: 200px 50vw;
   margin-bottom: 40px;
   height: 200px;
+  gap: 30px;
 }
 
 .results-section {
@@ -99,8 +100,7 @@ body {
 }
 
 .som {
-  width: 100px;
-  height: 100px;
+  object-fit: inherit;
 }
 
 .result-element-description-payload {
@@ -139,7 +139,6 @@ a:hover {
   width: 17vw;
   height: 200px;
   text-align: center;
-  background-color: red;
   display: flex;
   flex-direction: column;
   row-gap: 5px;
@@ -184,3 +183,4 @@ a:hover {
   grid-template-columns: 33vw 33vw 33vw;
   justify-items: center;
 }
+
