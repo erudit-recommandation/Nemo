@@ -32,6 +32,18 @@ func setRoute(r *mux.Router) {
 
 	r.HandleFunc(route.RENCONTRE_EN_VOYAGE, middleware.RencontreEnVoyage(route.Result)).Methods("POST")
 
+	r.HandleFunc(route.CLEF_CANONIQUE, func(w http.ResponseWriter, r *http.Request) {
+		middleware.Error(w, r, 501, "Service à venir!")
+	}).Methods("POST")
+
+	r.HandleFunc(route.VAISEAU, func(w http.ResponseWriter, r *http.Request) {
+		middleware.Error(w, r, 501, "Page à venir!")
+	}).Methods("GET")
+
+	r.HandleFunc(route.REMERCIEMENTS, func(w http.ResponseWriter, r *http.Request) {
+		middleware.Error(w, r, 501, "Page à venir!")
+	}).Methods("GET")
+
 	r.NotFoundHandler = r.NewRoute().HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		middleware.Error(w, r, 404, "page non trouvée")
 	}).GetHandler()

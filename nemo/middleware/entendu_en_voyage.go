@@ -3,15 +3,11 @@ package middleware
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"hash/fnv"
 	"io/ioutil"
 	"log"
-	"math"
 	"net/http"
-	"reflect"
 	"strconv"
-	"time"
 
 	"github.com/erudit-recommandation/search-engine-webapp/domain"
 	"github.com/erudit-recommandation/search-engine-webapp/infrastructure"
@@ -64,11 +60,7 @@ func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 				Error(w, req, http.StatusInternalServerError, err.Error())
 				return
 			}
-			CACHE[hasedQuery] = cacheElement{
-				CreatedDate: time.Now(),
-				Elements:    ids,
-				Query:       query,
-			}
+			CACHE[hasedQuery] = newCacheElement(query, hasedQuery, ids)
 
 			articles, errorCode, err := GetEntenduEnvoyageArticleFromCache(repo, hasedQuery, 0)
 			lastPage = CACHE[hasedQuery].NumberOfPage()
@@ -176,43 +168,6 @@ func GetEntenduEnvoyageArticleFromCache(repo infrastructure.ArticlesRepository, 
 		resp[i].BuildRelatedText()
 	}
 	return resp, http.StatusOK, nil
-}
-
-type cache map[uint32]cacheElement
-
-func (c *cache) ClearExpired() {
-	keys := reflect.ValueOf(*c).MapKeys()
-	for _, k := range keys {
-		if (*c)[uint32(k.Uint())].IsExpired() {
-			delete(*c, uint32(k.Uint()))
-		}
-	}
-}
-
-type cacheElement struct {
-	CreatedDate time.Time
-	Query       string
-	Elements    []infrastructure.ArticlesID
-}
-
-func (c cacheElement) IsExpired() bool {
-	return time.Until(c.CreatedDate) >= CACHE_DURATION
-}
-
-func (c cacheElement) NumberOfPage() uint {
-	return uint(math.Ceil(float64(len(c.Elements)) / float64(MAX_PAGE_ENTENDU_EN_VOYAGE)))
-}
-
-func (c cacheElement) GetPage(page uint) ([]infrastructure.ArticlesID, error) {
-	if page > c.NumberOfPage() {
-		return nil, fmt.Errorf("la page n'existe pas")
-	}
-
-	if page == c.NumberOfPage() {
-		return c.Elements[MAX_PAGE_ENTENDU_EN_VOYAGE*page:], nil
-	}
-
-	return c.Elements[MAX_PAGE_ENTENDU_EN_VOYAGE*page : MAX_PAGE_ENTENDU_EN_VOYAGE*(page+1)], nil
 }
 
 func hash(s string) uint32 {
