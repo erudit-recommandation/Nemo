@@ -36,13 +36,11 @@ func testGetByIdproprio(repositoryProvider func() (infrastructure.ArticlesReposi
 			Journal: "Spirale",
 		}
 		expectedResult.BuildUrl()
-
 		resp, err := repo.GetByIdproprio(id)
 		if err != nil {
 			t.Fatal(err)
 		}
-
-		resp.Text = ""
+		resp.PersonaSvg = "" // we don't want to enter this large string
 
 		if !reflect.DeepEqual(resp, expectedResult) {
 			t.Fatalf("the articles are not same the response is \n%v\n where we expect \n %v", resp, expectedResult)
