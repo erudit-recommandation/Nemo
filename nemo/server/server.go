@@ -36,9 +36,7 @@ func setRoute(r *mux.Router) {
 		middleware.Error(w, r, 501, "Service à venir!")
 	}).Methods("POST")
 
-	r.HandleFunc(route.VAISEAU, func(w http.ResponseWriter, r *http.Request) {
-		middleware.Error(w, r, 501, "Page à venir!")
-	}).Methods("GET")
+	r.HandleFunc(route.VAISEAU, route.Vaiseau).Methods("GET")
 
 	r.HandleFunc(route.REMERCIEMENTS, func(w http.ResponseWriter, r *http.Request) {
 		middleware.Error(w, r, 501, "Page à venir!")

@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Nemo</title>
+    <link rel="stylesheet" href="static/stylesheets/vaiseau.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <h1 class="title">- vaisseau -</h1>
+    <a class="repository_link" target="_blank" rel="noopener noreferrer"
+        href="https://github.com/erudit-recommandation/Nemo">Code sur
+        Github</a>
+
+    <div class="main">
+        <div class="entendu_en_voyage">
+            <img src="/static/images/p_black.svg" alt="entendu en voyage">
+            <p>Recherche dans le texte brut.</p>
+            <p>Phrases courtes.</p>
+            <p>AND, OR, NOT</p>
+        </div>
+
+        <div class="rencontre_en_voyage">
+            <img src="/static/images/o_black.svg" alt="rencontré en voyage">
+            <p>Trouver des textes similaires.</p>
+            <p>Texte intégral.</p>
+            <div class="step">
+                <p>lemmatisation</p>
+                <p>vectorisation TFIDF</p>
+                <p>doc2vec</p>
+            </div>
+
+        </div>
+
+        <div class="clef_canonique">
+            <img src="/static/images/key_black.svg" alt="clef canonique">
+            <p>Textes similaires aux textes clés.</p>
+            <p>Choix du texte.</p>
+            <div class="step">
+                <p>lemmatisation</p>
+                <p>transformation SVD</p>
+                <p>Self-Organizing Map (SOM)</p>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>
