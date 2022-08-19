@@ -1,7 +1,7 @@
 {{define "element_with_persona"}}
 <div class="result-element-persona" id="id-{{.ID}}">
     <a href={{.Url}} target="_blank" rel="noopener noreferrer" title={{.Title}} class="result-title">{{.Title}}</a>
-    <span class="description">({{.Author}}, {{.Year}}, {{.Journal}})</span>
+    <span class="description">(<span style="font-style:{{.AuthorStyle}};">{{.Author}}</span>, {{.Year}}, {{.Journal}})</span>
 </div>
 
 

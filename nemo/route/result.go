@@ -44,9 +44,16 @@ func Result(w http.ResponseWriter, r *http.Request) {
 		} else {
 			personaImageLink = fmt.Sprintf("/static/images/persona/%v/%v.svg", resp.HashedQuery, a.ID)
 		}
+		authorStyle := "none"
+		if a.Author == "" {
+			a.Author = "Auteur indisponible"
+			authorStyle = "italic"
+		}
+
 		articleHashedQuery[i] = ArticleHashedQuery{
 			Article:          a,
 			PersonaImageLink: personaImageLink,
+			AuthorStyle:      authorStyle,
 		}
 
 	}
@@ -109,6 +116,7 @@ type ResultInfo struct {
 type ArticleHashedQuery struct {
 	domain.Article
 	PersonaImageLink string
+	AuthorStyle      string
 }
 
 type Page struct {
