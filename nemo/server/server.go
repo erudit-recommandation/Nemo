@@ -38,9 +38,7 @@ func setRoute(r *mux.Router) {
 
 	r.HandleFunc(route.VAISEAU, route.Vaiseau).Methods("GET")
 
-	r.HandleFunc(route.REMERCIEMENTS, func(w http.ResponseWriter, r *http.Request) {
-		middleware.Error(w, r, 501, "Page à venir!")
-	}).Methods("GET")
+	r.HandleFunc(route.REMERCIEMENTS, route.Remerciements).Methods("GET")
 
 	r.NotFoundHandler = r.NewRoute().HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		middleware.Error(w, r, 404, "page non trouvée")
