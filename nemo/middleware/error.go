@@ -6,7 +6,6 @@ import (
 )
 
 func Error(w http.ResponseWriter, r *http.Request, status int, msg string) {
-
 	tmpl := template.Must(template.ParseFiles(
 		"static/error/error.html",
 	))

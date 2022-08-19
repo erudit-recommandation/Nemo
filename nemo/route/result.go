@@ -38,10 +38,17 @@ func Result(w http.ResponseWriter, r *http.Request) {
 	p := message.NewPrinter(language.CanadianFrench)
 	articleHashedQuery := make([]ArticleHashedQuery, len(articles))
 	for i, a := range resp.Data {
-		articleHashedQuery[i] = ArticleHashedQuery{
-			Article:     a,
-			HashedQuery: fmt.Sprintf("%v", resp.HashedQuery),
+		var personaImageLink string
+		if a.PersonaSvg == "" {
+			personaImageLink = "/static/images/persona_placeholder.svg"
+		} else {
+			personaImageLink = fmt.Sprintf("/static/images/persona/%v/%v.svg", resp.HashedQuery, a.ID)
 		}
+		articleHashedQuery[i] = ArticleHashedQuery{
+			Article:          a,
+			PersonaImageLink: personaImageLink,
+		}
+
 	}
 	result_info := ResultInfo{
 		Results:     articleHashedQuery,
@@ -101,7 +108,7 @@ type ResultInfo struct {
 
 type ArticleHashedQuery struct {
 	domain.Article
-	HashedQuery string
+	PersonaImageLink string
 }
 
 type Page struct {

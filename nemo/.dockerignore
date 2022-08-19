@@ -1,3 +1,6 @@
+static/images/persona/*
+!static/images/persona/.gitkeep
+
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 .git

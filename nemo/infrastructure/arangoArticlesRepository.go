@@ -13,8 +13,6 @@ import (
 	"github.com/erudit-recommandation/search-engine-webapp/domain"
 )
 
-var QUERY_MAXIMUM_DURATION = 15 * time.Second
-
 var arangoDb *ArangoArticlesRepository = nil
 
 type ArangoArticlesRepository struct {
@@ -64,6 +62,7 @@ func (a ArangoArticlesRepository) GetByIdPandas(id int) (domain.Article, error) 
 								author:a.author,
 								idproprio:a.idproprio,
 								titrerev:a.titrerev,
+								persona_svg: a.persona_svg
 						}`,
 		id)
 	cursor, err := a.database.Query(ctx, query, nil)
@@ -131,6 +130,7 @@ FOR el IN ids_sentences
                 current_sentence:el.sentence,
                 previous_sentence: prev[0],
                 next_sentence: next[0],
+				persona_svg: a.persona_svg
         }`,
 		booleanQuery.ToArangoPhraseQueryBody(),
 		n)
@@ -231,9 +231,10 @@ func (a ArangoArticlesRepository) GetArticleFromSentenceID(articleID ArticlesID)
                 current_sentence:current[0],
                 previous_sentence: prev[0],
                 next_sentence: next[0],
+				persona_svg: a.persona_svg
         }
 	`,
-		articleID.NSentence, articleID.Id)
+		articleID.NSentence, articleID.ID)
 	cursor, err := a.database.Query(ctx, query, nil)
 	if err != nil {
 		return domain.Article{}, err

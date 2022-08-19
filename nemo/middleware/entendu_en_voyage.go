@@ -16,7 +16,7 @@ import (
 
 func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		CACHE.ClearExpired()
+		CACHE_ENTENDU_EN_VOYAGE.ClearExpired()
 		repo, err := infrastructure.ProvideArangoArticlesRepository()
 		if err != nil {
 			log.Println(err)
@@ -42,12 +42,13 @@ func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 		var lastPage uint
 		hasedQuery := hash(query)
 
-		if r, ok := CACHE[hasedQuery]; ok {
+		if r, ok := CACHE_ENTENDU_EN_VOYAGE[hasedQuery]; ok {
 			lastPage = r.NumberOfPage()
 			nFound = len(r.Elements)
 			articles, errorCode, err := GetEntenduEnvoyageArticleFromCache(repo, hasedQuery, uint(page))
 			resp = articles
 			if err != nil {
+				log.Println(err)
 				Error(w, req, errorCode, err.Error())
 				return
 			}
@@ -62,11 +63,14 @@ func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 			nFound = len(ids)
 			lastPage = 0
 			if nFound != 0 {
-
-				CACHE[hasedQuery] = newCacheElement(query, hasedQuery, ids)
+				var anyIds []interface{} = make([]interface{}, len(ids))
+				for i, v := range ids {
+					anyIds[i] = v
+				}
+				CACHE_ENTENDU_EN_VOYAGE[hasedQuery] = newCacheElement(query, hasedQuery, anyIds)
 
 				articles, errorCode, err := GetEntenduEnvoyageArticleFromCache(repo, hasedQuery, 0)
-				lastPage = CACHE[hasedQuery].NumberOfPage()
+				lastPage = CACHE_ENTENDU_EN_VOYAGE[hasedQuery].NumberOfPage()
 				resp = articles
 				if err != nil {
 					log.Println(err)
@@ -80,6 +84,7 @@ func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 		j, err := json.Marshal(ResultResponse{Data: resp, Query: query, N: nFound, Page: uint(page), LastPage: lastPage, HashedQuery: hasedQuery})
 
 		if err != nil {
+			log.Println(err)
 			Error(w, req, http.StatusInternalServerError, err.Error())
 			return
 		}
@@ -90,7 +95,7 @@ func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 
 func EntenduEnVoyageCached(next httpHandlerFunc) httpHandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		CACHE.ClearExpired()
+		CACHE_ENTENDU_EN_VOYAGE.ClearExpired()
 
 		repo, err := infrastructure.ProvideArangoArticlesRepository()
 		if err != nil {
@@ -106,7 +111,7 @@ func EntenduEnVoyageCached(next httpHandlerFunc) httpHandlerFunc {
 			return
 		}
 
-		r, ok := CACHE[uint32(hasedQuery)]
+		r, ok := CACHE_ENTENDU_EN_VOYAGE[uint32(hasedQuery)]
 		if !ok {
 			err_msg := "Cette requête n'a jamais été faite"
 			log.Println(err_msg)
@@ -136,6 +141,7 @@ func EntenduEnVoyageCached(next httpHandlerFunc) httpHandlerFunc {
 		articles, errorCode, err := GetEntenduEnvoyageArticleFromCache(repo, uint32(hasedQuery), uint(page))
 		resp := articles
 		if err != nil {
+			log.Println(err)
 			Error(w, req, errorCode, err.Error())
 			return
 		}
@@ -143,6 +149,7 @@ func EntenduEnVoyageCached(next httpHandlerFunc) httpHandlerFunc {
 		j, err := json.Marshal(ResultResponse{Data: resp, Query: r.Query, N: nFound, Page: uint(page), LastPage: lastPage, HashedQuery: uint32(hasedQuery)})
 
 		if err != nil {
+			log.Println(err)
 			Error(w, req, http.StatusInternalServerError, err.Error())
 			return
 		}
@@ -155,16 +162,14 @@ func EntenduEnVoyageCached(next httpHandlerFunc) httpHandlerFunc {
 func GetEntenduEnvoyageArticleFromCache(repo infrastructure.ArticlesRepository, hasedQuery uint32, page uint) ([]domain.Article, int, error) {
 
 	resp := make([]domain.Article, 0, MAX_PAGE_ENTENDU_EN_VOYAGE)
-	var pageIds []infrastructure.ArticlesID
-	el := CACHE[hasedQuery]
-	pageIds, err := el.GetPage(page)
+	el := CACHE_ENTENDU_EN_VOYAGE[hasedQuery]
+	pageIds, err := el.GetPage(page, MAX_PAGE_ENTENDU_EN_VOYAGE)
 
 	if err != nil {
 		return nil, http.StatusNotFound, err
 	}
-
 	for _, id := range pageIds {
-		article, err := repo.GetArticleFromSentenceID(id)
+		article, err := repo.GetArticleFromSentenceID(id.(infrastructure.ArticlesID))
 		if err != nil {
 			log.Println(pageIds)
 			log.Println(el)
@@ -176,6 +181,7 @@ func GetEntenduEnvoyageArticleFromCache(repo infrastructure.ArticlesRepository, 
 	for i := 0; i < len(resp); i++ {
 		resp[i].BuildRelatedText()
 	}
+
 	if err := createPersonaSVG(resp, hasedQuery); err != nil {
 		return resp, http.StatusInternalServerError, err
 	}

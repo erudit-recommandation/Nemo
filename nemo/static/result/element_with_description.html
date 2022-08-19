@@ -1,7 +1,11 @@
 {{define "element_with_description"}}
 <div class="result-element-description">
     <div class="som">
-        <img src="static/images/persona/{{.HashedQuery}}/{{.ID}}.svg" alt="persona article {{.ID}}" style="width: 100%;"> 
+        <img src="{{.PersonaImageLink}}" alt="persona article {{.ID}}"
+            style="width: 100%;">
+
+        <!--  <img src="static/images/0.svg" alt="persona article {{.ID}}" style="width: 100%;"> -->
+
     </div>
 
     <div class="result-element-description-payload">

@@ -12,6 +12,6 @@ type ArticlesRepository interface {
 }
 
 type ArticlesID struct {
-	Id        string `json:"id"`
+	ID        string `json:"id"`
 	NSentence int    `json:"n_sentence"`
 }
