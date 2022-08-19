@@ -43,7 +43,7 @@ func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 		hasedQuery := hash(query)
 
 		if r, ok := CACHE_ENTENDU_EN_VOYAGE[hasedQuery]; ok {
-			lastPage = r.NumberOfPage()
+			lastPage = uint(r.NumberOfPage())
 			nFound = len(r.Elements)
 			articles, errorCode, err := GetEntenduEnvoyageArticleFromCache(repo, hasedQuery, uint(page))
 			resp = articles
@@ -67,10 +67,10 @@ func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 				for i, v := range ids {
 					anyIds[i] = v
 				}
-				CACHE_ENTENDU_EN_VOYAGE[hasedQuery] = newCacheElement(query, hasedQuery, anyIds)
+				CACHE_ENTENDU_EN_VOYAGE[hasedQuery] = newCacheElement(query, hasedQuery, anyIds, MAX_PAGE_ENTENDU_EN_VOYAGE)
 
 				articles, errorCode, err := GetEntenduEnvoyageArticleFromCache(repo, hasedQuery, 0)
-				lastPage = CACHE_ENTENDU_EN_VOYAGE[hasedQuery].NumberOfPage()
+				lastPage = uint(CACHE_ENTENDU_EN_VOYAGE[hasedQuery].NumberOfPage())
 				resp = articles
 				if err != nil {
 					log.Println(err)
@@ -135,7 +135,7 @@ func EntenduEnVoyageCached(next httpHandlerFunc) httpHandlerFunc {
 
 		}
 
-		lastPage := r.NumberOfPage()
+		lastPage := uint(r.NumberOfPage())
 		nFound := len(r.Elements)
 
 		articles, errorCode, err := GetEntenduEnvoyageArticleFromCache(repo, uint32(hasedQuery), uint(page))
@@ -163,7 +163,7 @@ func GetEntenduEnvoyageArticleFromCache(repo infrastructure.ArticlesRepository, 
 
 	resp := make([]domain.Article, 0, MAX_PAGE_ENTENDU_EN_VOYAGE)
 	el := CACHE_ENTENDU_EN_VOYAGE[hasedQuery]
-	pageIds, err := el.GetPage(page, MAX_PAGE_ENTENDU_EN_VOYAGE)
+	pageIds, err := el.GetPage(page)
 
 	if err != nil {
 		return nil, http.StatusNotFound, err

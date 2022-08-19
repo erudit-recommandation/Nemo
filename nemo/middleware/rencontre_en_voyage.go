@@ -88,7 +88,7 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 			for i, v := range articles {
 				anyArticles[i] = v
 			}
-			CACHE_RENCONTRE_EN_VOYAGE[hasedQuery] = newCacheElement(query, hasedQuery, anyArticles)
+			CACHE_RENCONTRE_EN_VOYAGE[hasedQuery] = newCacheElement(query, hasedQuery, anyArticles, LIMIT_RENCONTRE_EN_VOYAGE)
 
 			if err := createPersonaSVG(articles, hasedQuery); err != nil {
 				log.Println(err)
@@ -115,7 +115,7 @@ func GetRencontreEnVoyageArticleFromCache(hasedQuery uint32) ([]domain.Article, 
 	resp := make([]domain.Article, 0, LIMIT_RENCONTRE_EN_VOYAGE)
 	cacheValue := CACHE_RENCONTRE_EN_VOYAGE[hasedQuery]
 
-	articles, err := cacheValue.GetPage(1, LIMIT_RENCONTRE_EN_VOYAGE)
+	articles, err := cacheValue.GetPage(0)
 
 	if err != nil {
 		return nil, err

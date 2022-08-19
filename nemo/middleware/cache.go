@@ -33,34 +33,44 @@ type cacheElement[T any] struct {
 	CreatedDate time.Time
 	Query       string
 	Elements    []T
+	PageSize    uint
 }
 
-func newCacheElement(query string, hasedQuery uint32, elements []any) cacheElement[any] {
+func newCacheElement(query string, hasedQuery uint32, elements []any, pageSize uint) cacheElement[any] {
 	createPersonaDirectory(hasedQuery)
 	return cacheElement[any]{
 		Query:       query,
 		CreatedDate: time.Now(),
 		Elements:    elements,
+		PageSize:    pageSize,
 	}
 }
 func (c cacheElement[T]) IsExpired() bool {
 	return -1*time.Until(c.CreatedDate) >= CACHE_DURATION
 }
 
-func (c cacheElement[T]) NumberOfPage() uint {
-	return uint(math.Ceil(float64(len(c.Elements))/float64(MAX_PAGE_ENTENDU_EN_VOYAGE))) - 1
+func (c cacheElement[T]) NumberOfPage() int {
+	n := int(math.Ceil(float64(len(c.Elements))/float64(c.PageSize))) - 1
+	if n <= 0 {
+		n = -1
+	}
+	return n
 }
 
-func (c cacheElement[T]) GetPage(page uint, max uint) ([]T, error) {
-	if page > c.NumberOfPage() {
+func (c cacheElement[T]) GetPage(page uint) ([]T, error) {
+	if c.NumberOfPage() == -1 {
+		return c.Elements[c.PageSize*page:], nil
+	}
+
+	if int(page) > c.NumberOfPage() {
 		return nil, fmt.Errorf("la page n'existe pas")
 	}
 
-	if page == c.NumberOfPage() {
-		return c.Elements[max*page:], nil
+	if int(page) == c.NumberOfPage() {
+		return c.Elements[c.PageSize*page:], nil
 	}
 
-	return c.Elements[max*page : max*(page+1)], nil
+	return c.Elements[c.PageSize*page : c.PageSize*(page+1)], nil
 }
 
 func createPersonaDirectory(hasedQuery uint32) error {
