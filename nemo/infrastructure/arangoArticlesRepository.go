@@ -94,8 +94,11 @@ func (a ArangoArticlesRepository) SearchSentences(phrase string, n uint) ([]doma
 	booleanQuery := domain.NewBooleanQuery(phrase)
 
 	query := fmt.Sprintf(`LET ids_sentences = (
-FOR s IN sentences
-	FILTER %v
+FOR s IN article_analysis
+SEARCH ANALYZER(
+	%v,
+	"text_fr"
+)
     LIMIT %v
     RETURN {"id":s.idproprio, n_sentence:s.index_nm, sentence: s.text}
     
@@ -162,8 +165,11 @@ func (a ArangoArticlesRepository) GetSearchSentencesID(phrase string, n uint) ([
 	booleanQuery := domain.NewBooleanQuery(phrase)
 
 	query := fmt.Sprintf(`
-FOR s IN sentences
-	FILTER %v
+FOR s IN article_analysis
+SEARCH ANALYZER(
+	%v,
+	"text_fr"
+)
     LIMIT %v
     RETURN {"id":s.idproprio, n_sentence:s.index_nm}`,
 		booleanQuery.ToArangoPhraseQueryBody(),
