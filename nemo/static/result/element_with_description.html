@@ -14,10 +14,10 @@
                 class="result-title">{{.Title}}</a>
             <span class="description">({{.Author}}, {{.Year}}, {{.Journal}})</span>
         </div>
-        <div class="related-text">
-            <span>{{.RelatedText.Prev}}</span>
-            <span class="related-text-best">{{.RelatedText.Best}}</span>
-            <span>{{.RelatedText.After}}</span>
+        <div class="related-text" onclick="copyToClipboard('related-text-content-{{.ID}}')">
+            <span class="related-text-content-{{.ID}}">{{.RelatedText.Prev}}</span>
+            <span class="related-text-best related-text-content-{{.ID}}">{{.RelatedText.Best}}</span>
+            <span class="related-text-content-{{.ID}}">{{.RelatedText.After}}</span>
         </div>
 
 
