@@ -21,6 +21,7 @@ type Article struct {
 	NextSentence     string `json:"next_sentence"`
 	RelatedText      RelatedText
 	PersonaSvg       string `json:"persona_svg"`
+	Bmu              int    `json:"bmu"`
 }
 
 type RelatedText struct {

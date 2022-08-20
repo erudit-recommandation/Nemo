@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"reflect"
+	"sort"
 	"time"
 
 	driver "github.com/arangodb/go-driver"
@@ -260,6 +261,48 @@ func (a ArangoArticlesRepository) GetArticleFromSentenceID(articleID ArticlesID)
 	doc.BuildUrl()
 
 	return doc, nil
+}
+
+func (a ArangoArticlesRepository) GetNeighbouringArticlesByBMU(bmu int, limit uint) ([]domain.Article, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), QUERY_MAXIMUM_DURATION)
+	defer cancel()
+	query := fmt.Sprintf(`
+	LET bmu =  %v
+	FOR a IN articles
+		FILTER a.bmu==bmu OR a.bmu==bmu+1 OR a.bmu==bmu-1
+		LIMIT %v
+		RETURN {
+			annee:a.annee,
+			author:a.author,
+			idproprio:a.idproprio,
+			titrerev:a.titrerev,
+			persona_svg: a.persona_svg,
+			bmu:a.bmu
+		}
+		
+	`, bmu, limit)
+
+	cursor, err := a.database.Query(ctx, query, nil)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close()
+	resp := make([]domain.Article, 0, limit)
+	for {
+		var doc domain.Article
+		_, err := cursor.ReadDocument(ctx, &doc)
+		if driver.IsNoMoreDocuments(err) {
+			break
+		} else if err != nil {
+			return nil, err
+		}
+		doc.BuildUrl()
+		resp = append(resp, doc)
+	}
+	sort.SliceStable(resp, func(i, j int) bool {
+		return resp[i].Bmu-bmu < resp[j].Bmu-bmu
+	})
+	return resp, nil
 }
 
 func ProvideArangoArticlesRepository(corpus string) (ArticlesRepository, error) {
