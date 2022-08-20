@@ -16,7 +16,7 @@
         <button type="submit" formaction="/clefs_canoniques" class="clef-canonique"></button>
         {{end}}
     </div>
-    <div>
+    <div class="search-bar-container">
         <textarea name="text" class="search-bar" spellcheck="true">{{.Query}}</textarea>
         {{if .Page.IsEntenduEnVoyage}}
         <p>Nombre de résultats: {{.NResult}}</p>

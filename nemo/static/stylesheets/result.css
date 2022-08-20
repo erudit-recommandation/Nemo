@@ -6,7 +6,7 @@
 
 .mini-search {
   display: grid;
-  grid-template-columns: 15vw auto;
+  grid-template-columns: 15vw 60vw;
   height: fit-content;
 }
 
@@ -147,6 +147,7 @@ a:hover {
   display: grid;
   grid-template-columns: repeat(4, 22%);
   row-gap: 30px;
+  width: 60vw;
 }
 
 .result-element-persona a {
@@ -164,7 +165,7 @@ a:hover {
 }
 
 .search-bar {
-  width: 60vw;
+  width: 100%;
 }
 
 .input-form-button-section {
@@ -183,3 +184,6 @@ a:hover {
   justify-items: center;
 }
 
+.search-bar-container{
+  width: 100%;
+}
