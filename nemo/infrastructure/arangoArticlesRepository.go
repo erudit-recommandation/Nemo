@@ -13,11 +13,10 @@ import (
 	"github.com/erudit-recommandation/search-engine-webapp/domain"
 )
 
-var arangoDb *ArangoArticlesRepository = nil
+var arangoDb map[string]*ArangoArticlesRepository = make(map[string]*ArangoArticlesRepository)
 
 type ArangoArticlesRepository struct {
-	database   driver.Database
-	collection string
+	database driver.Database
 }
 
 func (a ArangoArticlesRepository) GetByIdproprio(id string) (domain.Article, error) {
@@ -263,11 +262,14 @@ func (a ArangoArticlesRepository) GetArticleFromSentenceID(articleID ArticlesID)
 	return doc, nil
 }
 
-func ProvideArangoArticlesRepository() (ArticlesRepository, error) {
-	if arangoDb == nil {
+func ProvideArangoArticlesRepository(corpus string) (ArticlesRepository, error) {
+	if !config.GetConfig().IsAnExistingCorpus(corpus) {
+		return nil, fmt.Errorf("the corpus \"%v\"does not exist", corpus)
+	}
+	if _, ok := arangoDb[corpus]; !ok {
 		config := config.GetConfig()
 		conn, err := http.NewConnection(http.ConnectionConfig{
-			Endpoints: []string{config.ArangoPort},
+			Endpoints: []string{config.ArangoAddr},
 			// TLSConfig: &tls.Config{ /*...*/ },
 		})
 		if err != nil {
@@ -282,14 +284,13 @@ func ProvideArangoArticlesRepository() (ArticlesRepository, error) {
 		}
 
 		ctx := context.Background()
-		db, err := client.Database(ctx, config.ArangoDatabase)
+		db, err := client.Database(ctx, corpus)
 		if err != nil {
 			return nil, err
 		}
 
-		return ArangoArticlesRepository{database: db,
-			collection: config.ArangoArticleCollection}, nil
+		return ArangoArticlesRepository{database: db}, nil
 	}
-	return arangoDb, nil
+	return arangoDb[corpus], nil
 
 }

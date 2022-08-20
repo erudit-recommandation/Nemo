@@ -1,0 +1,13 @@
+{
+    "port": "8099",
+    "arango_addr": "http://localhost:8529",
+    "arango_password": "rootpassword",
+    "arango_username": "root",
+    "arango_database": [
+        {
+            "name": "erudit",
+            "corpus": "erudit"
+        }
+    ],
+    "text_analysis_service_addr": "http://localhost:8092"
+}

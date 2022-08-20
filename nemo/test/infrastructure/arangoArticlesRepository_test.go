@@ -9,16 +9,26 @@ import (
 
 func TestCasesArangoArticlesRepository(t *testing.T) {
 	env := config.EnvVariable{
-		ArangoPort:              "http://localhost:8529",
-		ArangoPassword:          "rootpassword",
-		ArangoUsername:          "root",
-		ArangoDatabase:          "erudit",
-		ArangoArticleCollection: "articles",
+		ArangoAddr:     "http://localhost:8529",
+		ArangoPassword: "rootpassword",
+		ArangoUsername: "root",
+		ArangoDatabase: []config.DatabaseCorpus{
+			{
+				Name:   "erudit",
+				Corpus: "erudit",
+			},
+		},
 	}
 
 	config.SetConfig(&env)
-	for _, testCase := range ProvideTestCaseArangoArticlesRepository() {
-		test, name := testCase(infrastructure.ProvideArangoArticlesRepository, t)
-		t.Run(name, test)
+	for _, ad := range env.ArangoDatabase {
+		f := func() (infrastructure.ArticlesRepository, error) {
+			return infrastructure.ProvideArangoArticlesRepository(ad.Corpus)
+		}
+		for _, testCase := range ProvideTestCaseArangoArticlesRepository() {
+			test, name := testCase(f, t)
+			t.Run(name, test)
+		}
 	}
+
 }

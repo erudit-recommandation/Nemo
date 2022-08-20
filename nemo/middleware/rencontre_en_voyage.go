@@ -18,6 +18,7 @@ import (
 func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 
 	return func(w http.ResponseWriter, req *http.Request) {
+		corpus := "erudit"
 		if err := req.ParseForm(); err != nil || req.FormValue("text") == "" {
 			err_msg := domain.NO_TEXT_SENDED_FOR_RECOMMANDATION
 			log.Println(err)
@@ -47,7 +48,7 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 				Error(w, req, http.StatusInternalServerError, err.Error())
 				return
 			}
-			repo, err := infrastructure.ProvideArangoArticlesRepository()
+			repo, err := infrastructure.ProvideArangoArticlesRepository(corpus)
 			if err != nil {
 				log.Println(err)
 				Error(w, req, http.StatusInternalServerError, err.Error())
@@ -129,7 +130,7 @@ func GetRencontreEnVoyageArticleFromCache(hasedQuery uint32) ([]domain.Article, 
 }
 
 func sendRequestToGemsimService(text string, n uint) (map[string]float64, error) {
-	gemsimAddr := fmt.Sprintf("%v/gensim", config.GetConfig().TEXT_ANALYSIS_SERVICE)
+	gemsimAddr := fmt.Sprintf("%v/gensim", config.GetConfig().TextAnalysisServiceAddr)
 	body := gemsimServiceRequest{
 		Text: text,
 		N:    n,

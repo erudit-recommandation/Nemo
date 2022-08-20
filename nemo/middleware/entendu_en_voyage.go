@@ -16,8 +16,9 @@ import (
 
 func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
+		corpus := "erudit"
 		CACHE_ENTENDU_EN_VOYAGE.ClearExpired()
-		repo, err := infrastructure.ProvideArangoArticlesRepository()
+		repo, err := infrastructure.ProvideArangoArticlesRepository(corpus)
 		if err != nil {
 			log.Println(err)
 			Error(w, req, http.StatusInternalServerError, err.Error())
@@ -95,9 +96,10 @@ func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 
 func EntenduEnVoyageCached(next httpHandlerFunc) httpHandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
+		corpus := "erudit"
 		CACHE_ENTENDU_EN_VOYAGE.ClearExpired()
 
-		repo, err := infrastructure.ProvideArangoArticlesRepository()
+		repo, err := infrastructure.ProvideArangoArticlesRepository(corpus)
 		if err != nil {
 			log.Println(err)
 			Error(w, req, http.StatusInternalServerError, err.Error())

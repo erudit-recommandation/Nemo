@@ -1,9 +1,9 @@
 package config
 
 import (
-	"os"
-
-	"github.com/joho/godotenv"
+	"encoding/json"
+	"io/ioutil"
+	"log"
 )
 
 var envVariable *EnvVariable = nil
@@ -11,11 +11,11 @@ var envVariable *EnvVariable = nil
 func GetConfig() EnvVariable {
 	switch CONFIG_MODE {
 	case PRODUCTION:
-		return GetEnvVariableFromPath(".env")
+		return GetEnvVariableFromPath("env.json")
 	case DEV_DOCKER:
-		return GetEnvVariableFromPath(".env_dev_docker")
+		return GetEnvVariableFromPath("env_dev_docker.json")
 	case DEV:
-		return GetEnvVariableFromPath(".env_dev")
+		return GetEnvVariableFromPath("env_dev.json")
 	}
 	return EnvVariable{}
 }
@@ -29,19 +29,19 @@ func ClearEnvVariable() {
 }
 
 func GetEnvVariableFromPath(path string) EnvVariable {
+
 	if envVariable == nil {
-		if err := godotenv.Load(path); err != nil {
-			panic("was not able to load config check the current path in relation to the .env file")
+		content, err := ioutil.ReadFile(path)
+		if err != nil {
+			log.Panicf("Error when opening file: %v", err)
 		}
-		return EnvVariable{
-			Port:                    os.Getenv("PORT"),
-			ArangoPort:              os.Getenv("ARANGO_PORT"),
-			ArangoPassword:          os.Getenv("ARANGO_PASSWORD"),
-			ArangoUsername:          os.Getenv("ARANGO_USERNAME"),
-			ArangoDatabase:          os.Getenv("ARANGO_DATABASE"),
-			ArangoArticleCollection: os.Getenv("ARANGO_ARTICLE_COLLECTION"),
-			TEXT_ANALYSIS_SERVICE:   os.Getenv("TEXT_ANALYSIS_SERVICE"),
+
+		var payload EnvVariable
+		err = json.Unmarshal(content, &payload)
+		if err != nil {
+			log.Panicf("Error during Unmarshal(): %v", err)
 		}
+		return payload
 	}
 	return *envVariable
 }
