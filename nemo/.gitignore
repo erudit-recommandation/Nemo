@@ -1,5 +1,5 @@
 build
-.env
+env.json
 static/images/persona/*
 !static/images/persona/.gitkeep
 
