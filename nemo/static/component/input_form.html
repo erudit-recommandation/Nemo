@@ -18,8 +18,17 @@
     </div>
     <div class="search-bar-container">
         <textarea name="text" class="search-bar" spellcheck="true">{{.Query}}</textarea>
-        {{if .Page.IsEntenduEnVoyage}}
+        {{if or .Page.IsEntenduEnVoyage .Page.IsAccosteEnVoyage}}
         <p>Nombre de résultats: {{.NResult}}</p>
+        {{end}}
+
+        {{if .Page.IsAccosteEnVoyage}}
+        <p>Articles similaires à: <a href={{.HostArticle.Url}} target="_blank" rel="noopener noreferrer" title={{.HostArticle.Title}}
+                class="result-title">{{.HostArticle.Title}}</a>
+
+            <span class="description smaller-text">(<span style="font-style:{{.HostArticleAuthorStyle}};">{{.HostArticle.Author}}</span>,
+                {{.HostArticle.Year}}, {{.HostArticle.Journal}})</span>
+        </p>
         {{end}}
     </div>
 

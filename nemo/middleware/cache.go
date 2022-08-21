@@ -3,6 +3,7 @@ package middleware
 import (
 	"errors"
 	"fmt"
+	"hash/fnv"
 	"log"
 	"math"
 	"os"
@@ -107,4 +108,27 @@ func createPersonaSVG(articles []domain.Article, hasedQuery uint32) error {
 	}
 
 	return nil
+}
+
+func GetArticleFromCache(hasedQuery uint32, limit uint, currentCache *cache) ([]domain.Article, error) {
+	resp := make([]domain.Article, 0, limit)
+	cacheValue := (*currentCache)[hasedQuery]
+
+	articles, err := cacheValue.GetPage(0)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for _, a := range articles {
+		resp = append(resp, a.(domain.Article))
+	}
+
+	return resp, nil
+}
+
+func hash(s string, corpus string) uint32 {
+	h := fnv.New32a()
+	h.Write([]byte(s + "_" + corpus))
+	return h.Sum32()
 }

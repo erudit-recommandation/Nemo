@@ -3,7 +3,6 @@ package middleware
 import (
 	"bytes"
 	"encoding/json"
-	"hash/fnv"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -41,12 +40,12 @@ func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 		var resp []domain.Article
 		var nFound int
 		var lastPage uint
-		hasedQuery := hash(query)
+		hashedQuery := hash(query, corpus)
 
-		if r, ok := CACHE_ENTENDU_EN_VOYAGE[hasedQuery]; ok {
+		if r, ok := CACHE_ENTENDU_EN_VOYAGE[hashedQuery]; ok {
 			lastPage = uint(r.NumberOfPage())
 			nFound = len(r.Elements)
-			articles, errorCode, err := GetEntenduEnvoyageArticleFromCache(repo, hasedQuery, uint(page))
+			articles, errorCode, err := GetEntenduEnvoyageArticleFromCache(repo, hashedQuery, uint(page))
 			resp = articles
 			if err != nil {
 				log.Println(err)
@@ -68,10 +67,10 @@ func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 				for i, v := range ids {
 					anyIds[i] = v
 				}
-				CACHE_ENTENDU_EN_VOYAGE[hasedQuery] = newCacheElement(query, hasedQuery, anyIds, MAX_PAGE_ENTENDU_EN_VOYAGE)
+				CACHE_ENTENDU_EN_VOYAGE[hashedQuery] = newCacheElement(query, hashedQuery, anyIds, MAX_BY_PAGE_ENTENDU_EN_VOYAGE)
 
-				articles, errorCode, err := GetEntenduEnvoyageArticleFromCache(repo, hasedQuery, 0)
-				lastPage = uint(CACHE_ENTENDU_EN_VOYAGE[hasedQuery].NumberOfPage())
+				articles, errorCode, err := GetEntenduEnvoyageArticleFromCache(repo, hashedQuery, 0)
+				lastPage = uint(CACHE_ENTENDU_EN_VOYAGE[hashedQuery].NumberOfPage())
 				resp = articles
 				if err != nil {
 					log.Println(err)
@@ -82,7 +81,8 @@ func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 
 		}
 
-		j, err := json.Marshal(ResultResponse{Data: resp, Query: query, N: nFound, Page: uint(page), LastPage: lastPage, HashedQuery: hasedQuery})
+		j, err := json.Marshal(ResultResponse{Data: resp, Query: query,
+			N: nFound, Page: uint(page), LastPage: lastPage, HashedQuery: hashedQuery, Corpus: corpus})
 
 		if err != nil {
 			log.Println(err)
@@ -148,7 +148,7 @@ func EntenduEnVoyageCached(next httpHandlerFunc) httpHandlerFunc {
 			return
 		}
 
-		j, err := json.Marshal(ResultResponse{Data: resp, Query: r.Query, N: nFound, Page: uint(page), LastPage: lastPage, HashedQuery: uint32(hasedQuery)})
+		j, err := json.Marshal(ResultResponse{Data: resp, Query: r.Query, N: nFound, Page: uint(page), LastPage: lastPage, HashedQuery: uint32(hasedQuery), Corpus: corpus})
 
 		if err != nil {
 			log.Println(err)
@@ -163,7 +163,7 @@ func EntenduEnVoyageCached(next httpHandlerFunc) httpHandlerFunc {
 
 func GetEntenduEnvoyageArticleFromCache(repo infrastructure.ArticlesRepository, hasedQuery uint32, page uint) ([]domain.Article, int, error) {
 
-	resp := make([]domain.Article, 0, MAX_PAGE_ENTENDU_EN_VOYAGE)
+	resp := make([]domain.Article, 0, MAX_BY_PAGE_ENTENDU_EN_VOYAGE)
 	el := CACHE_ENTENDU_EN_VOYAGE[hasedQuery]
 	pageIds, err := el.GetPage(page)
 
@@ -188,10 +188,4 @@ func GetEntenduEnvoyageArticleFromCache(repo infrastructure.ArticlesRepository, 
 		return resp, http.StatusInternalServerError, err
 	}
 	return resp, http.StatusOK, nil
-}
-
-func hash(s string) uint32 {
-	h := fnv.New32a()
-	h.Write([]byte(s))
-	return h.Sum32()
 }

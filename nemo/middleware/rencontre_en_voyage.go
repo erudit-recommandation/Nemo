@@ -29,12 +29,12 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 
 		query := req.FormValue("text")
 		log.Printf("-- Rencontré en voyage Query: %v --\n", query)
-		hasedQuery := hash(query)
+		hashedQuery := hash(query, corpus)
 
 		var articles []domain.Article
 
-		if _, ok := CACHE_RENCONTRE_EN_VOYAGE[hasedQuery]; ok {
-			resp, err := GetRencontreEnVoyageArticleFromCache(hasedQuery)
+		if _, ok := CACHE_RENCONTRE_EN_VOYAGE[hashedQuery]; ok {
+			resp, err := GetArticleFromCache(hashedQuery, LIMIT_RENCONTRE_EN_VOYAGE, &CACHE_RENCONTRE_EN_VOYAGE)
 			articles = resp
 			if err != nil {
 				log.Println(err)
@@ -89,9 +89,9 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 			for i, v := range articles {
 				anyArticles[i] = v
 			}
-			CACHE_RENCONTRE_EN_VOYAGE[hasedQuery] = newCacheElement(query, hasedQuery, anyArticles, LIMIT_RENCONTRE_EN_VOYAGE)
+			CACHE_RENCONTRE_EN_VOYAGE[hashedQuery] = newCacheElement(query, hashedQuery, anyArticles, LIMIT_RENCONTRE_EN_VOYAGE)
 
-			if err := createPersonaSVG(articles, hasedQuery); err != nil {
+			if err := createPersonaSVG(articles, hashedQuery); err != nil {
 				log.Println(err)
 				Error(w, req, http.StatusInternalServerError, "Il n'y aucun resultat contacter le mainteneur")
 				return
@@ -99,7 +99,7 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 
 		}
 
-		j, err := json.Marshal(ResultResponse{Data: articles, Query: query, HashedQuery: hasedQuery})
+		j, err := json.Marshal(ResultResponse{Data: articles, Query: query, HashedQuery: hashedQuery, Corpus: corpus})
 
 		if err != nil {
 			log.Println(err)
@@ -110,23 +110,6 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 
 		next(w, req)
 	}
-}
-
-func GetRencontreEnVoyageArticleFromCache(hasedQuery uint32) ([]domain.Article, error) {
-	resp := make([]domain.Article, 0, LIMIT_RENCONTRE_EN_VOYAGE)
-	cacheValue := CACHE_RENCONTRE_EN_VOYAGE[hasedQuery]
-
-	articles, err := cacheValue.GetPage(0)
-
-	if err != nil {
-		return nil, err
-	}
-
-	for _, a := range articles {
-		resp = append(resp, a.(domain.Article))
-	}
-
-	return resp, nil
 }
 
 func sendRequestToGemsimService(text string, n uint) (map[string]float64, error) {

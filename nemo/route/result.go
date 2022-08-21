@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"text/template"
 
 	"github.com/erudit-recommandation/search-engine-webapp/domain"
@@ -54,15 +55,23 @@ func Result(w http.ResponseWriter, r *http.Request) {
 			Article:          a,
 			PersonaImageLink: personaImageLink,
 			AuthorStyle:      authorStyle,
+			Corpus:           resp.Corpus,
 		}
 
 	}
+	hostArticleAuthorStyle := "none"
+	if resp.HostArticle.Author == "" {
+		hostArticleAuthorStyle = "italic"
+	}
 	result_info := ResultInfo{
-		Results:     articleHashedQuery,
-		Query:       resp.Query,
-		Page:        page,
-		NResult:     p.Sprintf("%d\n", resp.N),
-		HashedQuery: fmt.Sprintf("%v", resp.HashedQuery),
+		Results:                articleHashedQuery,
+		Query:                  resp.Query,
+		Page:                   page,
+		NResult:                p.Sprintf("%d\n", resp.N),
+		HashedQuery:            fmt.Sprintf("%v", resp.HashedQuery),
+		Corpus:                 resp.Corpus,
+		HostArticle:            resp.HostArticle,
+		HostArticleAuthorStyle: hostArticleAuthorStyle,
 	}
 	err = tmpl.Execute(w, result_info)
 	if err != nil {
@@ -76,27 +85,26 @@ func managePageType(r *http.Request, resp *middleware.ResultResponse) Page {
 	if r.URL.Path == RENCONTRE_EN_VOYAGE {
 		pageType = Page{
 			ResultSectionClass:  "result-grid",
-			IsEntenduEnVoyage:   false,
 			IsRencontreEnVoyage: true,
+		}
+	} else if strings.Contains(r.URL.Path, ACCOSTE_EN_VOYAGE_ROOT) {
+		pageType = Page{
+			ResultSectionClass: "result-grid",
+			IsAccosteEnVoyage:  true,
 		}
 	} else {
 
 		pageType = Page{
-			ResultSectionClass:  "",
-			IsEntenduEnVoyage:   true,
-			IsRencontreEnVoyage: false,
+			ResultSectionClass: "",
+			IsEntenduEnVoyage:  true,
 		}
 
-		if resp.Page == 0 {
-			pageType.HasPreviousPage = false
-		} else {
+		if resp.Page != 0 {
 			pageType.HasPreviousPage = true
 			pageType.PreviousPage = fmt.Sprintf("%v/%v?page=%v", ENTENDU_EN_VOYAGE, resp.HashedQuery, resp.Page-1)
 		}
 
-		if resp.Page == resp.LastPage {
-			pageType.HasNextPage = false
-		} else {
+		if resp.Page != resp.LastPage {
 			pageType.HasNextPage = true
 			pageType.NextPage = fmt.Sprintf("%v/%v?page=%v", ENTENDU_EN_VOYAGE, resp.HashedQuery, resp.Page+1)
 		}
@@ -106,23 +114,28 @@ func managePageType(r *http.Request, resp *middleware.ResultResponse) Page {
 }
 
 type ResultInfo struct {
-	Results     []ArticleHashedQuery
-	Query       string
-	HashedQuery string
-	Page        Page
-	NResult     string
+	Results                []ArticleHashedQuery
+	Query                  string
+	HashedQuery            string
+	Page                   Page
+	NResult                string
+	Corpus                 string
+	HostArticle            domain.Article
+	HostArticleAuthorStyle string
 }
 
 type ArticleHashedQuery struct {
 	domain.Article
 	PersonaImageLink string
 	AuthorStyle      string
+	Corpus           string
 }
 
 type Page struct {
 	ResultSectionClass  string
 	IsEntenduEnVoyage   bool
 	IsRencontreEnVoyage bool
+	IsAccosteEnVoyage   bool
 
 	CurrentPage  string
 	NextPage     string

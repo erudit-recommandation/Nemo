@@ -16,11 +16,11 @@
 <body>
     {{template "header" .}}
     <div class="results-section {{.Page.ResultSectionClass}}">
-        {{if .Page.IsRencontreEnVoyage}}
+        {{if or (.Page.IsRencontreEnVoyage) (.Page.IsAccosteEnVoyage)}}
         {{range $el:=.Results}}
         {{template "element_with_persona" $el}}
         {{end}}
-        {{else}}
+        {{else if .Page.IsEntenduEnVoyage}}
         {{range $el:=.Results}}
         {{template "element_with_description" $el}}
         {{end}}

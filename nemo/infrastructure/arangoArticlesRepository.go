@@ -3,6 +3,7 @@ package infrastructure
 import (
 	"context"
 	"fmt"
+	"math"
 	"math/rand"
 	"reflect"
 	"sort"
@@ -25,10 +26,17 @@ func (a ArangoArticlesRepository) GetByIdproprio(id string) (domain.Article, err
 	ctx, cancel := context.WithTimeout(context.Background(), QUERY_MAXIMUM_DURATION)
 	defer cancel()
 
-	query := fmt.Sprintf(`FOR c IN articles
-    						FILTER c.idproprio == "%v"
+	query := fmt.Sprintf(`FOR a IN articles
+    						FILTER a.idproprio == "%v"
     						LIMIT 1
-    						RETURN c`,
+    						RETURN {
+								title:a.title,
+								annee:a.annee,
+								author:a.author,
+								idproprio:a.idproprio,
+								titrerev:a.titrerev,
+								persona_svg: a.persona_svg
+						}`,
 		id)
 	cursor, err := a.database.Query(ctx, query, nil)
 	if err != nil {
@@ -57,7 +65,8 @@ func (a ArangoArticlesRepository) GetByIdPandas(id int) (domain.Article, error) 
 	query := fmt.Sprintf(`FOR a IN articles
     						FILTER a.pandas_index == %v
     						LIMIT 1
-    						RETURN {title:a.title,
+    						RETURN {
+								title:a.title,
 								annee:a.annee,
 								author:a.author,
 								idproprio:a.idproprio,
@@ -237,7 +246,8 @@ func (a ArangoArticlesRepository) GetArticleFromSentenceID(articleID ArticlesID)
                 current_sentence:current[0],
                 previous_sentence: prev[0],
                 next_sentence: next[0],
-				persona_svg: a.persona_svg
+				persona_svg: a.persona_svg,
+				bmu:a.bmu
         }
 	`,
 		articleID.NSentence, articleID.ID)
@@ -267,11 +277,12 @@ func (a ArangoArticlesRepository) GetNeighbouringArticlesByBMU(bmu int, limit ui
 	ctx, cancel := context.WithTimeout(context.Background(), QUERY_MAXIMUM_DURATION)
 	defer cancel()
 	query := fmt.Sprintf(`
-	LET bmu =  %v
+	LET bmu = %v
 	FOR a IN articles
 		FILTER a.bmu==bmu OR a.bmu==bmu+1 OR a.bmu==bmu-1
 		LIMIT %v
 		RETURN {
+			title:a.title,
 			annee:a.annee,
 			author:a.author,
 			idproprio:a.idproprio,
@@ -300,7 +311,7 @@ func (a ArangoArticlesRepository) GetNeighbouringArticlesByBMU(bmu int, limit ui
 		resp = append(resp, doc)
 	}
 	sort.SliceStable(resp, func(i, j int) bool {
-		return resp[i].Bmu-bmu < resp[j].Bmu-bmu
+		return math.Abs(float64(resp[i].Bmu-bmu)) < math.Abs(float64(resp[j].Bmu-bmu))
 	})
 	return resp, nil
 }

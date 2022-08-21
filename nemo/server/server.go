@@ -32,6 +32,8 @@ func setRoute(r *mux.Router) {
 
 	r.HandleFunc(route.RENCONTRE_EN_VOYAGE, middleware.RencontreEnVoyage(route.Result)).Methods("POST")
 
+	r.HandleFunc(route.ACCOSTE_EN_VOYAGE, middleware.AccosteEnVoyage(route.Result)).Methods("GET")
+
 	r.HandleFunc(route.CLEF_CANONIQUE, func(w http.ResponseWriter, r *http.Request) {
 		middleware.Error(w, r, 501, "Service à venir!")
 	}).Methods("POST")

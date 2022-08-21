@@ -135,8 +135,8 @@ a:hover {
 }
 
 .result-element-persona {
-  width: 17vw;
-  height: 17vw;
+  width: 13vw;
+  height: 13vw;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -145,9 +145,11 @@ a:hover {
 
 .result-grid {
   display: grid;
-  grid-template-columns: repeat(4, 22%);
+  grid-template-columns: repeat(4, auto);
   row-gap: 30px;
   width: 60vw;
+  justify-items: end;
+  justify-content: space-between;
 }
 
 .result-element-persona a {
@@ -184,6 +186,14 @@ a:hover {
   justify-items: center;
 }
 
-.search-bar-container{
+.search-bar-container {
   width: 100%;
+}
+.accoste_en_voyage {
+  opacity: 0;
+  height: 100%;
+}
+.smaller-text span,
+.smaller-text{
+  font-size: 0.9em;
 }

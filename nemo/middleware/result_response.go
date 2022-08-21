@@ -9,4 +9,6 @@ type ResultResponse struct {
 	N           int              `json:"n"`
 	Page        uint             `json:"page"`
 	LastPage    uint             `json:"last_page"`
+	HostArticle domain.Article   `json:"host_article"`
+	Corpus      string           `json:"corpus"`
 }

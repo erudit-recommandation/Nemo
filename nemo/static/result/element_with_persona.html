@@ -1,7 +1,10 @@
 {{define "element_with_persona"}}
 <div class="result-element-persona" id="id-{{.ID}}">
-    <a href={{.Url}} target="_blank" rel="noopener noreferrer" title={{.Title}} class="result-title">{{.Title}}</a>
-    <span class="description">(<span style="font-style:{{.AuthorStyle}};">{{.Author}}</span>, {{.Year}}, {{.Journal}})</span>
+    <a href={{.Url}} target="_blank" rel="noopener noreferrer" title={{.Title}} class="result-title smaller-text">{{.Title}}</a>
+    <span class="description smaller-text">(<span style="font-style:{{.AuthorStyle}};">{{.Author}}</span>, {{.Year}}, {{.Journal}})</span>
+    <a class="accoste_en_voyage" href="/accoste_en_voyage/{{.Corpus}}/{{.ID}}">
+    LINK
+    </a>
 </div>
 
 
