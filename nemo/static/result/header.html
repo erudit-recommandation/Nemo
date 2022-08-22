@@ -4,9 +4,9 @@
         <a href="/" id="name">Nemo</a>
         <span id="visite">visite</span>
         <select form="input-form" name="corpus">
-            <option value="{{.Corpus}}" selected>{{.Corpus}}</option>
-            {{range $el:=.AllCorpus}}
-            <option value="{{$el}}">{{$el}}</option>
+            <option value="{{.Corpus.Corpus}}" selected>{{.Corpus.Name}}</option>
+            {{range $el:=.ResofTheCorpus}}
+            <option value="{{$el.Corpus}}">{{$el.Name}}</option>
             {{end}}
         </select>
         <span id="corpus"></span>

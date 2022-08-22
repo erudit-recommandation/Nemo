@@ -3,12 +3,12 @@ package route
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 	"text/template"
 
 	"github.com/erudit-recommandation/search-engine-webapp/config"
-	"github.com/erudit-recommandation/search-engine-webapp/domain"
 	"github.com/erudit-recommandation/search-engine-webapp/middleware"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
@@ -64,16 +64,22 @@ func Result(w http.ResponseWriter, r *http.Request) {
 	if resp.HostArticle.Author == "" {
 		hostArticleAuthorStyle = "italic"
 	}
+
+	corpus, err := config.GetConfig().GetDatabaseCorpus(resp.Corpus)
+	if err != nil {
+		log.Println(err)
+		middleware.Error(w, r, 500, err.Error())
+	}
 	result_info := ResultInfo{
 		Results:                articleHashedQuery,
 		Query:                  resp.Query,
 		Page:                   page,
 		NResult:                p.Sprintf("%d\n", resp.N),
 		HashedQuery:            fmt.Sprintf("%v", resp.HashedQuery),
-		Corpus:                 resp.Corpus,
+		Corpus:                 corpus,
 		HostArticle:            resp.HostArticle,
 		HostArticleAuthorStyle: hostArticleAuthorStyle,
-		AllCorpus:              config.GetConfig().GetCorpusNames()[1:],
+		ResofTheCorpus:         config.GetConfig().ArangoDatabase[1:],
 	}
 	err = tmpl.Execute(w, result_info)
 	if err != nil {
@@ -113,37 +119,4 @@ func managePageType(r *http.Request, resp *middleware.ResultResponse) Page {
 	}
 
 	return pageType
-}
-
-type ResultInfo struct {
-	Results                []ArticleHashedQuery
-	Query                  string
-	HashedQuery            string
-	Page                   Page
-	NResult                string
-	Corpus                 string
-	HostArticle            domain.Article
-	HostArticleAuthorStyle string
-	AllCorpus              []string
-}
-
-type ArticleHashedQuery struct {
-	domain.Article
-	PersonaImageLink string
-	AuthorStyle      string
-	Corpus           string
-}
-
-type Page struct {
-	ResultSectionClass  string
-	IsEntenduEnVoyage   bool
-	IsRencontreEnVoyage bool
-	IsAccosteEnVoyage   bool
-
-	CurrentPage  string
-	NextPage     string
-	PreviousPage string
-
-	HasNextPage     bool
-	HasPreviousPage bool
 }

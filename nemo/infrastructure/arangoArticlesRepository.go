@@ -35,7 +35,8 @@ func (a ArangoArticlesRepository) GetByIdproprio(id string) (domain.Article, err
 								author:a.author,
 								idproprio:a.idproprio,
 								titrerev:a.titrerev,
-								persona_svg: a.persona_svg
+								persona_svg: a.persona_svg,
+								bmu:a.bmu
 						}`,
 		id)
 	cursor, err := a.database.Query(ctx, query, nil)

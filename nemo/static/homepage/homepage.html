@@ -19,9 +19,9 @@
             <span id="name">Nemo</span>
             <span id="visite">visite</span>
             <select form="input-form" name="corpus">
-                <option value="{{.DefaultCorpus}}" selected>{{.DefaultCorpus}}</option>
-                {{range $el:=.AllCorpus}}
-                <option value="{{$el}}">{{$el}}</option>
+                <option value="{{.Corpus.Corpus}}" selected>{{.Corpus.Name}}</option>
+                {{range $el:=.ResofTheCorpus}}
+                <option value="{{$el.Corpus}}">{{$el.Name}}</option>
                 {{end}}
             </select>
             <span class="corpus" form="input-form"></span>
@@ -34,5 +34,6 @@
         <a id="remerciements" href="/remerciements">— remerciements —</a>
     </div>
 </body>
+<script src="/static/js/interactif_button.js"></script>
 
 </html>

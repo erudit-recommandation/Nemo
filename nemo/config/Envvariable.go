@@ -1,5 +1,7 @@
 package config
 
+import "fmt"
+
 type EnvVariable struct {
 	Port                    string           `json:"port"`
 	ArangoAddr              string           `json:"arango_addr"`
@@ -18,12 +20,13 @@ func (e EnvVariable) IsAnExistingCorpus(corpus string) bool {
 	return false
 }
 
-func (e EnvVariable) GetCorpusNames() []string {
-	var names []string = make([]string, len(e.ArangoDatabase))
-	for i, corpus := range e.ArangoDatabase {
-		names[i] = corpus.Name
+func (e EnvVariable) GetDatabaseCorpus(name string) (DatabaseCorpus, error) {
+	for _, corpus := range e.ArangoDatabase {
+		if corpus.Name == name {
+			return corpus, nil
+		}
 	}
-	return names
+	return DatabaseCorpus{}, fmt.Errorf("le corpus n'existe pas")
 }
 
 type DatabaseCorpus struct {

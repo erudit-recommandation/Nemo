@@ -19,6 +19,8 @@ func AccosteEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 		idproprio := vars["idproprio"]
 		hashedQuery := hash(idproprio, corpus)
 
+		log.Printf("-- Accosté en voyage Query: %v --\n", idproprio)
+
 		var nFound int
 		var articles []domain.Article
 		repo, err := infrastructure.ProvideArangoArticlesRepository(corpus)
