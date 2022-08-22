@@ -18,6 +18,14 @@ func (e EnvVariable) IsAnExistingCorpus(corpus string) bool {
 	return false
 }
 
+func (e EnvVariable) GetCorpusNames() []string {
+	var names []string = make([]string, len(e.ArangoDatabase))
+	for i, corpus := range e.ArangoDatabase {
+		names[i] = corpus.Name
+	}
+	return names
+}
+
 type DatabaseCorpus struct {
 	Name   string `json:"name"`
 	Corpus string `json:"corpus"`

@@ -7,6 +7,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/erudit-recommandation/search-engine-webapp/config"
 	"github.com/erudit-recommandation/search-engine-webapp/domain"
 	"github.com/erudit-recommandation/search-engine-webapp/middleware"
 	"golang.org/x/text/language"
@@ -72,6 +73,7 @@ func Result(w http.ResponseWriter, r *http.Request) {
 		Corpus:                 resp.Corpus,
 		HostArticle:            resp.HostArticle,
 		HostArticleAuthorStyle: hostArticleAuthorStyle,
+		AllCorpus:              config.GetConfig().GetCorpusNames()[1:],
 	}
 	err = tmpl.Execute(w, result_info)
 	if err != nil {
@@ -122,6 +124,7 @@ type ResultInfo struct {
 	Corpus                 string
 	HostArticle            domain.Article
 	HostArticleAuthorStyle string
+	AllCorpus              []string
 }
 
 type ArticleHashedQuery struct {

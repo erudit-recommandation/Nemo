@@ -1,9 +1,15 @@
 {{define "header"}}
 <div class="mini-search">
     <div class="information">
-        <a href="./.." id="name">Nemo</a>
+        <a href="/" id="name">Nemo</a>
         <span id="visite">visite</span>
-        <span id="corpus">Érudit</span>
+        <select form="input-form" name="corpus">
+            <option value="{{.Corpus}}" selected>{{.Corpus}}</option>
+            {{range $el:=.AllCorpus}}
+            <option value="{{$el}}">{{$el}}</option>
+            {{end}}
+        </select>
+        <span id="corpus"></span>
     </div>
 
     {{template "search-input" .}}

@@ -6,9 +6,6 @@ import (
 	"github.com/Pallinder/go-randomdata"
 )
 
-var N_RELATED_TEXT_SENTENCE int = 2
-var MIN_SENTENCE_RELATED_SIZE int = 15
-
 type Article struct {
 	Title            string `json:"title"`
 	Url              string

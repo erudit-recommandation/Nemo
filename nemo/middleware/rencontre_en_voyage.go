@@ -42,7 +42,7 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 				return
 			}
 		} else {
-			recommandation, err := sendRequestToGemsimService(query, LIMIT_RENCONTRE_EN_VOYAGE)
+			recommandation, err := sendRequestToGemsimService(query, LIMIT_RENCONTRE_EN_VOYAGE, corpus)
 			if err != nil {
 				log.Println(err)
 				Error(w, req, http.StatusInternalServerError, err.Error())
@@ -112,11 +112,12 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 	}
 }
 
-func sendRequestToGemsimService(text string, n uint) (map[string]float64, error) {
+func sendRequestToGemsimService(text string, n uint, corpus string) (map[string]float64, error) {
 	gemsimAddr := fmt.Sprintf("%v/gensim", config.GetConfig().TextAnalysisServiceAddr)
 	body := gemsimServiceRequest{
-		Text: text,
-		N:    n,
+		Text:   text,
+		N:      n,
+		Corpus: corpus,
 	}
 
 	jsonData, err := json.Marshal(body)

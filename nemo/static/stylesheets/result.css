@@ -197,3 +197,7 @@ a:hover {
 .smaller-text{
   font-size: 0.9em;
 }
+
+select{
+  width: 50%;
+}

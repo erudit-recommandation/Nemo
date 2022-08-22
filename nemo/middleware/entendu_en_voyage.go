@@ -15,16 +15,10 @@ import (
 
 func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		corpus := "erudit"
-		CACHE_ENTENDU_EN_VOYAGE.ClearExpired()
-		repo, err := infrastructure.ProvideArangoArticlesRepository(corpus)
-		if err != nil {
-			log.Println(err)
-			Error(w, req, http.StatusInternalServerError, err.Error())
-			return
-		}
 
-		if err := req.ParseForm(); err != nil || req.FormValue("text") == "" {
+		CACHE_ENTENDU_EN_VOYAGE.ClearExpired()
+
+		if err := req.ParseForm(); err != nil || (req.FormValue("text") == "" && req.FormValue("corpus") == "") {
 			err_msg := domain.NO_TEXT_SENDED_FOR_RECOMMANDATION
 			log.Println(err)
 			Error(w, req, http.StatusBadRequest, err_msg)
@@ -32,6 +26,13 @@ func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 		}
 
 		query := req.FormValue("text")
+		corpus := req.FormValue("corpus")
+		repo, err := infrastructure.ProvideArangoArticlesRepository(corpus)
+		if err != nil {
+			log.Println(err)
+			Error(w, req, http.StatusInternalServerError, err.Error())
+			return
+		}
 
 		page := 0
 

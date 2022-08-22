@@ -34,11 +34,12 @@ a {
   font-size: 1.2em;
 }
 
-#corpus {
+.corpus {
   font-size: 3em;
+  text-transform: uppercase;
 }
 
-#corpus:hover {
+.corpus:hover {
   text-decoration: underline;
 }
 
@@ -61,4 +62,9 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+select {
+  margin-bottom: 10px;
+  margin-top: 10px;
 }

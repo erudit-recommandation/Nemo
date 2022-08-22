@@ -18,7 +18,13 @@
         <div class="title">
             <span id="name">Nemo</span>
             <span id="visite">visite</span>
-            <span id="corpus" form="input-form">ÉRUDIT</span>
+            <select form="input-form" name="corpus">
+                <option value="{{.DefaultCorpus}}" selected>{{.DefaultCorpus}}</option>
+                {{range $el:=.AllCorpus}}
+                <option value="{{$el}}">{{$el}}</option>
+                {{end}}
+            </select>
+            <span class="corpus" form="input-form"></span>
         </div>
         {{template "search-input" .}}
     </div>
