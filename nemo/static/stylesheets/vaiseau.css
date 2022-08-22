@@ -33,7 +33,7 @@ body {
 
 .main {
   display: grid;
-  grid-template-columns: repeat(3, 33%);
+  grid-template-columns: repeat(4, 25%);
   align-content: center;
 }
 
@@ -44,7 +44,8 @@ body {
 
 .entendu_en_voyage,
 .rencontre_en_voyage,
-.clef_canonique {
+.clef_canonique,
+.accoster_en_voyage {
   display: flex;
   flex-direction: column;
   align-content: center;
