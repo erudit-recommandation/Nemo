@@ -20,13 +20,25 @@ func (e EnvVariable) IsAnExistingCorpus(corpus string) bool {
 	return false
 }
 
-func (e EnvVariable) GetDatabaseCorpus(name string) (DatabaseCorpus, error) {
+func (e EnvVariable) GetDatabaseCorpus(corpusName string) (DatabaseCorpus, error) {
 	for _, corpus := range e.ArangoDatabase {
-		if corpus.Name == name {
+		if corpus.Corpus == corpusName {
 			return corpus, nil
 		}
 	}
 	return DatabaseCorpus{}, fmt.Errorf("le corpus n'existe pas")
+}
+
+func (e EnvVariable) GetDatabaseCorpusExcept(corpusName string) []DatabaseCorpus {
+	resp := make([]DatabaseCorpus, 0, len(e.ArangoDatabase))
+	for _, corpus := range e.ArangoDatabase {
+		if corpus.Name != corpusName {
+			resp = append(resp, corpus)
+
+		}
+
+	}
+	return resp
 }
 
 type DatabaseCorpus struct {

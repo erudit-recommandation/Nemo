@@ -46,44 +46,36 @@ func Result(w http.ResponseWriter, r *http.Request) {
 		} else {
 			personaImageLink = fmt.Sprintf("/static/images/persona/%v/%v.svg", resp.HashedQuery, a.ID)
 		}
-		authorStyle := "none"
-		if a.Author == "" {
-			a.Author = "Auteur indisponible"
-			authorStyle = "italic"
-		}
+		a.BuildUrl(resp.Corpus)
 
 		articleHashedQuery[i] = ArticleHashedQuery{
 			Article:          a,
 			PersonaImageLink: personaImageLink,
-			AuthorStyle:      authorStyle,
 			Corpus:           resp.Corpus,
 		}
 
-	}
-	hostArticleAuthorStyle := "none"
-	if resp.HostArticle.Author == "" {
-		hostArticleAuthorStyle = "italic"
 	}
 
 	corpus, err := config.GetConfig().GetDatabaseCorpus(resp.Corpus)
 	if err != nil {
 		log.Println(err)
-		middleware.Error(w, r, 500, err.Error())
+		middleware.Error(w, r, http.StatusInternalServerError, err.Error())
+		return
 	}
 	result_info := ResultInfo{
-		Results:                articleHashedQuery,
-		Query:                  resp.Query,
-		Page:                   page,
-		NResult:                p.Sprintf("%d\n", resp.N),
-		HashedQuery:            fmt.Sprintf("%v", resp.HashedQuery),
-		Corpus:                 corpus,
-		HostArticle:            resp.HostArticle,
-		HostArticleAuthorStyle: hostArticleAuthorStyle,
-		ResofTheCorpus:         config.GetConfig().ArangoDatabase[1:],
+		Results:        articleHashedQuery,
+		Query:          resp.Query,
+		Page:           page,
+		NResult:        p.Sprintf("%d\n", resp.N),
+		HashedQuery:    fmt.Sprintf("%v", resp.HashedQuery),
+		Corpus:         corpus,
+		HostArticle:    resp.HostArticle,
+		ResofTheCorpus: config.GetConfig().GetDatabaseCorpusExcept(corpus.Name),
 	}
 	err = tmpl.Execute(w, result_info)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Println(err)
+		middleware.Error(w, r, http.StatusInternalServerError, err.Error())
 		return
 	}
 }
@@ -109,12 +101,12 @@ func managePageType(r *http.Request, resp *middleware.ResultResponse) Page {
 
 		if resp.Page != 0 {
 			pageType.HasPreviousPage = true
-			pageType.PreviousPage = fmt.Sprintf("%v/%v?page=%v", ENTENDU_EN_VOYAGE, resp.HashedQuery, resp.Page-1)
+			pageType.PreviousPage = fmt.Sprintf("%v/%v?page=%v&corpus=%v", ENTENDU_EN_VOYAGE, resp.HashedQuery, resp.Page-1, resp.Corpus)
 		}
 
 		if resp.Page != resp.LastPage {
 			pageType.HasNextPage = true
-			pageType.NextPage = fmt.Sprintf("%v/%v?page=%v", ENTENDU_EN_VOYAGE, resp.HashedQuery, resp.Page+1)
+			pageType.NextPage = fmt.Sprintf("%v/%v?page=%v&corpus=%v", ENTENDU_EN_VOYAGE, resp.HashedQuery, resp.Page+1, resp.Corpus)
 		}
 	}
 

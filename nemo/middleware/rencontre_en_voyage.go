@@ -18,8 +18,7 @@ import (
 func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 
 	return func(w http.ResponseWriter, req *http.Request) {
-		corpus := "erudit"
-		if err := req.ParseForm(); err != nil || req.FormValue("text") == "" {
+		if err := req.ParseForm(); err != nil || req.FormValue("text") == "" && req.FormValue("corpus") == "" {
 			err_msg := domain.NO_TEXT_SENDED_FOR_RECOMMANDATION
 			log.Println(err)
 
@@ -28,7 +27,8 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 		}
 
 		query := req.FormValue("text")
-		log.Printf("-- Rencontré en voyage Query: %v --\n", query)
+		corpus := req.FormValue("corpus")
+		log.Printf("-- Rencontré en voyage Query avec le corpus %v: %v --\n", corpus, query)
 		hashedQuery := hash(query, corpus)
 
 		var articles []domain.Article
@@ -69,6 +69,8 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 					articlesParsed = append(articlesParsed, articleScore{Article: article, Score: v})
 					sort.Slice(articlesParsed, func(i, j int) bool { return articlesParsed[i].Score > articlesParsed[j].Score })
 
+				} else {
+					log.Printf("not fatal error %v", err)
 				}
 
 			}
@@ -81,7 +83,7 @@ func RencontreEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 
 			if len(articles) == 0 {
 				log.Println(err)
-				Error(w, req, http.StatusInternalServerError, "Il n'y aucun resultat contacter le mainteneur")
+				Error(w, req, http.StatusInternalServerError, "Il n'y aucun resultat")
 				return
 			}
 

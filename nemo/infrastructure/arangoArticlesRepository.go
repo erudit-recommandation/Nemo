@@ -53,7 +53,6 @@ func (a ArangoArticlesRepository) GetByIdproprio(id string) (domain.Article, err
 	} else if err != nil {
 		return domain.Article{}, err
 	}
-	doc.BuildUrl()
 
 	return doc, nil
 }
@@ -92,7 +91,6 @@ func (a ArangoArticlesRepository) GetByIdPandas(id int) (domain.Article, error) 
 	} else if err != nil {
 		return domain.Article{}, err
 	}
-	doc.BuildUrl()
 
 	return doc, nil
 }
@@ -161,7 +159,7 @@ FOR el IN ids_sentences
 		} else if err != nil {
 			return nil, err
 		}
-		doc.BuildUrl()
+
 		resp = append(resp, doc)
 	}
 	rand.Seed(time.Now().UnixNano())
@@ -269,7 +267,6 @@ func (a ArangoArticlesRepository) GetArticleFromSentenceID(articleID ArticlesID)
 	} else if err != nil {
 		return domain.Article{}, err
 	}
-	doc.BuildUrl()
 
 	return doc, nil
 }
@@ -308,7 +305,7 @@ func (a ArangoArticlesRepository) GetNeighbouringArticlesByBMU(bmu int, limit ui
 		} else if err != nil {
 			return nil, err
 		}
-		doc.BuildUrl()
+
 		resp = append(resp, doc)
 	}
 	sort.SliceStable(resp, func(i, j int) bool {

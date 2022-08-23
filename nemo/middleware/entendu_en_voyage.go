@@ -36,7 +36,7 @@ func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 
 		page := 0
 
-		log.Printf("-- Entendu en voyage Query: %v --\n", query)
+		log.Printf("-- Entendu en voyage Query avec le corpus %v : %v --\n", corpus, query)
 
 		var resp []domain.Article
 		var nFound int
@@ -55,6 +55,7 @@ func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 			}
 		} else {
 			ids, err := repo.GetSearchSentencesID(query, LIMIT_ENTENDU_EN_VOYAGE)
+			log.Println(ids)
 			if err != nil {
 				log.Println(err)
 				Error(w, req, http.StatusInternalServerError, err.Error())
@@ -97,13 +98,19 @@ func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 
 func EntenduEnVoyageCached(next httpHandlerFunc) httpHandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		corpus := "erudit"
+
 		CACHE_ENTENDU_EN_VOYAGE.ClearExpired()
+		corpus := req.URL.Query().Get("corpus")
+		if corpus == "" {
+			errMsg := "a corpus must be defined"
+			log.Println(errMsg)
+			Error(w, req, http.StatusInternalServerError, errMsg)
+			return
+		}
 
 		repo, err := infrastructure.ProvideArangoArticlesRepository(corpus)
 		if err != nil {
-			log.Println(err)
-			Error(w, req, http.StatusInternalServerError, err.Error())
+
 			return
 		}
 		vars := mux.Vars(req)
@@ -113,6 +120,7 @@ func EntenduEnVoyageCached(next httpHandlerFunc) httpHandlerFunc {
 			Error(w, req, http.StatusInternalServerError, err.Error())
 			return
 		}
+		log.Printf("-- Entendu en voyage Cache : %v --\n", hasedQuery)
 
 		r, ok := CACHE_ENTENDU_EN_VOYAGE[uint32(hasedQuery)]
 		if !ok {
@@ -174,8 +182,6 @@ func GetEntenduEnvoyageArticleFromCache(repo infrastructure.ArticlesRepository, 
 	for _, id := range pageIds {
 		article, err := repo.GetArticleFromSentenceID(id.(infrastructure.ArticlesID))
 		if err != nil {
-			log.Println(pageIds)
-			log.Println(el)
 			return nil, http.StatusInternalServerError, err
 		}
 		resp = append(resp, article)

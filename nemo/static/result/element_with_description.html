@@ -2,10 +2,9 @@
 <div class="result-element-description">
     <div class="som">
         <a style="width: 100%;" href="/accoste_en_voyage/{{.Corpus}}/{{.ID}}">
-            <img src="{{.PersonaImageLink}}" alt="persona article {{.ID}}"
-            style="width: 100%;">
+            <img src="{{.PersonaImageLink}}" alt="persona article {{.ID}}" style="width: 100%;">
         </a>
-        
+
 
         <!--  <img src="static/images/0.svg" alt="persona article {{.ID}}" style="width: 100%;"> -->
 
@@ -13,9 +12,34 @@
 
     <div class="result-element-description-payload">
         <div class="result-element-description-header">
+            {{$styleAuthor := "none"}}
+            {{$author := .Author}}
+            {{if eq $author "" }}
+            {{$styleAuthor := "italic"}}
+            {{$author = "auteur non disponible"}}
+            {{end}}
+
+            {{$styleYear := "none"}}
+            {{$year := .Year}}
+            {{if eq $year 0 }}
+            {{$styleYear := "italic"}}
+            {{$year = "année de parution non disponible"}}
+            {{end}}
+
+            {{$styleJournal := "none"}}
+            {{$journal := .Journal}}
+            {{if eq $journal "" }}
+            {{$styleJournal := "italic"}}
+            {{$journal = "journal non disponible"}}
+            {{end}}
+            
+            {{if eq .Url ""}}
+            <span class="result-title">{{.Title}}</span>
+            {{else}}
             <a href={{.Url}} target="_blank" rel="noopener noreferrer" title={{.Title}}
                 class="result-title">{{.Title}}</a>
-            <span class="description">({{.Author}}, {{.Year}}, {{.Journal}})</span>
+            {{end}}
+            <span class="description">(<span style="{{$styleAuthor}}">{{$author}}</span>, <span style="{{$styleYear}}">{{$year}}</span>, <span style="{{$styleJournal}}">{{$journal}}</span>)</span>
         </div>
         <div class="related-text" onclick="copyToClipboard('related-text-content-{{.ID}}')">
             <span class="related-text-content-{{.ID}}">{{.RelatedText.Prev}}</span>

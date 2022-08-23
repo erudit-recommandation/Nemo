@@ -27,11 +27,14 @@ type RelatedText struct {
 	After string
 }
 
-func (a *Article) BuildUrl() {
-	a.Url = fmt.Sprintf("https://id.erudit.org/iderudit/%v", a.ID)
-	if a.Title == "" {
+func (a *Article) BuildUrl(corpus string) {
+	if corpus == "erudit" {
+		a.Url = build_erudit_url(a)
+	}
+	if a.Url != "" && a.Title == "" {
 		a.Title = a.Url
 	}
+
 }
 
 func (a *Article) BuildRelatedText() {

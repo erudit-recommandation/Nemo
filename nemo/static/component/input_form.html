@@ -23,11 +23,38 @@
         {{end}}
 
         {{if .Page.IsAccosteEnVoyage}}
-        <p>Articles similaires à: <a href={{.HostArticle.Url}} target="_blank" rel="noopener noreferrer" title={{.HostArticle.Title}}
-                class="result-title">{{.HostArticle.Title}}</a>
 
-            <span class="description smaller-text">(<span style="font-style:{{.HostArticleAuthorStyle}};">{{.HostArticle.Author}}</span>,
-                {{.HostArticle.Year}}, {{.HostArticle.Journal}})</span>
+        {{$styleAuthor := "none"}}
+        {{$author := .HostArticle.Author}}
+        {{if eq $author "" }}
+        {{$styleAuthor := "italic"}}
+        {{$author = "auteur non disponible"}}
+        {{end}}
+
+        {{$styleYear := "none"}}
+        {{$year := .HostArticle.Year}}
+        {{if eq $year 0 }}
+        {{$styleYear := "italic"}}
+        {{$year = "année de parution non disponible"}}
+        {{end}}
+
+        {{$styleJournal := "none"}}
+        {{$journal := .HostArticle.Journal}}
+        {{if eq $journal "" }}
+        {{$styleJournal := "italic"}}
+        {{$journal = "journal non disponible"}}
+        {{end}}
+        <p>Articles similaires à:
+            {{if eq .HostArticle.Url ""}}
+            <span class="result-title">{{.HostArticle.Title}}</span>
+            {{else}}
+            <a href={{.HostArticle.Url}} target="_blank" rel="noopener noreferrer" title={{.HostArticle.Title}}
+                class="result-title">{{.HostArticle.Title}}</a>
+            {{end}}
+
+            <span class="description smaller-text">(<span style="font-style:{{$styleAuthor}};">{{$author }}</span>,
+                <span style="{{$styleYear}}">{{$year}}</span>, <span
+                    style="{{$styleJournal}}">{{$journal}}</span>)</span>
         </p>
         {{end}}
     </div>

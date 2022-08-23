@@ -6,21 +6,19 @@ import (
 )
 
 type ResultInfo struct {
-	Results                []ArticleHashedQuery
-	Query                  string
-	HashedQuery            string
-	Page                   Page
-	NResult                string
-	Corpus                 config.DatabaseCorpus
-	HostArticle            domain.Article
-	HostArticleAuthorStyle string
-	ResofTheCorpus         []config.DatabaseCorpus
+	Results        []ArticleHashedQuery
+	Query          string
+	HashedQuery    string
+	Page           Page
+	NResult        string
+	Corpus         config.DatabaseCorpus
+	HostArticle    domain.Article
+	ResofTheCorpus []config.DatabaseCorpus
 }
 
 type ArticleHashedQuery struct {
 	domain.Article
 	PersonaImageLink string
-	AuthorStyle      string
 	Corpus           string
 }
 

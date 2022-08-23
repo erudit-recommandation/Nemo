@@ -7,6 +7,17 @@
         {
             "name": "erudit",
             "corpus": "erudit"
+        },
+        {
+            "name":"Théorie de l'architecture française",
+            "corpus":"libraryFr"        
+        },
+        {
+            "name":"Théorie de l'architecture anglaise",
+            "corpus":"libraryEng"
+        },{
+            "name":"Xenotheka",
+            "corpus":"xenotheka"
         }
     ],
     "text_analysis_service_addr": "http://localhost:8092"
