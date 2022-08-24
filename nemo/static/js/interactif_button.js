@@ -39,7 +39,7 @@ class InteractiveInput {
       return false;
     };
 
-    this.btnSelected = this.btnEntenduEnVoyage;
+    this.btnSelected = null;
     this.deleteSelectTag();
 
     this.startingFunction();
@@ -206,6 +206,7 @@ class InteractiveInput {
     } else if (url.includes(this.btnEntenduEnVoyage.formAction)) {
       this.entenduEnVoyageInteraction();
     } else if (url.includes(this.btnRencontreEnvoyage.formAction)) {
+      this.btnSelected = this.btnRencontreEnvoyage;
       const d = document.createElement("TEXTAREA");
       d.value = this.searchBar.value;
       d.classList = this.searchBar.classList;
