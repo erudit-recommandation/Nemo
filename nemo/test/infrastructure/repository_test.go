@@ -35,7 +35,6 @@ func testGetByIdproprio(repositoryProvider func() (infrastructure.ArticlesReposi
 			ID:      id,
 			Journal: "Spirale",
 		}
-		expectedResult.BuildUrl()
 		resp, err := repo.GetByIdproprio(id)
 		if err != nil {
 			t.Fatal(err)

@@ -133,7 +133,7 @@ FOR el IN ids_sentences
 
     FOR a IN articles
         FILTER a.idproprio == el.id
-        RETURN DISTINCT {title:a.title,
+        RETURN {title:a.title,
                 annee:a.annee,
                 author:a.author,
                 idproprio:a.idproprio,

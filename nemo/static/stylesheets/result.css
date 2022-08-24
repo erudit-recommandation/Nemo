@@ -42,11 +42,11 @@
   margin-bottom: 10px;
 }
 
-#corpus {
+.corpus {
   font-size: 1.1em;
 }
 
-#corpus:hover {
+.corpus:hover {
   text-decoration: underline;
 }
 #simple-search-button {

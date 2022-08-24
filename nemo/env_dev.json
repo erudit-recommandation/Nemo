@@ -5,7 +5,7 @@
     "arango_username": "root",
     "arango_database": [
         {
-            "name": "erudit",
+            "name": "Érudit",
             "corpus": "erudit"
         },
         {

@@ -4,12 +4,12 @@
         <a href="/" id="name">Nemo</a>
         <span id="visite">visite</span>
         <select form="input-form" name="corpus">
-            <option value="{{.Corpus.Corpus}}" selected>{{.Corpus.Name}}</option>
+            <option value="{{.Corpus.Corpus}}" id="{{.Corpus.Corpus}}" selected>{{.Corpus.Name}}</option>
             {{range $el:=.ResofTheCorpus}}
-            <option value="{{$el.Corpus}}">{{$el.Name}}</option>
+            <option value="{{$el.Corpus}}" id="{{$el.Corpus}}">{{$el.Name}}</option>
             {{end}}
         </select>
-        <span id="corpus"></span>
+        <span class="corpus"></span>
     </div>
 
     {{template "search-input" .}}

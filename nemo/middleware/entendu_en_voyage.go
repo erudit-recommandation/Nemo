@@ -55,7 +55,6 @@ func EntenduEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 			}
 		} else {
 			ids, err := repo.GetSearchSentencesID(query, LIMIT_ENTENDU_EN_VOYAGE)
-			log.Println(ids)
 			if err != nil {
 				log.Println(err)
 				Error(w, req, http.StatusInternalServerError, err.Error())
