@@ -1,7 +1,6 @@
 "use strict";
 
 function copyToClipboard(text_Class) {
-  console.log(text_Class)
   const Toastify = window.Toastify;
 
   let text = "";
