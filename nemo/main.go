@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
@@ -26,12 +27,14 @@ func main() {
 	} else if *productionMode {
 		config.CONFIG_MODE = config.PRODUCTION
 		fmt.Println("production mode")
+
 	} else {
 		fmt.Println("developpement mode")
 		config.CONFIG_MODE = config.DEV
 	}
+	//fmt.Println(config.GetConfig().Port)
 
-	fmt.Printf("\nServer started at: http://localhost%v", server.GetPort())
+	log.Printf("\nServer started at: http://localhost%v", server.GetPort())
 	srv := &http.Server{}
 	close := make(chan os.Signal, 1)
 	server.BuildServer(srv, close)
