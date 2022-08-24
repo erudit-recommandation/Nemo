@@ -7,7 +7,7 @@
 .mini-search {
   display: grid;
   grid-template-columns: 15vw 60vw;
-  height: fit-content;
+  height: 30vh;
 }
 
 .search-form {
