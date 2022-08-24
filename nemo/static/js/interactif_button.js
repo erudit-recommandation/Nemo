@@ -76,7 +76,7 @@ class InteractiveInput {
           try {
             Toastify({
               text: msg,
-              duration: 1000,
+              duration: 5000,
               newWindow: true,
               close: true,
               gravity: "top", // `top` or `bottom`
@@ -206,7 +206,14 @@ class InteractiveInput {
     } else if (url.includes(this.btnEntenduEnVoyage.formAction)) {
       this.entenduEnVoyageInteraction();
     } else if (url.includes(this.btnRencontreEnvoyage.formAction)) {
-      this.rencontreEnVoyageInteraction();
+      const d = document.createElement("TEXTAREA");
+      d.value = this.searchBar.value;
+      d.classList = this.searchBar.classList;
+      this.searchBar.parentNode.replaceChild(d, this.searchBar);
+
+      this.searchBar = document.querySelector(".search-bar");
+      this.searchBar.style.height = "140px";
+      this.search();
     } else {
       this.entenduEnVoyageInteraction();
     }
