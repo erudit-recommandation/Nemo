@@ -5,8 +5,19 @@
     "arango_username": "root",
     "arango_database": [
         {
-            "name": "erudit",
+            "name": "Érudit",
             "corpus": "erudit"
+        },
+        {
+            "name":"Théorie de l'architecture française",
+            "corpus":"libraryFr"        
+        },
+        {
+            "name":"Théorie de l'architecture anglaise",
+            "corpus":"libraryEng"
+        },{
+            "name":"Xenotheka",
+            "corpus":"xenotheka"
         }
     ],
     "text_analysis_service_addr": "http://analysis:8092"
