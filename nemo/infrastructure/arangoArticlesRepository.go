@@ -271,13 +271,14 @@ func (a ArangoArticlesRepository) GetArticleFromSentenceID(articleID ArticlesID)
 	return doc, nil
 }
 
-func (a ArangoArticlesRepository) GetNeighbouringArticlesByBMU(bmu int, limit uint) ([]domain.Article, error) {
+func (a ArangoArticlesRepository) GetNeighbouringArticlesByBMU(bmu int, bmuRange uint, limit uint) ([]domain.Article, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), QUERY_MAXIMUM_DURATION)
 	defer cancel()
 	query := fmt.Sprintf(`
 	LET bmu = %v
+	LET bmu_range = %v
 	FOR a IN articles
-		FILTER a.bmu==bmu OR a.bmu==bmu+1 OR a.bmu==bmu-1
+		FILTER (a.bmu <= bmu + bmu_range) AND (a.bmu >= bmu-bmu_range)
 		LIMIT %v
 		RETURN {
 			title:a.title,
@@ -289,7 +290,7 @@ func (a ArangoArticlesRepository) GetNeighbouringArticlesByBMU(bmu int, limit ui
 			bmu:a.bmu
 		}
 		
-	`, bmu, limit)
+	`, bmu, bmuRange, limit)
 
 	cursor, err := a.database.Query(ctx, query, nil)
 	if err != nil {

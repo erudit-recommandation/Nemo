@@ -42,6 +42,7 @@ func (e EnvVariable) GetDatabaseCorpusExcept(corpusName string) []DatabaseCorpus
 }
 
 type DatabaseCorpus struct {
-	Name   string `json:"name"`
-	Corpus string `json:"corpus"`
+	Name        string `json:"name"`
+	Corpus      string `json:"corpus"`
+	BMUInterval uint   `json:"bmu_interval"`
 }

@@ -10,7 +10,7 @@ type ArticlesRepository interface {
 	GetSearchSentencesID(phrase string, limit uint) ([]ArticlesID, error)
 	GetArticleFromSentenceID(articleID ArticlesID) (domain.Article, error)
 
-	GetNeighbouringArticlesByBMU(bmu int, limit uint) ([]domain.Article, error)
+	GetNeighbouringArticlesByBMU(bmu int, bmuRange uint, limit uint) ([]domain.Article, error)
 }
 
 type ArticlesID struct {

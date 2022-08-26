@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/erudit-recommandation/search-engine-webapp/config"
 	"github.com/erudit-recommandation/search-engine-webapp/domain"
 	"github.com/erudit-recommandation/search-engine-webapp/infrastructure"
 	"github.com/gorilla/mux"
@@ -48,7 +49,13 @@ func AccosteEnVoyage(next httpHandlerFunc) httpHandlerFunc {
 			nFound = len(articles)
 
 		} else {
-			resp, err := repo.GetNeighbouringArticlesByBMU(hostArticle.Bmu, LIMIT_ACCOSTER_EN_VOYAGE)
+			corpusInfo, err := config.GetConfig().GetDatabaseCorpus(corpus)
+			if err != nil {
+				log.Println(err)
+				Error(w, req, http.StatusInternalServerError, err.Error())
+				return
+			}
+			resp, err := repo.GetNeighbouringArticlesByBMU(hostArticle.Bmu, corpusInfo.BMUInterval, LIMIT_ACCOSTER_EN_VOYAGE)
 			if err != nil {
 				log.Println(err)
 				Error(w, req, http.StatusInternalServerError, err.Error())

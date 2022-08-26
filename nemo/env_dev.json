@@ -6,7 +6,18 @@
     "arango_database": [
         {
             "name": "Érudit",
-            "corpus": "erudit"
+            "corpus": "erudit",
+            "bmu_interval": 0
+        },
+        {
+            "name": "Théorie de l'architecture française",
+            "corpus": "libraryFr",
+            "bmu_interval": 2
+        },
+        {
+            "name": "Théorie de l'architecture anglaise",
+            "corpus": "libraryEng",
+            "bmu_interval": 2
         }
     ],
     "text_analysis_service_addr": "http://localhost:8092"
