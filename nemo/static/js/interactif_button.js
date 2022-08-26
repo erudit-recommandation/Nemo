@@ -202,8 +202,10 @@ class InteractiveInput {
   startingFunction() {
     const url = window.location.href;
     if (url.includes(this.btnClefCanonique.formAction)) {
+      this.btnSelected = this.btnClefCanonique;
       this.clefCanoniqueInteraction();
     } else if (url.includes(this.btnEntenduEnVoyage.formAction)) {
+      this.btnSelected = this.btnEntenduEnVoyage;
       this.entenduEnVoyageInteraction();
     } else if (url.includes(this.btnRencontreEnvoyage.formAction)) {
       this.btnSelected = this.btnRencontreEnvoyage;
@@ -216,6 +218,7 @@ class InteractiveInput {
       this.searchBar.style.height = "140px";
       this.search();
     } else {
+      this.btnSelected = this.btnEntenduEnVoyage;
       this.entenduEnVoyageInteraction();
     }
   }
