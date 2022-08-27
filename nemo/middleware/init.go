@@ -14,8 +14,8 @@ var CACHE_DURATION = 1 * time.Hour
 var LIMIT_RENCONTRE_EN_VOYAGE uint = 16
 var LIMIT_ACCOSTER_EN_VOYAGE uint = 1000
 
-var CACHE_ENTENDU_EN_VOYAGE cache = make(cache)
+var CACHE_ENTENDU_EN_VOYAGE Cache = make(Cache)
 
-var CACHE_RENCONTRE_EN_VOYAGE cache = make(cache)
+var CACHE_RENCONTRE_EN_VOYAGE Cache = make(Cache)
 
-var CACHE_ACCOSTE_EN_VOYAGE cache = make(cache)
+var CACHE_ACCOSTE_EN_VOYAGE Cache = make(Cache)

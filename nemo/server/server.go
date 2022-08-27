@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/erudit-recommandation/search-engine-webapp/api"
 	"github.com/erudit-recommandation/search-engine-webapp/config"
 	"github.com/erudit-recommandation/search-engine-webapp/middleware"
 	"github.com/erudit-recommandation/search-engine-webapp/route"
@@ -41,6 +42,9 @@ func setRoute(r *mux.Router) {
 	r.HandleFunc(route.VAISEAU, route.Vaiseau).Methods("GET")
 
 	r.HandleFunc(route.REMERCIEMENTS, route.Remerciements).Methods("GET")
+
+	r.HandleFunc("/cache", api.GetCache).Methods("GET")
+	r.HandleFunc("/cache", api.DeleteCache).Methods("DELETE")
 
 	r.NotFoundHandler = r.NewRoute().HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		middleware.Error(w, r, 404, "page non trouvée")

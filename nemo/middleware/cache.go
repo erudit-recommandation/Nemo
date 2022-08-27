@@ -16,9 +16,9 @@ import (
 var PERSONA_IMAGE_DIRECTORY_TEMPLATE = "./static/images/persona/%v"
 var PERSONA_IMAGE_TEMPLATE = "./static/images/persona/%v/%v.svg"
 
-type cache map[uint32]cacheElement[any]
+type Cache map[uint32]cacheElement[any]
 
-func (c *cache) ClearExpired() {
+func (c *Cache) ClearExpired() {
 	keys := reflect.ValueOf(*c).MapKeys()
 	for _, k := range keys {
 		if (*c)[uint32(k.Uint())].IsExpired() {
@@ -27,6 +27,15 @@ func (c *cache) ClearExpired() {
 			os.RemoveAll(path)
 			delete(*c, uint32(k.Uint()))
 		}
+	}
+}
+
+func (c *Cache) Clear() {
+	keys := reflect.ValueOf(*c).MapKeys()
+	for _, k := range keys {
+		path := fmt.Sprintf(PERSONA_IMAGE_DIRECTORY_TEMPLATE, uint32(k.Uint()))
+		os.RemoveAll(path)
+		delete(*c, uint32(k.Uint()))
 	}
 }
 
@@ -110,7 +119,7 @@ func createPersonaSVG(articles []domain.Article, hasedQuery uint32) error {
 	return nil
 }
 
-func GetArticleFromCache(hasedQuery uint32, limit uint, currentCache *cache) ([]domain.Article, error) {
+func GetArticleFromCache(hasedQuery uint32, limit uint, currentCache *Cache) ([]domain.Article, error) {
 	resp := make([]domain.Article, 0, limit)
 	cacheValue := (*currentCache)[hasedQuery]
 
