@@ -2,8 +2,10 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/erudit-recommandation/search-engine-webapp/middleware"
 )
@@ -25,8 +27,20 @@ func GetCache(w http.ResponseWriter, r *http.Request) {
 
 }
 
+var last_time_deleted = time.Now()
+
+var MIN_DURATION_DELETION = 5 * time.Minute
+
 func DeleteCache(w http.ResponseWriter, r *http.Request) {
-	middleware.CACHE_ENTENDU_EN_VOYAGE.Clear()
-	middleware.CACHE_RENCONTRE_EN_VOYAGE.Clear()
-	middleware.CACHE_ACCOSTE_EN_VOYAGE.Clear()
+	if -1*time.Until(last_time_deleted) >= MIN_DURATION_DELETION {
+		middleware.CACHE_ENTENDU_EN_VOYAGE.Clear()
+		middleware.CACHE_RENCONTRE_EN_VOYAGE.Clear()
+		middleware.CACHE_ACCOSTE_EN_VOYAGE.Clear()
+		last_time_deleted = time.Now()
+
+	} else {
+		log.Println(1 * time.Until(last_time_deleted))
+		http.Error(w, fmt.Sprintf("Le cache peut être supprimé dans %v", MIN_DURATION_DELETION+time.Until(last_time_deleted)), http.StatusForbidden)
+	}
+
 }
