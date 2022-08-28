@@ -36,3 +36,32 @@ L'utilité de ce mode est de faire fonctionner localement l'application.
 Ce mode se sert du fichier `.env_dev` afin de configurer les services. Il faut au préalable lancer les services à [la racine du répertoire](https://github.com/erudit-recommandation/Nemo) en lançant `make run-docker-debug`, par la suite il faut dans ce répertoire courant lancer la commande `make run`.
 
 L'utilité de ce mode est de plus facilement faire du développement, pour lancer l'application localement, il est plus simple de servir de Docker-compose.
+
+# Exemple `.env`
+
+```json
+{
+    "port": "8087", // port de la web app
+    "arango_addr": "http://localhost:8529", // addresse de arangoDB
+    "arango_password": "rootpassword", // mode de passe de arangoDB
+    "arango_username": "root", // utilisateur de arangoDB devrait toujours être root
+    "arango_database": [ // base de données utilisé
+        {
+            "name": "Érudit", // nom à afficher dans le UI
+            "corpus": "erudit", // nom de la base de données
+            "bmu_interval": 0 // l'interval de BMU à regarder
+        },
+        {
+            "name": "Théorie de l'architecture française",
+            "corpus": "libraryFr",
+            "bmu_interval": 2
+        },
+        {
+            "name": "Théorie de l'architecture anglaise",
+            "corpus": "libraryEng",
+            "bmu_interval": 2
+        }
+    ],
+    "text_analysis_service_addr": "http://localhost:8092" // addresse du service d'analyse
+}
+```
