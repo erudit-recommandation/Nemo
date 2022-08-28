@@ -1,23 +1,28 @@
 {
-    "port": "8099",
+    "port": "8087",
     "arango_addr": "http://arangodb:8529",
     "arango_password": "rootpassword",
     "arango_username": "root",
     "arango_database": [
         {
             "name": "Érudit",
-            "corpus": "erudit"
+            "corpus": "erudit",
+            "bmu_interval": 0
         },
         {
-            "name":"Théorie de l'architecture française",
-            "corpus":"libraryFr"        
+            "name": "Théorie de l'architecture française",
+            "corpus": "libraryFr",
+            "bmu_interval": 2
         },
         {
-            "name":"Théorie de l'architecture anglaise",
-            "corpus":"libraryEng"
-        },{
-            "name":"Xenotheka",
-            "corpus":"xenotheka"
+            "name": "Théorie de l'architecture anglaise",
+            "corpus": "libraryEng",
+            "bmu_interval": 2
+        },
+        {
+            "name": "Xenotheka",
+            "corpus": "xenotheka",
+            "bmu_interval": 3
         }
     ],
     "text_analysis_service_addr": "http://analysis:8092"

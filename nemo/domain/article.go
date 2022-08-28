@@ -1,11 +1,5 @@
 package domain
 
-import (
-	"fmt"
-
-	"github.com/Pallinder/go-randomdata"
-)
-
 type Article struct {
 	Title            string `json:"title"`
 	Url              string
@@ -45,17 +39,4 @@ func (a *Article) BuildRelatedText() {
 		After: a.NextSentence,
 	}
 
-}
-
-func NewDummyResults(n int) []Article {
-	res := make([]Article, n)
-	for i := 0; i < n; i++ {
-		res[i] = Article{
-			Title:  randomdata.SillyName(),
-			Author: randomdata.SillyName(),
-			Url:    fmt.Sprintf("https://%v.com", randomdata.SillyName()),
-			Year:   randomdata.Number(1900, 2022),
-		}
-	}
-	return res
 }
