@@ -5,26 +5,27 @@
     {{else}}
     <a href={{.Url}} target="_blank" rel="noopener noreferrer" title={{.Title}} class="result-title smaller-text">{{.Title}}</a>
     {{end}}
-    
+
+    {{$notAvailable:="ND"}}
     {{$styleAuthor := "none"}}
     {{$author := .Author}}
     {{if eq $author  "" }}
     {{$styleAuthor := "italic"}}
-    {{$author = "auteur non disponible"}}
+    {{$author = $notAvailable}}
     {{end}}
 
     {{$styleYear := "none"}}
     {{$year := .Year}}
     {{if eq $year  0 }}
     {{$styleYear := "italic"}}
-    {{$year = "année de parution non disponible"}}
+    {{$year = $notAvailable}}
     {{end}}
 
     {{$styleJournal := "none"}}
     {{$journal := .Journal}}
     {{if eq $journal  "" }}
     {{$styleJournal := "italic"}}
-    {{$journal = "journal non disponible"}}
+    {{$journal = $notAvailable}}
     {{end}}
     <span class="description smaller-text">(<span style="{{$styleAuthor}}">{{$author}}</span>, <span style="{{$styleYear}}">{{$year}}</span>, <span style="{{$styleJournal}}">{{$journal}}</span>)</span>
     <a class="accoste_en_voyage" href="/accoste_en_voyage/{{.Corpus}}/{{.ID}}">

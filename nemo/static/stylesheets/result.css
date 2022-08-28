@@ -4,6 +4,8 @@
   --corpus-text-size: 1.1em;
   --visite-text-size: 1.05em;
   --visite-magin-bottom: 10px;
+  --visite-magin-top: 20px;
+  --title-text-size:3.5em;
 }
 
 * {
@@ -33,7 +35,7 @@
 }
 
 #name {
-  font-size: 3.5em;
+  font-size: var(--title-text-size);
   color: black;
 }
 
@@ -43,14 +45,14 @@
 
 #visite {
   font-size: var(--visite-text-size);
-  margin-top: 20px;
+  margin-top: var(--visite-magin-top);
   margin-bottom: var(--visite-magin-bottom);
 }
 
 .corpus {
   font-size: var(--corpus-text-size);
 }
-#nb-result{
+#nb-result {
   margin-top: 0px;
 }
 
@@ -105,9 +107,7 @@ body {
 
 .results-section {
   margin-left: 15vw;
-  margin-top: calc(
-    -1 * var(--corpus-text-size) - var(--visite-magin-bottom) - var(--visite-text-size)
-  );
+  margin-top: calc(-1 * var(--corpus-text-size));
 }
 
 .som {

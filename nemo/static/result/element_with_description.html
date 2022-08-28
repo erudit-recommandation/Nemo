@@ -8,25 +8,26 @@
 
     <div class="result-element-description-payload">
         <div class="result-element-description-header">
+            {{$notAvailable:="ND"}}
             {{$styleAuthor := "none"}}
             {{$author := .Author}}
             {{if eq $author "" }}
             {{$styleAuthor := "italic"}}
-            {{$author = "auteur non disponible"}}
+            {{$author = $notAvailable}}
             {{end}}
 
             {{$styleYear := "none"}}
             {{$year := .Year}}
             {{if eq $year 0 }}
             {{$styleYear := "italic"}}
-            {{$year = "année de parution non disponible"}}
+            {{$year = $notAvailable}}
             {{end}}
 
             {{$styleJournal := "none"}}
             {{$journal := .Journal}}
             {{if eq $journal "" }}
             {{$styleJournal := "italic"}}
-            {{$journal = "journal non disponible"}}
+            {{$journal = $notAvailable}}
             {{end}}
             
             {{if eq .Url ""}}
