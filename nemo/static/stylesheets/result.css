@@ -1,5 +1,11 @@
 @import "input_form.css";
 
+:root {
+  --corpus-text-size: 1.1em;
+  --visite-text-size: 1.05em;
+  --visite-magin-bottom: 10px;
+}
+
 * {
   font-family: "Cabin", sans-serif;
 }
@@ -7,7 +13,6 @@
 .mini-search {
   display: grid;
   grid-template-columns: 15vw 60vw;
-  height: 30vh;
 }
 
 .search-form {
@@ -37,13 +42,16 @@
 }
 
 #visite {
-  font-size: 1.05em;
+  font-size: var(--visite-text-size);
   margin-top: 20px;
-  margin-bottom: 10px;
+  margin-bottom: var(--visite-magin-bottom);
 }
 
 .corpus {
-  font-size: 1.1em;
+  font-size: var(--corpus-text-size);
+}
+#nb-result{
+  margin-top: 0px;
 }
 
 .corpus:hover {
@@ -97,6 +105,9 @@ body {
 
 .results-section {
   margin-left: 15vw;
+  margin-top: calc(
+    -1 * var(--corpus-text-size) - var(--visite-magin-bottom) - var(--visite-text-size)
+  );
 }
 
 .som {
@@ -194,10 +205,10 @@ a:hover {
   height: 100%;
 }
 .smaller-text span,
-.smaller-text{
+.smaller-text {
   font-size: 0.9em;
 }
 
-select{
+select {
   width: 85%;
 }

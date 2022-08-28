@@ -47,7 +47,7 @@ func setRoute(r *mux.Router) {
 	r.HandleFunc("/cache", api.DeleteCache).Methods("DELETE")
 
 	r.NotFoundHandler = r.NewRoute().HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		middleware.Error(w, r, 404, "page non trouvée")
+		middleware.Error(w, r, http.StatusNotFound, "page non trouvée")
 	}).GetHandler()
 
 }

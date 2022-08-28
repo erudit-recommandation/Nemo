@@ -112,7 +112,7 @@ class InteractiveInput {
   }
 
   deleteSelectTag() {
-    document.querySelector("select").style.visibility = "hidden";
+    document.querySelector("select").style.display = "none";
     document.querySelector("select").style.marginTop = "0px";
     document.querySelector("select").style.marginBottom = "0px";
   }

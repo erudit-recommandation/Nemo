@@ -19,7 +19,7 @@
     <div class="search-bar-container">
         <textarea name="text" class="search-bar" spellcheck="true">{{.Query}}</textarea>
         {{if or .Page.IsEntenduEnVoyage .Page.IsAccosteEnVoyage}}
-        <p>Nombre de résultats: {{.NResult}}</p>
+        <p id="nb-result">Nombre de résultats: {{.NResult}}</p>
         {{end}}
 
         {{if .Page.IsAccosteEnVoyage}}
