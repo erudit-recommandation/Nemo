@@ -26,3 +26,6 @@ create-docker:
 
 run-prod: build
 	$(BINARY) -p
+deploy:
+	rm -r ./static/images/persona/* || true
+	eb deploy
