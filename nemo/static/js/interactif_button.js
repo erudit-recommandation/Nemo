@@ -14,6 +14,10 @@ class InteractiveInput {
 
     this.indexCorpus = 0;
 
+    this.searchBarHeight = `calc( ${
+      document.querySelector("#name").offsetHeight
+    }px + var(--visite-margin-top))`;
+
     this.corpusElement = document.querySelector(".corpus");
     this.corpusElement.textContent = this.selectedCorpus.name;
 
@@ -120,16 +124,9 @@ class InteractiveInput {
   rencontreEnVoyageInteraction() {
     this.setOneButtonBlack(this.btnRencontreEnvoyage);
     if (this.searchBar.tagName === "TEXTAREA") {
-      this.searchBar.style.height = "140px";
+      this.searchBar.style.height = this.searchBarHeight;
     } else {
-      const d = document.createElement("TEXTAREA");
-      d.value = this.searchBar.value;
-      d.classList = this.searchBar.classList;
-      this.searchBar.parentNode.replaceChild(d, this.searchBar);
-
-      this.searchBar = document.querySelector(".search-bar");
-      this.searchBar.style.height = "140px";
-      this.search();
+      this.startingRencontreeEnvoyage();
     }
   }
 
@@ -199,6 +196,18 @@ class InteractiveInput {
     }
   }
 
+  startingRencontreeEnvoyage() {
+    this.btnSelected = this.btnRencontreEnvoyage;
+    const d = document.createElement("TEXTAREA");
+    d.value = this.searchBar.value;
+    d.classList = this.searchBar.classList;
+    this.searchBar.parentNode.replaceChild(d, this.searchBar);
+
+    this.searchBar = document.querySelector(".search-bar");
+    this.searchBar.style.height = this.searchBarHeight;
+    this.search();
+  }
+
   startingFunction() {
     const url = window.location.href;
     if (url.includes(this.btnClefCanonique.formAction)) {
@@ -208,15 +217,7 @@ class InteractiveInput {
       this.btnSelected = this.btnEntenduEnVoyage;
       this.entenduEnVoyageInteraction();
     } else if (url.includes(this.btnRencontreEnvoyage.formAction)) {
-      this.btnSelected = this.btnRencontreEnvoyage;
-      const d = document.createElement("TEXTAREA");
-      d.value = this.searchBar.value;
-      d.classList = this.searchBar.classList;
-      this.searchBar.parentNode.replaceChild(d, this.searchBar);
-
-      this.searchBar = document.querySelector(".search-bar");
-      this.searchBar.style.height = "140px";
-      this.search();
+      this.startingRencontreeEnvoyage();
     } else {
       this.btnSelected = this.btnEntenduEnVoyage;
       this.entenduEnVoyageInteraction();

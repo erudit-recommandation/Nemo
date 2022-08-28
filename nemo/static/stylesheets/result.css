@@ -3,9 +3,9 @@
 :root {
   --corpus-text-size: 1.1em;
   --visite-text-size: 1.05em;
-  --visite-magin-bottom: 10px;
-  --visite-magin-top: 20px;
-  --title-text-size:3.5em;
+  --visite-margin-bottom: 10px;
+  --visite-margin-top: 20px;
+  --name-text-size:3.5em;
 }
 
 * {
@@ -35,7 +35,7 @@
 }
 
 #name {
-  font-size: var(--title-text-size);
+  font-size: var(--name-text-size);
   color: black;
 }
 
@@ -45,8 +45,8 @@
 
 #visite {
   font-size: var(--visite-text-size);
-  margin-top: var(--visite-magin-top);
-  margin-bottom: var(--visite-magin-bottom);
+  margin-top: var(--visite-margin-top);
+  margin-bottom: var(--visite-margin-bottom);
 }
 
 .corpus {
@@ -211,4 +211,8 @@ a:hover {
 
 select {
   width: 85%;
+}
+
+.search-bar-extended{
+  height: calc(var(--name-text-size) + var(--visite-margin-top));
 }
