@@ -36,7 +36,8 @@ func (a ArangoArticlesRepository) GetByIdproprio(id string) (domain.Article, err
 								idproprio:a.idproprio,
 								titrerev:a.titrerev,
 								persona_svg: a.persona_svg,
-								bmu:a.bmu
+								bmu:a.bmu,
+								url: a.url
 						}`,
 		id)
 	cursor, err := a.database.Query(ctx, query, nil)
@@ -71,7 +72,8 @@ func (a ArangoArticlesRepository) GetByIdPandas(id int) (domain.Article, error) 
 								author:a.author,
 								idproprio:a.idproprio,
 								titrerev:a.titrerev,
-								persona_svg: a.persona_svg
+								persona_svg: a.persona_svg,
+								url: a.url
 						}`,
 		id)
 	cursor, err := a.database.Query(ctx, query, nil)
@@ -141,7 +143,8 @@ FOR el IN ids_sentences
                 current_sentence:el.sentence,
                 previous_sentence: prev[0],
                 next_sentence: next[0],
-				persona_svg: a.persona_svg
+				persona_svg: a.persona_svg,
+				url: a.url
         }`,
 		booleanQuery.ToArangoPhraseQueryBody(),
 		n)
@@ -246,7 +249,8 @@ func (a ArangoArticlesRepository) GetArticleFromSentenceID(articleID ArticlesID)
                 previous_sentence: prev[0],
                 next_sentence: next[0],
 				persona_svg: a.persona_svg,
-				bmu:a.bmu
+				bmu:a.bmu,
+				url: a.url
         }
 	`,
 		articleID.NSentence, articleID.ID)
@@ -287,7 +291,8 @@ func (a ArangoArticlesRepository) GetNeighbouringArticlesByBMU(bmu int, bmuRange
 			idproprio:a.idproprio,
 			titrerev:a.titrerev,
 			persona_svg: a.persona_svg,
-			bmu:a.bmu
+			bmu:a.bmu,
+			url: a.url
 		}
 		
 	`, bmu, bmuRange, limit)

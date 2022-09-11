@@ -46,7 +46,7 @@ func Result(w http.ResponseWriter, r *http.Request) {
 		} else {
 			personaImageLink = fmt.Sprintf("/static/images/persona/%v/%v.svg", resp.HashedQuery, a.ID)
 		}
-		a.BuildUrl(resp.Corpus)
+		a.BuildTitle(resp.Corpus)
 
 		articleHashedQuery[i] = ArticleHashedQuery{
 			Article:          a,
@@ -62,7 +62,7 @@ func Result(w http.ResponseWriter, r *http.Request) {
 		middleware.Error(w, r, http.StatusInternalServerError, err.Error())
 		return
 	}
-	resp.HostArticle.BuildUrl(resp.Corpus)
+	resp.HostArticle.BuildTitle(resp.Corpus)
 	result_info := ResultInfo{
 		Results:        articleHashedQuery,
 		Query:          resp.Query,

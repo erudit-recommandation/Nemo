@@ -2,7 +2,7 @@ package domain
 
 type Article struct {
 	Title            string `json:"title"`
-	Url              string
+	Url              string `json:"url"`
 	Year             int    `json:"annee"`
 	Author           string `json:"author"`
 	ID               string `json:"idproprio"`
@@ -21,10 +21,7 @@ type RelatedText struct {
 	After string
 }
 
-func (a *Article) BuildUrl(corpus string) {
-	if corpus == "erudit" {
-		a.Url = build_erudit_url(a)
-	}
+func (a *Article) BuildTitle(corpus string) {
 	if a.Url != "" && a.Title == "" {
 		a.Title = a.Url
 	}
