@@ -15,5 +15,5 @@
             "bmu_interval": 3
         }
     ],
-    "text_analysis_service_addr": "http://localhost:5000"
+    "text_analysis_service_addr": "http://localhost:8092"
 }
