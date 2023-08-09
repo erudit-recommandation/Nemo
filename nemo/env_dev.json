@@ -1,18 +1,18 @@
 {
     "port": "8087",
     "arango_addr": "http://localhost:8529",
-    "arango_password": "rootpassword",
+    "arango_password": "",
     "arango_username": "root",
     "arango_database": [
         {
-            "name": "Théorie de l'architecture française",
+            "name": "Corpus FR",
             "corpus": "libraryFr",
-            "bmu_interval": 2
+            "bmu_interval": 3
         },
         {
             "name": "Xenotheka",
             "corpus": "xenotheka",
-            "bmu_interval": 3
+            "bmu_interval": 2
         }
     ],
     "text_analysis_service_addr": "http://localhost:8092"
